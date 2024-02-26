@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.coralblocks</groupId>
-  <artifactId>coralcontest</artifactId>
+  <artifactId>coralbench</artifactId>
   <version>0.1.1-SNAPSHOT</version>
 
   <properties>
@@ -11,9 +11,9 @@
   </properties>
 
   <scm>
-    <connection>scm:git:https://github.com/coralblocks/CoralContest</connection>
-    <developerConnection>scm:git:https://github.com/coralblocks/CoralContest</developerConnection>
-    <url>https://github.com/coralblocks/CoralContest</url>
+    <connection>scm:git:https://github.com/coralblocks/CoralBench</connection>
+    <developerConnection>scm:git:https://github.com/coralblocks/CoralBench</developerConnection>
+    <url>https://github.com/coralblocks/CoralBench</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -120,7 +120,7 @@
           </goals>
           <configuration>
             <minimizeJar>false</minimizeJar>  
-            <finalName>coralcontest-all</finalName>
+            <finalName>coralbench-all</finalName>
             <shadedArtifactAttached>true</shadedArtifactAttached>
             <shadedClassifierName>all</shadedClassifierName>
           </configuration>
@@ -135,7 +135,7 @@
     <repository>
       <id>github-cb</id>
       <name>GitHub Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/coralblocks/CoralContest</url>
+      <url>https://maven.pkg.github.com/coralblocks/CoralBench</url>
       <layout>default</layout>
     </repository>
   </distributionManagement>
