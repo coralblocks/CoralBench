@@ -1,4 +1,4 @@
-package com.coralblocks.coralcontest;
+package com.coralblocks.coralbench;
 
 import java.text.DecimalFormat;
 
