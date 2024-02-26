@@ -3,18 +3,24 @@ package com.coralblocks.coralcontest;
 import java.text.DecimalFormat;
 
 public class Bench {
+
+	public static boolean INCLUDE_STDEV = true;
+	public static boolean INCLUDE_MORE_PERCS = false;
+	public static boolean INCLUDE_WORST_PERCS = false;
+	public static boolean INCLUDE_TOTALS = false;
+	public static boolean INCLUDE_RATIOS = false;
 	
 	private static final int DEFAULT_WARMUP = 0;
 	private static final int NUMBER_OF_DECIMALS = 3;
 
-	private long time;
-	private long count = 0;
-	private long totalTime = 0;
-	private int warmup = 0;
-	private long minTime = Long.MAX_VALUE;
-	private long maxTime = Long.MIN_VALUE;
-	
 	private final DecimalFormat formatter = new DecimalFormat("#,###");
+	
+	private long time;
+	private long count;
+	private long totalTime;
+	private int warmup;
+	private long minTime;
+	private long maxTime;
 	
 	public Bench() {
 		this(DEFAULT_WARMUP);
@@ -24,14 +30,14 @@ public class Bench {
 		
 		this.warmup = warmup;
 		
-		reset(true);
-		
 		try {
 			// initialize it here so when you measure for the first time garbage is not created...
 			Class.forName("java.lang.Math");
 		} catch (final Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
+		
+		reset(true);
 	}
 
 	public void reset(boolean repeatWarmup) {
