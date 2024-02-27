@@ -206,7 +206,7 @@ typename LongMap<E>::Entry* LongMap<E>::getEntryFromPool(long key, E value, Entr
 
 template <typename E>
 void LongMap<E>::releaseEntryBackToPool(Entry* e) {
-    e->value = E(); // Set value to default-constructed value
+    e->value = nullptr;
     e->next = poolHead;
     poolHead = e;
 }
