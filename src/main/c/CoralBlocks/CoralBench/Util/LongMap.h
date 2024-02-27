@@ -54,6 +54,7 @@ class LongMap {
         class ReusableIterator : public std::iterator<std::input_iterator_tag, E> {
 
             private:
+                LongMap<E>* outer;
                 int size;
                 int index;
                 int dataIndex;
@@ -63,12 +64,12 @@ class LongMap {
                 bool wasRemoved;
 
             public:
-                ReusableIterator();
+                ReusableIterator(LongMap<E>& outerPtr);
                 ~ReusableIterator() = default;
 
                 void reset();
-                bool hasNextPtr() const;
-                E nextPtr();
+                bool hasNext() const;
+                E nextValue();
                 void remove();
         };
 

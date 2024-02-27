@@ -8,6 +8,7 @@ using namespace CoralBlocks::CoralBench::Util;
 using std::invalid_argument;
 using std::to_string;
 using std::round;
+using std::runtime_error;
 
 template <typename E>
 LongMap<E>::LongMap() : LongMap(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR) {}
@@ -26,7 +27,7 @@ LongMap<E>::LongMap(int initialCapacity, float loadFactor) {
     lengthMinusOne = initialCapacity - 1;
     this->loadFactor = loadFactor;
     threshold = static_cast<int>(round(initialCapacity * loadFactor));
-    reusableIter = new ReusableIterator();
+    reusableIter = new ReusableIterator(this);
 }
 
 template <typename E>
@@ -223,4 +224,75 @@ template <typename E>
 typename LongMap<E>::ReusableIterator LongMap<E>::iterator() {
     reusableIter->reset();
     return reusableIter;
+}
+
+template <typename E>
+LongMap<E>::ReusableIterator::ReusableIterator(LongMap<E>& outerPtr) {
+    outer = outerPtr;
+}
+
+template <typename E>
+void LongMap<E>::ReusableIterator::reset() {
+    size = outer->count;
+    index = 0;
+    dataIndex = 0;
+    prev = nullptr;
+    next = outer->data[0];
+    entry = nullptr;
+    wasRemoved = false;
+}
+
+template <typename E>
+bool LongMap<E>::ReusableIterator::hasNext() const {
+    return index < size;
+}
+
+template <typename E>
+E LongMap<E>::ReusableIterator::nextValue() {
+
+    if (index >= size) throw runtime_error("nothing to return");
+
+    if (!wasRemoved) prev = entry;
+    
+    wasRemoved = false;
+
+    entry = next;
+
+    if (entry == nullptr) {
+        while(entry == nullptr) {
+            dataIndex++;
+            entry = outer->data[dataIndex];
+        }
+        prev = nullptr;
+    }
+
+    index++;
+    
+    E o = entry->value;
+
+    outer->currIteratorKey = entry->key;
+
+    next = entry->next;
+
+    return o;
+}
+
+template <typename E>
+void LongMap<E>::ReusableIterator::remove() {
+
+    if (wasRemoved || entry == nullptr) throw runtime_error("nothing to remove");
+    
+    wasRemoved = true;
+
+    if (prev == nullptr) {
+        outer->data[dataIndex] = next;
+    } else {
+        prev->next = next;
+    }
+
+    outer->releaseEntryBackToPool(entry);
+
+    entry = nullptr;
+
+    count--;
 }
