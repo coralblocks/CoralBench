@@ -30,7 +30,7 @@ class LongMap {
 
         void releaseEntryBackToPool(Entry* e);
 
-        int toArrayIndex(long key);
+        int toArrayIndex(long key) const;
 
     public:
         LongMap();
@@ -73,4 +73,9 @@ class LongMap {
         };
 
         ReusableIterator iterator();
+
+        private:
+
+            ReusableIterator* reusableIter; 
+
 };

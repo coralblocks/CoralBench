@@ -43,7 +43,7 @@ bool LongMap<E>::isEmpty() const {
 
 template <typename E>
 bool LongMap<E>::contains(const E& value) const {
-    for (int i = 0; i < lengthMinusOne; i++) {
+    for (int i = lengthMinusOne; i >= 0; i--) {
         Entry* e = data[i];
         while (e != nullptr) {
             if (e->value == value) {
@@ -76,12 +76,13 @@ E LongMap<E>::get(long key) const {
         }
         e = e->next;
     }
-    return E(); // Default-constructed value if key not found
+    return nullptr;
 }
 
 template <typename E>
 E LongMap<E>::put(long key, const E& value) {
-    if (value == E()) {
+
+    if (value == nullptr) {
         throw invalid_argument("Cannot put null value!");
     }
 
@@ -108,11 +109,12 @@ E LongMap<E>::put(long key, const E& value) {
 
     count++;
 
-    return E(); // Default-constructed value if no previous value
+    return nullptr;
 }
 
 template <typename E>
 E LongMap<E>::remove(long key) {
+
     int index = toArrayIndex(key);
 
     Entry* e = data[index];
@@ -137,7 +139,7 @@ E LongMap<E>::remove(long key) {
         e = e->next;
     }
 
-    return E(); // Default-constructed value if key not found
+    return nullptr;
 }
 
 template <typename E>
@@ -216,6 +218,6 @@ void LongMap<E>::releaseEntryBackToPool(Entry* e) {
 }
 
 template <typename E>
-int LongMap<E>::toArrayIndex(long key) {
+int LongMap<E>::toArrayIndex(long key) const {
     return static_cast<int>((static_cast<unsigned int>(key) & 0x7FFFFFFF) & lengthMinusOne);
 }
