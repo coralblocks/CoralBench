@@ -10,26 +10,25 @@ class LongMap {
         static const int DEFAULT_INITIAL_CAPACITY = 128;
         static constexpr float DEFAULT_LOAD_FACTOR = 0.80f;
 
-        template <typename T>
         struct Entry {
             long key;
-            T value;
-            Entry<T>* next;
+            E value;
+            Entry* next;
         };
 
-        Entry<E>** data;
+        Entry** data;
         int lengthMinusOne;
         int count;
         int threshold;
         float loadFactor;
-        Entry<E>* poolHead;
+        Entry* poolHead;
         long currIteratorKey;
 
         void rehash();
 
-        Entry<E>* getEntryFromPool(long key, E value, Entry<E>* next);
+        Entry* getEntryFromPool(long key, E value, Entry* next);
 
-        void releaseEntryBackToPool(Entry<E>* e);
+        void releaseEntryBackToPool(Entry* e);
 
         int toArrayIndex(long key);
 
@@ -58,9 +57,9 @@ class LongMap {
                 int size;
                 int index;
                 int dataIndex;
-                Entry<E>* prev;
-                Entry<E>* next;
-                Entry<E>* entry;
+                Entry* prev;
+                Entry* next;
+                Entry* entry;
                 bool wasRemoved;
 
             public:

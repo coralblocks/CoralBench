@@ -19,7 +19,7 @@ LongMap<E>::LongMap(int initialCapacity, float loadFactor) {
         throw invalid_argument("Size must be power of two: " + to_string(initialCapacity));
     }
 
-    data = new Entry<E>*[initialCapacity]();
+    data = new Entry*[initialCapacity]();
     lengthMinusOne = initialCapacity - 1;
     this->loadFactor = loadFactor;
     threshold = static_cast<int>(initialCapacity * loadFactor);
@@ -44,7 +44,7 @@ bool LongMap<E>::isEmpty() const {
 template <typename E>
 bool LongMap<E>::contains(const E& value) const {
     for (int i = 0; i < lengthMinusOne; i++) {
-        Entry<E>* e = data[i];
+        Entry* e = data[i];
         while (e != nullptr) {
             if (e->value == value) {
                 return true;
@@ -57,7 +57,7 @@ bool LongMap<E>::contains(const E& value) const {
 
 template <typename E>
 bool LongMap<E>::containsKey(long key) const {
-    Entry<E>* e = data[toArrayIndex(key)];
+    Entry* e = data[toArrayIndex(key)];
     while (e != nullptr) {
         if (e->key == key) {
             return true;
@@ -69,7 +69,7 @@ bool LongMap<E>::containsKey(long key) const {
 
 template <typename E>
 E LongMap<E>::get(long key) const {
-    Entry<E>* e = data[toArrayIndex(key)];
+    Entry* e = data[toArrayIndex(key)];
     while (e != nullptr) {
         if (e->key == key) {
             return e->value;
@@ -87,7 +87,7 @@ E LongMap<E>::put(long key, const E& value) {
 
     int index = toArrayIndex(key);
 
-    Entry<E>* e = data[index];
+    Entry* e = data[index];
 
     while (e != nullptr) {
         if (e->key == key) {
@@ -115,8 +115,8 @@ template <typename E>
 E LongMap<E>::remove(long key) {
     int index = toArrayIndex(key);
 
-    Entry<E>* e = data[index];
-    Entry<E>* prev = nullptr;
+    Entry* e = data[index];
+    Entry* prev = nullptr;
 
     while (e != nullptr) {
         if (e->key == key) {
@@ -144,7 +144,7 @@ template <typename E>
 void LongMap<E>::clear() {
     for (int index = lengthMinusOne; index >= 0; index--) {
         while (data[index] != nullptr) {
-            Entry<E>* next = data[index]->next;
+            Entry* next = data[index]->next;
             releaseEntryBackToPool(data[index]);
             data[index] = next;
         }
@@ -165,20 +165,20 @@ void LongMap<E>::rehash() {
 
     int oldCapacity = lengthMinusOne + 1;
 
-    Entry<E>** oldData = data;
+    Entry** oldData = data;
 
     int newCapacity = oldCapacity * 2; // power of two, always!
 
-    data = new Entry<E>*[newCapacity]();
+    data = new Entry*[newCapacity]();
     lengthMinusOne = newCapacity - 1;
 
     threshold = static_cast<int>(newCapacity * loadFactor);
 
     for (int i = oldCapacity - 1; i >= 0; i--) {
-        Entry<E>* old = oldData[i];
+        Entry* old = oldData[i];
 
         while (old != nullptr) {
-            Entry<E>* e = old;
+            Entry* e = old;
             old = old->next;
 
             int index = toArrayIndex(e->key);
@@ -191,14 +191,14 @@ void LongMap<E>::rehash() {
 }
 
 template <typename E>
-typename LongMap<E>::Entry<E>* LongMap<E>::getEntryFromPool(long key, E value, Entry<E>* next) {
+typename LongMap<E>::Entry* LongMap<E>::getEntryFromPool(long key, E value, Entry* next) {
 
-    Entry<E>* newEntry = poolHead;
+    Entry* newEntry = poolHead;
 
     if (newEntry != nullptr) {
         poolHead = newEntry->next;
     } else {
-        newEntry = new Entry<E>();
+        newEntry = new Entry();
     }
 
     newEntry->key = key;
@@ -209,7 +209,7 @@ typename LongMap<E>::Entry<E>* LongMap<E>::getEntryFromPool(long key, E value, E
 }
 
 template <typename E>
-void LongMap<E>::releaseEntryBackToPool(Entry<E>* e) {
+void LongMap<E>::releaseEntryBackToPool(Entry* e) {
     e->value = E(); // Set value to default-constructed value
     e->next = poolHead;
     poolHead = e;
