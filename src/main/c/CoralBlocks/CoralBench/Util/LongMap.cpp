@@ -2,10 +2,12 @@
 #include "MathUtils.h"
 #include <stdexcept>
 #include <string>
+#include <cmath>
 
 using namespace CoralBlocks::CoralBench::Util;
 using std::invalid_argument;
 using std::to_string;
+using std::round;
 
 template <typename E>
 LongMap<E>::LongMap() : LongMap(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR) {}
@@ -23,7 +25,7 @@ LongMap<E>::LongMap(int initialCapacity, float loadFactor) {
     data = new Entry*[initialCapacity]();
     lengthMinusOne = initialCapacity - 1;
     this->loadFactor = loadFactor;
-    threshold = static_cast<int>(initialCapacity * loadFactor);
+    threshold = static_cast<int>(round(initialCapacity * loadFactor));
     reusableIter = new ReusableIterator();
 }
 
@@ -168,9 +170,10 @@ void LongMap<E>::rehash() {
     data = new Entry*[newCapacity]();
     lengthMinusOne = newCapacity - 1;
 
-    threshold = static_cast<int>(newCapacity * loadFactor);
+    threshold = static_cast<int>(round(newCapacity * loadFactor));
 
     for (int i = oldCapacity - 1; i >= 0; i--) {
+
         Entry* old = oldData[i];
 
         while (old != nullptr) {
@@ -183,7 +186,7 @@ void LongMap<E>::rehash() {
         }
     }
 
-    delete[] oldData;
+    delete[] oldData; // don't forget
 }
 
 template <typename E>
@@ -213,7 +216,7 @@ void LongMap<E>::releaseEntryBackToPool(Entry* e) {
 
 template <typename E>
 int LongMap<E>::toArrayIndex(long key) const {
-    return static_cast<int>((static_cast<unsigned int>(key) & 0x7FFFFFFF) & lengthMinusOne);
+    return (static_cast<unsigned int>(key) & 0x7FFFFFFF) & lengthMinusOne;
 }
 
 template <typename E>
