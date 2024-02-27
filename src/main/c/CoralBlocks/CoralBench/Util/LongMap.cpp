@@ -28,6 +28,7 @@ template <typename E>
 LongMap<E>::~LongMap() {
     clear();
     delete[] data;
+    delete reusableIter;
 }
 
 template <typename E>
