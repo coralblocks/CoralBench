@@ -294,5 +294,5 @@ void LongMap<E>::ReusableIterator::remove() {
 
     entry = nullptr;
 
-    count--;
+    outer->count--;
 }

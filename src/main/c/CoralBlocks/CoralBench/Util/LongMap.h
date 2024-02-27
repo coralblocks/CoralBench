@@ -51,7 +51,7 @@ class LongMap {
         E remove(long key);
         void clear();
 
-        class ReusableIterator : public std::iterator<std::input_iterator_tag, E> {
+        class ReusableIterator {
 
             private:
                 LongMap<E>* outer;
