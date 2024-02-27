@@ -26,7 +26,17 @@ LongMap<E>::LongMap(int initialCapacity, float loadFactor) {
 
 template <typename E>
 LongMap<E>::~LongMap() {
+
     clear();
+
+    // don't forget to release all entry objects from the pool...
+    Entry* entryToRelease = nullptr;
+    while((entryToRelease = poolHead) != nullptr) {
+        Entry* nextPtr = entryToRelease->next;
+        delete entryToRelease;
+        poolHead = nextPtr;
+    }
+
     delete[] data;
     delete reusableIter;
 }
