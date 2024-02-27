@@ -15,6 +15,7 @@ LongMap<E>::LongMap(int initialCapacity) : LongMap(initialCapacity, DEFAULT_LOAD
 
 template <typename E>
 LongMap<E>::LongMap(int initialCapacity, float loadFactor) {
+
     if (!MathUtils::isPowerOfTwo(initialCapacity)) {
         throw invalid_argument("Size must be power of two: " + to_string(initialCapacity));
     }
@@ -23,6 +24,7 @@ LongMap<E>::LongMap(int initialCapacity, float loadFactor) {
     lengthMinusOne = initialCapacity - 1;
     this->loadFactor = loadFactor;
     threshold = static_cast<int>(initialCapacity * loadFactor);
+    reusableIter = new ReusableIterator();
 }
 
 template <typename E>
@@ -102,10 +104,9 @@ E LongMap<E>::put(long key, const E& value) {
     if (count >= threshold) {
         rehash();
         index = toArrayIndex(key); // lengthMinusOne has changed!
-        data[index] = getEntryFromPool(key, value, data[index]);
-    } else {
-        data[index] = getEntryFromPool(key, value, data[index]);
     }
+    
+    data[index] = getEntryFromPool(key, value, data[index]);
 
     count++;
 
@@ -153,13 +154,6 @@ void LongMap<E>::clear() {
     }
 
     count = 0;
-}
-
-template <typename E>
-typename LongMap<E>::ReusableIterator LongMap<E>::iterator() {
-    ReusableIterator iter;
-    iter.reset();
-    return iter;
 }
 
 template <typename E>
@@ -220,4 +214,10 @@ void LongMap<E>::releaseEntryBackToPool(Entry* e) {
 template <typename E>
 int LongMap<E>::toArrayIndex(long key) const {
     return static_cast<int>((static_cast<unsigned int>(key) & 0x7FFFFFFF) & lengthMinusOne);
+}
+
+template <typename E>
+typename LongMap<E>::ReusableIterator LongMap<E>::iterator() {
+    reusableIter->reset();
+    return reusableIter;
 }
