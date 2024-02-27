@@ -38,9 +38,10 @@ class LongMap {
         LongMap(int initialCapacity, float loadFactor);
         ~LongMap();
 
-        // Copy constructor and assignment operator are deleted to avoid unintended behavior
         LongMap(const LongMap&) = delete;
         LongMap& operator=(const LongMap&) = delete;
+        LongMap(LongMap&&) = delete;
+        LongMap& operator=(LongMap&&) = delete;
 
         int size() const;
         bool isEmpty() const;
@@ -66,6 +67,11 @@ class LongMap {
             public:
                 ReusableIterator(LongMap<E>& outerPtr) : outer(outerPtr) { }
                 ~ReusableIterator() = default;
+
+                ReusableIterator(const ReusableIterator&) = delete;
+                ReusableIterator& operator=(const ReusableIterator&) = delete;
+                ReusableIterator(ReusableIterator&&) = delete;
+                ReusableIterator& operator=(ReusableIterator&&) = delete;
 
                 void reset();
                 bool hasNext() const;
