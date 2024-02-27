@@ -15,10 +15,9 @@ import com.coralblocks.coralbench.util.MutableInt;
 public class Bench {
 
 	public static boolean INCLUDE_STDEV = true;
-	public static boolean INCLUDE_MORE_PERCS = false;
-	public static boolean INCLUDE_WORST_PERCS = false;
-	public static boolean INCLUDE_TOTALS = false;
-	public static boolean INCLUDE_RATIOS = false;
+	public static boolean INCLUDE_MORE_PERCS = false; // 99.9999% and 99.99999% (usually unnecessary)
+	public static boolean INCLUDE_WORST_PERCS = false; // include the bottom percentile after the top (Ex: 90% and 10%)
+	public static boolean INCLUDE_TOTALS = false; // corresponding number of iterations for the given percentile
 	
 	private static final int DEFAULT_WARMUP = 0;
 	private static final int NUMBER_OF_DECIMALS = 3;
@@ -254,7 +253,6 @@ public class Bench {
 				
 			}
 			sb.append(", min: ").append(minBottom != -1 ? convertNanoTime(minBottom) : "?").append(']');
-			if (INCLUDE_RATIOS) sb.append(" R: ").append(iBottom > 0 ? formatPercentage(((double) (sumBottom / iBottom) / (double) (sumTop / iTop)) - 1, 2) : "?");
 		}
 	}
 	
