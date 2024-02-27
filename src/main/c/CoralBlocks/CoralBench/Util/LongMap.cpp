@@ -1,10 +1,9 @@
-#include "LongMap.h"
-#include "MathUtils.h"
 #include <stdexcept>
 #include <string>
 #include <cmath>
+#include "MathUtils.h"
+#include "LongMap.h"
 
-using namespace CoralBlocks::CoralBench::Util;
 using std::invalid_argument;
 using std::to_string;
 using std::round;
