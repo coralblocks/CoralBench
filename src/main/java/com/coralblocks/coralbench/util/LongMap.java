@@ -222,12 +222,9 @@ public class LongMap<E> implements Iterable<E> {
 
 			index = toArrayIndex(key); // lengthMinusOne has changed!
 
-			data[index] = getEntryFromPool(key, value, data[index]);
-
-		} else {
-
-			data[index] = getEntryFromPool(key, value, data[index]);
 		}
+
+		data[index] = getEntryFromPool(key, value, data[index]);
 
 		count++;
 
