@@ -11,12 +11,6 @@ using std::round;
 using std::runtime_error;
 
 template <typename E>
-LongMap<E>::LongMap() : LongMap(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR) {}
-
-template <typename E>
-LongMap<E>::LongMap(int initialCapacity) : LongMap(initialCapacity, DEFAULT_LOAD_FACTOR) {}
-
-template <typename E>
 LongMap<E>::LongMap(int initialCapacity, float loadFactor) {
 
     if (!MathUtils::isPowerOfTwo(initialCapacity)) {
@@ -224,11 +218,6 @@ template <typename E>
 typename LongMap<E>::ReusableIterator LongMap<E>::iterator() {
     reusableIter->reset();
     return reusableIter;
-}
-
-template <typename E>
-LongMap<E>::ReusableIterator::ReusableIterator(LongMap<E>& outerPtr) {
-    outer = outerPtr;
 }
 
 template <typename E>

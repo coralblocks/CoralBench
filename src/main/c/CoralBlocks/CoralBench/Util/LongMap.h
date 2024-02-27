@@ -33,8 +33,8 @@ class LongMap {
         int toArrayIndex(long key) const;
 
     public:
-        LongMap();
-        LongMap(int initialCapacity);
+        LongMap() : LongMap(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR) {}
+        LongMap(int initialCapacity) : LongMap(initialCapacity, DEFAULT_LOAD_FACTOR) {}
         LongMap(int initialCapacity, float loadFactor);
         ~LongMap();
 
@@ -64,7 +64,7 @@ class LongMap {
                 bool wasRemoved;
 
             public:
-                ReusableIterator(LongMap<E>& outerPtr);
+                ReusableIterator(LongMap<E>& outerPtr) : outer(outerPtr) { }
                 ~ReusableIterator() = default;
 
                 void reset();
