@@ -1,13 +1,3 @@
-#include <stdexcept>
-#include <string>
-#include <cmath>
-#include "MathUtils.h"
-#include "LongMap.h"
-
-using std::invalid_argument;
-using std::to_string;
-using std::round;
-using std::runtime_error;
 
 namespace CoralBlocks::CoralBench::Util {
 
@@ -93,10 +83,6 @@ namespace CoralBlocks::CoralBench::Util {
     template <typename E>
     E LongMap<E>::put(long key, const E& value) {
 
-        if (value == nullptr) {
-            throw invalid_argument("Cannot put null value!");
-        }
-
         int index = toArrayIndex(key);
 
         Entry* e = data[index];
@@ -114,12 +100,12 @@ namespace CoralBlocks::CoralBench::Util {
             rehash();
             index = toArrayIndex(key); // lengthMinusOne has changed!
         }
-        
+
         data[index] = getEntryFromPool(key, value, data[index]);
 
         count++;
 
-        return nullptr;
+        return nullptr; // this is wrong !!! (FIXME)
     }
 
     template <typename E>
@@ -227,7 +213,7 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    typename LongMap<E>::ReusableIterator LongMap<E>::iterator() {
+    typename LongMap<E>::ReusableIterator* LongMap<E>::iterator() {
         reusableIter->reset();
         return reusableIter;
     }

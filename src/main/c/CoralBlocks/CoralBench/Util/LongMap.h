@@ -1,7 +1,12 @@
-#pragma once
-
-#include <iterator>
 #include <stdexcept>
+#include <string>
+#include <cmath>
+#include "MathUtils.h"
+
+using std::invalid_argument;
+using std::to_string;
+using std::round;
+using std::runtime_error;
 
 namespace CoralBlocks::CoralBench::Util {
 
@@ -9,14 +14,15 @@ namespace CoralBlocks::CoralBench::Util {
     class LongMap {
 
         private:
-            static const int DEFAULT_INITIAL_CAPACITY = 128;
-            static constexpr float DEFAULT_LOAD_FACTOR = 0.80f;
 
             struct Entry {
                 long key;
                 E value;
                 Entry* next;
             };
+
+            static const int DEFAULT_INITIAL_CAPACITY = 128;
+            static constexpr float DEFAULT_LOAD_FACTOR = 0.80f;
 
             Entry** data;
             int lengthMinusOne;
@@ -56,36 +62,39 @@ namespace CoralBlocks::CoralBench::Util {
 
             class ReusableIterator {
 
-                private:
-                    LongMap<E>* outer;
-                    int size;
-                    int index;
-                    int dataIndex;
-                    Entry* prev;
-                    Entry* next;
-                    Entry* entry;
-                    bool wasRemoved;
+                    private:
+                        LongMap<E>* outer;
+                        int size;
+                        int index;
+                        int dataIndex;
+                        Entry* prev;
+                        Entry* next;
+                        Entry* entry;
+                        bool wasRemoved;
 
-                public:
-                    ReusableIterator(LongMap<E>& outerPtr) : outer(outerPtr) { }
-                    ~ReusableIterator() = default;
+                    public:
+                        ReusableIterator(LongMap<E>* outerPtr) : outer(outerPtr) { }
+                        ~ReusableIterator() = default;
 
-                    ReusableIterator(const ReusableIterator&) = delete;
-                    ReusableIterator& operator=(const ReusableIterator&) = delete;
-                    ReusableIterator(ReusableIterator&&) = delete;
-                    ReusableIterator& operator=(ReusableIterator&&) = delete;
+                        ReusableIterator(const ReusableIterator&) = delete;
+                        ReusableIterator& operator=(const ReusableIterator&) = delete;
+                        ReusableIterator(ReusableIterator&&) = delete;
+                        ReusableIterator& operator=(ReusableIterator&&) = delete;
 
-                    void reset();
-                    bool hasNext() const;
-                    E nextValue();
-                    void remove();
-            };
+                        void reset();
+                        bool hasNext() const;
+                        E nextValue();
+                        void remove();
+            };   
 
-            ReusableIterator iterator();
+            ReusableIterator* iterator();         
 
-            private:
+        private:
 
-                ReusableIterator* reusableIter; 
+            ReusableIterator* reusableIter; 
 
     };
 }
+
+#include "LongMap.tpp"
+
