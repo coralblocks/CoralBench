@@ -43,7 +43,9 @@ void runLongMapTests() {
     assert(!map.containsKey(4));
 
     // Get values
+    string anotherOne = "One";
     assert(*map.get(1) == one);
+    assert(*map.get(1) == anotherOne);
     assert(*map.get(3) == three);
 
     // Remove an entry
