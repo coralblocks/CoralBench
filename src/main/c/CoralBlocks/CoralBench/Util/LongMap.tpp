@@ -43,11 +43,11 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    bool LongMap<E>::contains(const E& value) const {
+    bool LongMap<E>::contains(E& value) const {
         for (int i = lengthMinusOne; i >= 0; i--) {
             Entry* e = data[i];
             while (e != nullptr) {
-                if (e->value == value) {
+                if (*(e->value) == value) {
                     return true;
                 }
                 e = e->next;
@@ -69,7 +69,7 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    E LongMap<E>::get(long key) const {
+    E* LongMap<E>::get(long key) const {
         Entry* e = data[toArrayIndex(key)];
         while (e != nullptr) {
             if (e->key == key) {
@@ -81,7 +81,7 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    E LongMap<E>::put(long key, const E& value) {
+    E* LongMap<E>::put(long key, E& value) {
 
         int index = toArrayIndex(key);
 
@@ -89,8 +89,8 @@ namespace CoralBlocks::CoralBench::Util {
 
         while (e != nullptr) {
             if (e->key == key) {
-                E old = e->value;
-                e->value = value;
+                E* old = e->value;
+                e->value = &value;
                 return old;
             }
             e = e->next;
@@ -105,11 +105,11 @@ namespace CoralBlocks::CoralBench::Util {
 
         count++;
 
-        return nullptr; // this is wrong !!! (FIXME)
+        return nullptr;
     }
 
     template <typename E>
-    E LongMap<E>::remove(long key) {
+    E* LongMap<E>::remove(long key) {
 
         int index = toArrayIndex(key);
 
@@ -124,7 +124,7 @@ namespace CoralBlocks::CoralBench::Util {
                     data[index] = e->next;
                 }
 
-                E oldValue = e->value;
+                E* oldValue = e->value;
                 releaseEntryBackToPool(e);
                 count--;
 
@@ -183,7 +183,7 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    typename LongMap<E>::Entry* LongMap<E>::getEntryFromPool(long key, E value, Entry* next) {
+    typename LongMap<E>::Entry* LongMap<E>::getEntryFromPool(long key, E& value, Entry* next) {
 
         Entry* newEntry = poolHead;
 
@@ -194,7 +194,7 @@ namespace CoralBlocks::CoralBench::Util {
         }
 
         newEntry->key = key;
-        newEntry->value = value;
+        newEntry->value = &value;
         newEntry->next = next;
 
         return newEntry;
@@ -235,7 +235,7 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    E LongMap<E>::ReusableIterator::nextValue() {
+    E* LongMap<E>::ReusableIterator::nextValue() {
 
         if (index >= size) throw runtime_error("nothing to return");
 
@@ -255,7 +255,7 @@ namespace CoralBlocks::CoralBench::Util {
 
         index++;
         
-        E o = entry->value;
+        E* o = entry->value;
 
         outer->currIteratorKey = entry->key;
 

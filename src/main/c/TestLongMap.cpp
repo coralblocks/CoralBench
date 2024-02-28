@@ -1,11 +1,13 @@
 #include <iostream>
 #include <cassert>
+#include <string>
 #include "CoralBlocks/CoralBench/Util/LongMap.h"
 
 using namespace CoralBlocks::CoralBench::Util;
 using std::string;
 using std::cout;
 using std::endl;
+using std::to_string;
 
 void runLongMapTests() {
 
@@ -15,26 +17,34 @@ void runLongMapTests() {
     assert(map.size() == 0);
     assert(map.isEmpty());
 
+    string one = "One";
+    string two = "Two";
+    string three = "Three";
+    string four = "Four";
+    string ten = "Ten";
+    string twenty = "Twenty";
+    string thirty = "Thirty";
+
     // Put some entries
-    map.put(1, "One");
-    map.put(2, "Two");
-    map.put(3, "Three");
+    map.put(1, one);
+    map.put(2, two);
+    map.put(3, three);
 
     // Check size and isEmpty
     assert(map.size() == 3);
     assert(!map.isEmpty());
 
     // Check contains
-    assert(map.contains("Two"));
-    assert(!map.contains("Four"));
+    assert(map.contains(two));
+    assert(!map.contains(four));
 
     // Check containsKey
     assert(map.containsKey(2));
     assert(!map.containsKey(4));
 
     // Get values
-    assert(map.get(1) == "One");
-    assert(map.get(3) == "Three");
+    assert(*map.get(1) == one);
+    assert(*map.get(3) == three);
 
     // Remove an entry
     map.remove(2);
@@ -47,28 +57,28 @@ void runLongMapTests() {
     assert(map.isEmpty());
 
     // Test ReusableIterator
-    map.put(10, "Ten");
-    map.put(20, "Twenty");
-    map.put(30, "Thirty");
+    map.put(10, ten);
+    map.put(20, twenty);
+    map.put(30, thirty);
 
     LongMap<string>::ReusableIterator* iterator = map.iterator();
 
     assert(iterator->hasNext());
-    assert(iterator->nextValue() == "Ten");
+    assert(*iterator->nextValue() == ten);
 
     iterator->remove();
     assert(map.size() == 2);
     assert(!map.containsKey(10));
 
     assert(iterator->hasNext());
-    assert(iterator->nextValue() == "Twenty");
+    assert(*iterator->nextValue() == twenty);
 
     iterator->remove();
     assert(map.size() == 1);
     assert(!map.containsKey(20));
 
     assert(iterator->hasNext());
-    assert(iterator->nextValue() == "Thirty");
+    assert(*iterator->nextValue() == thirty);
 
     iterator->remove();
     assert(map.size() == 0);

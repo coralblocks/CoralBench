@@ -17,7 +17,7 @@ namespace CoralBlocks::CoralBench::Util {
 
             struct Entry {
                 long key;
-                E value;
+                E* value;
                 Entry* next;
             };
 
@@ -34,7 +34,7 @@ namespace CoralBlocks::CoralBench::Util {
 
             void rehash();
 
-            Entry* getEntryFromPool(long key, E value, Entry* next);
+            Entry* getEntryFromPool(long key, E& value, Entry* next);
 
             void releaseEntryBackToPool(Entry* e);
 
@@ -53,11 +53,11 @@ namespace CoralBlocks::CoralBench::Util {
 
             int size() const;
             bool isEmpty() const;
-            bool contains(const E& value) const;
+            bool contains(E& value) const;
             bool containsKey(long key) const;
-            E get(long key) const;
-            E put(long key, const E& value);
-            E remove(long key);
+            E* get(long key) const;
+            E* put(long key, E& value);
+            E* remove(long key);
             void clear();
 
             class ReusableIterator {
@@ -83,7 +83,7 @@ namespace CoralBlocks::CoralBench::Util {
 
                         void reset();
                         bool hasNext() const;
-                        E nextValue();
+                        E* nextValue();
                         void remove();
             };   
 
