@@ -26,7 +26,7 @@ public class FastObjectList<E> implements Iterable<E> {
 	private final ReusableIterator iter = new ReusableIterator();
 	
 	@SuppressWarnings("unchecked")
-    public FastObjectList(int initialCapacity) {
+    	public FastObjectList(int initialCapacity) {
 		this.values = (E[]) new Object[initialCapacity];
 	}
 	
