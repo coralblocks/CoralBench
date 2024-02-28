@@ -12,16 +12,16 @@ using std::to_string;
 void runLongMapTests() {
 
     // Create a LongMap with default constructor
-    LongMap<string> map;
+    LongMap<const string> map;
 
     assert(map.size() == 0);
     assert(map.isEmpty());
 
     string one = "One";
-    string two = "Two";
+    const string two = "Two";
     string three = "Three";
     string four = "Four";
-    string ten = "Ten";
+    const string ten = "Ten";
     string twenty = "Twenty";
     string thirty = "Thirty";
 
@@ -63,7 +63,7 @@ void runLongMapTests() {
     map.put(20, twenty);
     map.put(30, thirty);
 
-    LongMap<string>::ReusableIterator* iterator = map.iterator();
+    LongMap<const string>::ReusableIterator* iterator = map.iterator();
 
     assert(iterator->hasNext());
     assert(*iterator->nextValue() == ten);
