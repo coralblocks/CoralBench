@@ -56,7 +56,7 @@ namespace CoralBlocks::CoralBench::Util {
             void reset();
             bool hasNext();
             E& next();
-            void remove() = delete; // Remove not supported
+            void remove() { throw std::runtime_error("Unsupported operation"); }
         };
 
         private:
