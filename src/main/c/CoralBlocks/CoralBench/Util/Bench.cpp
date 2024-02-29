@@ -18,7 +18,8 @@ using std::stringstream;
 using std::map;
 using std::fixed;
 using std::setprecision;
-using std::round;
+using std::cout;
+using std::endl;
 
 namespace CoralBlocks::CoralBench::Util {
 
@@ -119,7 +120,7 @@ namespace CoralBlocks::CoralBench::Util {
         }
 
         void printResults() {
-            std::cout << getResults() << std::endl << std::endl;
+            cout << getResults() << endl << endl;
         }
 
         static void doSleep(Bench& bench) {
@@ -155,7 +156,6 @@ namespace CoralBlocks::CoralBench::Util {
             int realCount = count - warmup;
             if (realCount <= 0) return 0;
             double avg = static_cast<double>(totalTime) / static_cast<double>(realCount);
-            std::cout << std::to_string(avg) << std::endl;
             return avg;
         }
 
@@ -198,9 +198,7 @@ namespace CoralBlocks::CoralBench::Util {
                                     sum += (avg - t) * (avg - t);
                                     ++iter2;
                                 }
-                                double stdev = std::sqrt(static_cast<double>(sum) / static_cast<double>(tempList.size()));
-                                double rounded = roundToThreeDecimals(stdev);
-                                stdevTop = rounded;
+                                stdevTop = std::sqrt(static_cast<double>(sum) / static_cast<double>(tempList.size()));
                             }
 
                             if (INCLUDE_WORST_PERCS) {
@@ -246,8 +244,7 @@ namespace CoralBlocks::CoralBench::Util {
                             ++iter2;
                         }
                         double stdevBottom = std::sqrt(static_cast<double>(sum) / static_cast<double>(tempList.size()));
-                        double rounded = roundToThreeDecimals(stdevBottom);
-                        result += formatToThreeDecimals(rounded) + " nanos";
+                        result += formatToThreeDecimals(stdevBottom) + " nanos";
                     } else {
                         result += "?";
                     }
@@ -284,11 +281,6 @@ namespace CoralBlocks::CoralBench::Util {
             std::ostringstream ss;
             ss << std::fixed << std::setprecision(decimals) << x * 100;
             return trimTrailingZeros(ss.str()) + "%";
-        }
-
-        double roundToThreeDecimals(double d) const {
-            double pow = std::pow(10, 3);
-            return round(d * pow) / pow;
         }
 
         string formatToThreeDecimals(double value) const {
