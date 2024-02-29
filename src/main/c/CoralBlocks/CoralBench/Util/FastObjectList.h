@@ -55,7 +55,7 @@ namespace CoralBlocks::CoralBench::Util {
 
             void reset();
             bool hasNext();
-            E* next();
+            E& next();
             void remove() = delete; // Remove not supported
         };
 

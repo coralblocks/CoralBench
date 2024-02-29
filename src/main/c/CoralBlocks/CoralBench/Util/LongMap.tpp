@@ -235,7 +235,7 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    E* LongMap<E>::ReusableIterator::nextValue() {
+    E& LongMap<E>::ReusableIterator::nextValue() {
 
         if (index >= size) throw runtime_error("nothing to return");
 
@@ -261,7 +261,7 @@ namespace CoralBlocks::CoralBench::Util {
 
         next = entry->next;
 
-        return o;
+        return *o;
     }
 
     template <typename E>

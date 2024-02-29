@@ -85,7 +85,7 @@ namespace CoralBlocks::CoralBench::Util {
 
                         void reset();
                         bool hasNext() const;
-                        E* nextValue();
+                        E& nextValue();
                         void remove();
             };   
 

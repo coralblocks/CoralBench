@@ -66,21 +66,21 @@ void runLongMapTests() {
     LongMap<const string>::ReusableIterator& iterator = map.iterator();
 
     assert(iterator.hasNext());
-    assert(*iterator.nextValue() == ten);
+    assert(iterator.nextValue() == ten);
 
     iterator.remove();
     assert(map.size() == 2);
     assert(!map.containsKey(10));
 
     assert(iterator.hasNext());
-    assert(*iterator.nextValue() == twenty);
+    assert(iterator.nextValue() == twenty);
 
     iterator.remove();
     assert(map.size() == 1);
     assert(!map.containsKey(20));
 
     assert(iterator.hasNext());
-    assert(*iterator.nextValue() == thirty);
+    assert(iterator.nextValue() == thirty);
 
     iterator.remove();
     assert(map.size() == 0);

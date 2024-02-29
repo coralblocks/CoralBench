@@ -38,13 +38,13 @@ int main() {
 
     FastObjectList<int>::ReusableIterator& iter = list.iterator();
     assert(iter.hasNext());
-    assert(*iter.next() == 1);
+    assert(iter.next() == 1);
 
     iter.reset();
     assert(iter.hasNext());
-    assert(*iter.next() == 1);
-    assert(*iter.next() == 2);
-    assert(*iter.next() == 3);
+    assert(iter.next() == 1);
+    assert(iter.next() == 2);
+    assert(iter.next() == 3);
     assert(!iter.hasNext());
 
     cout << "All tests passed!" << endl;

@@ -187,10 +187,10 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    E* FastObjectList<E>::ReusableIterator::next() {
+    E& FastObjectList<E>::ReusableIterator::next() {
         E* value;
         while ((value = outer->values[pointer++]) == nullptr);
         returned++;
-        return value;
+        return *value;
     }
 }
