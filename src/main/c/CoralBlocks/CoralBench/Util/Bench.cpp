@@ -13,6 +13,9 @@
 using std::unordered_map;
 using std::vector;
 using std::runtime_error;
+using std::string;
+using std::stringstream;
+using std::map;
 
 namespace CoralBlocks::CoralBench::Util {
 
@@ -69,8 +72,7 @@ namespace CoralBlocks::CoralBench::Util {
             if (time > 0) {
                 long elapsed = get_nano_ts() - time;
                 if (elapsed < 0) throw runtime_error("Found a negative elapsed time");
-                const bool counted = measure(elapsed);
-                if (counted) {
+                if (measure(elapsed)) {
                     return elapsed;
                 }
             }
@@ -89,8 +91,32 @@ namespace CoralBlocks::CoralBench::Util {
             return avg();
         }
 
+        string getResults() {
+            string result;
+            int realCount = count - warmup;
+            result += "Iterations: " + formatter(realCount) + " | Warm-Up: " + formatter(warmup) + " | Avg Time: " + convertNanoTime(avg());
+            if (realCount > 0) {
+                result += " | Min Time: " + convertNanoTime(minTime) + " | Max Time: " + convertNanoTime(maxTime);
+            }
+
+            map<long, int> treeMap(results.begin(), results.end());
+
+            addPercentile(result, 0.75, treeMap);
+            addPercentile(result, 0.9, treeMap);
+            addPercentile(result, 0.99, treeMap);
+            addPercentile(result, 0.999, treeMap);
+            addPercentile(result, 0.9999, treeMap);
+            addPercentile(result, 0.99999, treeMap);
+            if (INCLUDE_MORE_PERCS) {
+                addPercentile(result, 0.999999, treeMap);
+                addPercentile(result, 0.9999999, treeMap);
+            }
+
+            return result;
+        }
+
         void printResults() {
-            std::cout << resultsStr() << std::endl << std::endl;
+            std::cout << getResults() << std::endl << std::endl;
         }
 
         static void doSleep(Bench& bench) {
@@ -139,12 +165,12 @@ namespace CoralBlocks::CoralBench::Util {
             return round(d, NUMBER_OF_DECIMALS);
         }
 
-        std::string convertNanoTime(double nanoTime) const {
-            std::string result;
+        string convertNanoTime(double nanoTime) const {
+            string result;
             return convertNanoTime(nanoTime, result);
         }
 
-        std::string& convertNanoTime(double nanoTime, std::string& result) const {
+        string& convertNanoTime(double nanoTime, string& result) const {
             if (nanoTime >= 1000000000L) {
                 double seconds = round(nanoTime / 1000000000.0);
                 result += std::to_string(seconds) + (seconds > 1 ? " secs" : " sec");
@@ -161,14 +187,13 @@ namespace CoralBlocks::CoralBench::Util {
             return result;
         }
 
-        std::string formatter(int value) const {
-            std::stringstream ss;
-            ss.imbue(std::locale(""));
+        string formatter(int value) const {
+            stringstream ss;
             ss << std::fixed << value;
             return ss.str();
         }
 
-        void addPercentile(std::string& result, double perc, std::map<long, int>& treeMap) {
+        void addPercentile(string& result, double perc, std::map<long, int>& treeMap) {
             
             if (treeMap.empty()) {
                 return;
@@ -265,32 +290,7 @@ namespace CoralBlocks::CoralBench::Util {
             }
         }
 
-        std::string resultsStr() {
-            std::string result;
-            const long realCount = count - warmup;
-            result += "Iterations: " + formatter(realCount) + " | Warm-Up: " + formatter(warmup) + " | Avg Time: " +
-                    convertNanoTime(avg());
-            if (realCount > 0) {
-                result += " | Min Time: " + convertNanoTime(minTime) + " | Max Time: " + convertNanoTime(maxTime);
-            }
-
-            std::map<long, int> treeMap(results.begin(), results.end());
-
-            addPercentile(result, 0.75, treeMap);
-            addPercentile(result, 0.9, treeMap);
-            addPercentile(result, 0.99, treeMap);
-            addPercentile(result, 0.999, treeMap);
-            addPercentile(result, 0.9999, treeMap);
-            addPercentile(result, 0.99999, treeMap);
-            if (INCLUDE_MORE_PERCS) {
-                addPercentile(result, 0.999999, treeMap);
-                addPercentile(result, 0.9999999, treeMap);
-            }
-
-            return result;
-        }
-
-        std::string formatPercentage(double x, int decimals) const {
+        string formatPercentage(double x, int decimals) const {
             std::ostringstream ss;
             ss << std::fixed << std::setprecision(decimals) << x;
             return ss.str();
@@ -301,29 +301,3 @@ namespace CoralBlocks::CoralBench::Util {
         }
     };
 }
-
-using namespace CoralBlocks::CoralBench::Util;
-
-int main() {
-    const int warmupIterations = 1000000;
-    const int measurementIterations = 1000000;
-
-    Bench bench(warmupIterations);
-
-    while (bench.getCount() < measurementIterations + warmupIterations) {
-        Bench::doSleep(bench);
-    }
-
-    bench.printResults();
-
-    bench.reset(false); // false because we don't want to repeat warmup
-
-    while (bench.getCount() < measurementIterations) {
-        Bench::doSleep(bench);
-    }
-
-    bench.printResults();
-
-    return 0;
-}
-

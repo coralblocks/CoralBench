@@ -8,4 +8,6 @@ g++ -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/MutableInt.cpp src/main/c/
 
 g++ -std=c++17 src/main/c/TestFastObjectList.cpp -o src/main/c/TestFastObjectList
 
+g++ -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/Bench.cpp src/main/c/TestBench.cpp -o src/main/c/TestBench
+
 
