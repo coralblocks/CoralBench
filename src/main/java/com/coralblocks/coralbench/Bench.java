@@ -25,13 +25,13 @@ public class Bench {
 	private final DecimalFormat formatter = new DecimalFormat("#,###");
 	
 	private long time;
-	private long count;
-	private long totalTime;
+	private int count;
+	private int size;
 	private int warmup;
+	private long totalTime;
 	private long minTime;
 	private long maxTime;
 	
-	private int size;
 	private final LinkedObjectList<MutableInt> pool = new LinkedObjectList<MutableInt>(1024);
 	private final LongMap<MutableInt> results = new LongMap<MutableInt>(4194304); // 2 ^ 22
 	private final FastObjectList<Long> tempList = new FastObjectList<Long>(1024 * 1024 * 10);
@@ -256,8 +256,12 @@ public class Bench {
 		}
 	}
 	
-    public long getCount() {
+    public int getCount() {
     	return count;
+    }
+    
+    public int getSize() {
+    	return size;
     }
 	
 	public final double getAverage() {
