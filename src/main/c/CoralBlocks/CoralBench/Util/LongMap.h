@@ -57,9 +57,9 @@ namespace CoralBlocks::CoralBench::Util {
             bool isEmpty() const;
             bool contains(E& value) const;
             bool containsKey(long key) const;
-            E* get(long key) const;
-            E* put(long key, E& value);
-            E* remove(long key);
+            E* get(long key) const; // returning pointer because it can return nullptr
+            E* put(long key, E& value); // returning pointer because it can return nullptr
+            E* remove(long key); // returning pointer because it can return nullptr
             void clear();
 
             class ReusableIterator {
