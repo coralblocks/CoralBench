@@ -213,9 +213,9 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    typename LongMap<E>::ReusableIterator* LongMap<E>::iterator() {
+    typename LongMap<E>::ReusableIterator& LongMap<E>::iterator() {
         reusableIter->reset();
-        return reusableIter;
+        return *reusableIter;
     }
 
     template <typename E>

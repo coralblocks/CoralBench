@@ -89,7 +89,7 @@ namespace CoralBlocks::CoralBench::Util {
                         void remove();
             };   
 
-            ReusableIterator* iterator();         
+            ReusableIterator& iterator();         
 
         private:
 

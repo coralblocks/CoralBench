@@ -63,29 +63,29 @@ void runLongMapTests() {
     map.put(20, twenty);
     map.put(30, thirty);
 
-    LongMap<const string>::ReusableIterator* iterator = map.iterator();
+    LongMap<const string>::ReusableIterator& iterator = map.iterator();
 
-    assert(iterator->hasNext());
-    assert(*iterator->nextValue() == ten);
+    assert(iterator.hasNext());
+    assert(*iterator.nextValue() == ten);
 
-    iterator->remove();
+    iterator.remove();
     assert(map.size() == 2);
     assert(!map.containsKey(10));
 
-    assert(iterator->hasNext());
-    assert(*iterator->nextValue() == twenty);
+    assert(iterator.hasNext());
+    assert(*iterator.nextValue() == twenty);
 
-    iterator->remove();
+    iterator.remove();
     assert(map.size() == 1);
     assert(!map.containsKey(20));
 
-    assert(iterator->hasNext());
-    assert(*iterator->nextValue() == thirty);
+    assert(iterator.hasNext());
+    assert(*iterator.nextValue() == thirty);
 
-    iterator->remove();
+    iterator.remove();
     assert(map.size() == 0);
     assert(!map.containsKey(30));
-    assert(!iterator->hasNext());
+    assert(!iterator.hasNext());
 
     cout << "All tests passed!" << endl;
 }
