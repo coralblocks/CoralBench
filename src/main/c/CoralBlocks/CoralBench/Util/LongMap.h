@@ -20,7 +20,7 @@ namespace CoralBlocks::CoralBench::Util {
             struct Entry {
                 long key;
                 E* value;
-                Entry* next;
+                Entry* nxt;
             };
 
             static const int DEFAULT_INITIAL_CAPACITY = 128;
@@ -69,8 +69,8 @@ namespace CoralBlocks::CoralBench::Util {
                         int size;
                         int index;
                         int dataIndex;
-                        Entry* prev;
-                        Entry* next;
+                        Entry* prv;
+                        Entry* nxt;
                         Entry* entry;
                         bool wasRemoved;
 
@@ -85,7 +85,7 @@ namespace CoralBlocks::CoralBench::Util {
 
                         void reset();
                         bool hasNext() const;
-                        E& nextValue();
+                        E& next();
                         void remove();
             };   
 

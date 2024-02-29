@@ -23,9 +23,9 @@ namespace CoralBlocks::CoralBench::Util {
         // don't forget to release all entry objects from the pool...
         Entry* entryToRelease = nullptr;
         while((entryToRelease = poolHead) != nullptr) {
-            Entry* nextPtr = entryToRelease->next;
+            Entry* nxtPtr = entryToRelease->nxt;
             delete entryToRelease;
-            poolHead = nextPtr;
+            poolHead = nxtPtr;
         }
 
         delete[] data;
@@ -50,7 +50,7 @@ namespace CoralBlocks::CoralBench::Util {
                 if (*(e->value) == value) {
                     return true;
                 }
-                e = e->next;
+                e = e->nxt;
             }
         }
         return false;
@@ -63,7 +63,7 @@ namespace CoralBlocks::CoralBench::Util {
             if (e->key == key) {
                 return true;
             }
-            e = e->next;
+            e = e->nxt;
         }
         return false;
     }
@@ -75,7 +75,7 @@ namespace CoralBlocks::CoralBench::Util {
             if (e->key == key) {
                 return e->value;
             }
-            e = e->next;
+            e = e->nxt;
         }
         return nullptr;
     }
@@ -93,7 +93,7 @@ namespace CoralBlocks::CoralBench::Util {
                 e->value = &value;
                 return old;
             }
-            e = e->next;
+            e = e->nxt;
         }
 
         if (count >= threshold) {
@@ -114,14 +114,14 @@ namespace CoralBlocks::CoralBench::Util {
         int index = toArrayIndex(key);
 
         Entry* e = data[index];
-        Entry* prev = nullptr;
+        Entry* prv = nullptr;
 
         while (e != nullptr) {
             if (e->key == key) {
-                if (prev != nullptr) {
-                    prev->next = e->next;
+                if (prv != nullptr) {
+                    prv->nxt = e->nxt;
                 } else {
-                    data[index] = e->next;
+                    data[index] = e->nxt;
                 }
 
                 E* oldValue = e->value;
@@ -131,8 +131,8 @@ namespace CoralBlocks::CoralBench::Util {
                 return oldValue;
             }
 
-            prev = e;
-            e = e->next;
+            prv = e;
+            e = e->nxt;
         }
 
         return nullptr;
@@ -142,9 +142,9 @@ namespace CoralBlocks::CoralBench::Util {
     void LongMap<E>::clear() {
         for (int index = lengthMinusOne; index >= 0; index--) {
             while (data[index] != nullptr) {
-                Entry* next = data[index]->next;
+                Entry* nxt = data[index]->nxt;
                 releaseEntryBackToPool(data[index]);
-                data[index] = next;
+                data[index] = nxt;
             }
         }
 
@@ -171,10 +171,10 @@ namespace CoralBlocks::CoralBench::Util {
 
             while (old != nullptr) {
                 Entry* e = old;
-                old = old->next;
+                old = old->nxt;
 
                 int index = toArrayIndex(e->key);
-                e->next = data[index];
+                e->nxt = data[index];
                 data[index] = e;
             }
         }
@@ -183,19 +183,19 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    typename LongMap<E>::Entry* LongMap<E>::getEntryFromPool(long key, E& value, Entry* next) {
+    typename LongMap<E>::Entry* LongMap<E>::getEntryFromPool(long key, E& value, Entry* nxt) {
 
         Entry* newEntry = poolHead;
 
         if (newEntry != nullptr) {
-            poolHead = newEntry->next;
+            poolHead = newEntry->nxt;
         } else {
             newEntry = new Entry();
         }
 
         newEntry->key = key;
         newEntry->value = &value;
-        newEntry->next = next;
+        newEntry->nxt = nxt;
 
         return newEntry;
     }
@@ -203,7 +203,7 @@ namespace CoralBlocks::CoralBench::Util {
     template <typename E>
     void LongMap<E>::releaseEntryBackToPool(Entry* e) {
         e->value = nullptr;
-        e->next = poolHead;
+        e->nxt = poolHead;
         poolHead = e;
     }
 
@@ -223,8 +223,8 @@ namespace CoralBlocks::CoralBench::Util {
         size = outer->count;
         index = 0;
         dataIndex = 0;
-        prev = nullptr;
-        next = outer->data[0];
+        prv = nullptr;
+        nxt = outer->data[0];
         entry = nullptr;
         wasRemoved = false;
     }
@@ -235,22 +235,22 @@ namespace CoralBlocks::CoralBench::Util {
     }
 
     template <typename E>
-    E& LongMap<E>::ReusableIterator::nextValue() {
+    E& LongMap<E>::ReusableIterator::next() {
 
         if (index >= size) throw runtime_error("nothing to return");
 
-        if (!wasRemoved) prev = entry;
+        if (!wasRemoved) prv = entry;
         
         wasRemoved = false;
 
-        entry = next;
+        entry = nxt;
 
         if (entry == nullptr) {
             while(entry == nullptr) {
                 dataIndex++;
                 entry = outer->data[dataIndex];
             }
-            prev = nullptr;
+            prv = nullptr;
         }
 
         index++;
@@ -259,7 +259,7 @@ namespace CoralBlocks::CoralBench::Util {
 
         outer->currIteratorKey = entry->key;
 
-        next = entry->next;
+        nxt = entry->nxt;
 
         return *o;
     }
@@ -271,10 +271,10 @@ namespace CoralBlocks::CoralBench::Util {
         
         wasRemoved = true;
 
-        if (prev == nullptr) {
-            outer->data[dataIndex] = next;
+        if (prv == nullptr) {
+            outer->data[dataIndex] = nxt;
         } else {
-            prev->next = next;
+            prv->nxt = nxt;
         }
 
         outer->releaseEntryBackToPool(entry);
