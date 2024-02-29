@@ -13,6 +13,7 @@ namespace CoralBlocks::CoralBench::Util {
     template <typename E>
     FastObjectList<E>::~FastObjectList() {
         delete[] values;
+        delete reusableIter;
     }
 
     template <typename E>
