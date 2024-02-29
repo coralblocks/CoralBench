@@ -40,16 +40,16 @@ private:
     static const bool INCLUDE_TOTALS = false;
 
     std::chrono::high_resolution_clock::time_point time;
-    long long count;
-    long long totalTime;
+    long count;
+    long totalTime;
     int warmup;
-    long long minTime;
-    long long maxTime;
+    long minTime;
+    long maxTime;
 
     int size;
     std::list<MutableInt> pool;
-    std::unordered_map<long long, MutableInt> results;
-    std::vector<long long> tempList;
+    std::unordered_map<long, MutableInt> results;
+    std::vector<long> tempList;
 
 public:
     Bench() : Bench(DEFAULT_WARMUP) {}
@@ -63,8 +63,8 @@ public:
         count = 0;
         totalTime = 0;
         if (!repeatWarmup) warmup = 0;
-        minTime = LLONG_MAX;
-        maxTime = LLONG_MIN;
+        minTime = LONG_MAX;
+        maxTime = LONG_MIN;
 
         size = 0;
         results.clear();
@@ -76,7 +76,7 @@ public:
         return time;
     }
 
-    long long measure() {
+    long measure() {
         if (time.time_since_epoch().count() > 0) {
             auto now = std::chrono::high_resolution_clock::now();
             auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(now - time).count();
@@ -93,7 +93,7 @@ public:
         return warmup <= count;
     }
 
-    long long getCount() const {
+    long getCount() const {
         return count;
     }
 
@@ -128,7 +128,7 @@ private:
         pool.push_back(mi);
     }
 
-    bool measure(long long lastNanoTime) {
+    bool measure(long lastNanoTime) {
         if (++count > warmup) {
             totalTime += lastNanoTime;
             minTime = std::min(minTime, lastNanoTime);
@@ -146,7 +146,7 @@ private:
     }
 
     double avg() const {
-        const long long realCount = count - warmup;
+        const long realCount = count - warmup;
         if (realCount <= 0) {
             return 0;
         }
@@ -193,7 +193,7 @@ private:
         return ss.str();
     }
 
-    void addPercentile(std::string& result, double perc, std::map<long long, MutableInt>& treeMap) {
+    void addPercentile(std::string& result, double perc, std::map<long, MutableInt>& treeMap) {
         
         if (treeMap.empty()) {
             return;
@@ -202,18 +202,18 @@ private:
         tempList.clear();
         double stdevTop = -1;
 
-        long long maxTop = -1;
-        long long minBottom = -1;
+        long maxTop = -1;
+        long minBottom = -1;
 
-        long long x = std::round(perc * size);
+        long x = std::round(perc * size);
         auto iter = treeMap.begin();
         int iTop = 0;
         int iBottom = 0;
-        long long sumTop = 0;
-        long long sumBottom = 0;
+        long sumTop = 0;
+        long sumBottom = 0;
         bool trueForTopFalseForBottom = true;
         while (iter != treeMap.end()) {
-            const long long time = iter->first;
+            const long time = iter->first;
             const MutableInt& count = iter->second;
             for (int a = 0; a < count.get(); a++) {
                 if (trueForTopFalseForBottom) {
@@ -225,10 +225,10 @@ private:
 
                         if (INCLUDE_STDEV) {
                             double avg = static_cast<double>(sumTop) / static_cast<double>(iTop);
-                            long long sum = 0;
+                            long sum = 0;
                             auto iter2 = tempList.begin();
                             while (iter2 != tempList.end()) {
-                                long long t = *iter2;
+                                long t = *iter2;
                                 sum += (avg - t) * (avg - t);
                                 ++iter2;
                             }
@@ -272,10 +272,10 @@ private:
                 result += ", stdev: ";
                 if (iBottom > 0) {
                     double avg = static_cast<double>(sumBottom) / static_cast<double>(iBottom);
-                    long long sum = 0;
+                    long sum = 0;
                     auto iter2 = tempList.begin();
                     while (iter2 != tempList.end()) {
-                        long long t = *iter2;
+                        long t = *iter2;
                         sum += (avg - t) * (avg - t);
                         ++iter2;
                     }
@@ -292,14 +292,14 @@ private:
 
     std::string resultsStr() {
         std::string result;
-        const long long realCount = count - warmup;
+        const long realCount = count - warmup;
         result += "Iterations: " + formatter(realCount) + " | Warm-Up: " + formatter(warmup) + " | Avg Time: " +
                   convertNanoTime(avg());
         if (realCount > 0) {
             result += " | Min Time: " + convertNanoTime(minTime) + " | Max Time: " + convertNanoTime(maxTime);
         }
 
-        std::map<long long, MutableInt> treeMap(results.begin(), results.end());
+        std::map<long, MutableInt> treeMap(results.begin(), results.end());
 
         addPercentile(result, 0.75, treeMap);
         addPercentile(result, 0.9, treeMap);
@@ -321,7 +321,7 @@ private:
         return ss.str();
     }
 
-    void addTempTime(long long time) {
+    void addTempTime(long time) {
         tempList.push_back(time);
     }
 };
