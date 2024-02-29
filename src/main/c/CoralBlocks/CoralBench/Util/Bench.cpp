@@ -146,6 +146,7 @@ namespace CoralBlocks::CoralBench::Util {
                     results[lastNanoTime] = 1;
                 }
                 size++;
+                return true;
             }
             return false;
         }

@@ -109,6 +109,7 @@ public class Bench {
 
 	private final boolean measure(long lastNanoTime) {
 		if (++count > warmup) {
+
 			totalTime += lastNanoTime;
 			minTime = Math.min(minTime, lastNanoTime);
 			maxTime = Math.max(maxTime, lastNanoTime);
@@ -120,7 +121,7 @@ public class Bench {
 				count.set(count.get() + 1);
 			}
 			size++;
-			
+			return true;
 		}
 		return false;
 	}
