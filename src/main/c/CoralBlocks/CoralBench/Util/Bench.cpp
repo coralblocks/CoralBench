@@ -229,7 +229,7 @@ namespace CoralBlocks::CoralBench::Util {
                     if (trueForTopFalseForBottom) {
                         iTop++;
                         sumTop += time;
-                        addTempTime(time);
+                        tempList.push_back(time);
                         if (iTop == x) {
                             maxTop = time;
 
@@ -260,7 +260,7 @@ namespace CoralBlocks::CoralBench::Util {
                         if (minBottom == -1) {
                             minBottom = time;
                         }
-                        addTempTime(time);
+                        tempList.push_back(time);
                     }
                 }
                 ++iter;
@@ -300,14 +300,27 @@ namespace CoralBlocks::CoralBench::Util {
             }
         }
 
-        string formatPercentage(double x, int decimals) const {
-            std::ostringstream ss;
-            ss << std::fixed << std::setprecision(decimals) << x;
-            return ss.str();
+        string trimTrailingZeros(const string& input) {
+
+            size_t dotPosition = input.find('.');
+            
+            if (dotPosition != std::string::npos) {
+                size_t lastNonZero = input.find_last_not_of('0');
+                
+                if (lastNonZero != std::string::npos && lastNonZero > dotPosition) {
+                    return input.substr(0, lastNonZero + 1);
+                } else {
+                    return input.substr(0, dotPosition);
+                }
+            }
+            
+            return input;
         }
 
-        void addTempTime(long time) {
-            tempList.push_back(time);
+        string formatPercentage(double x, int decimals) {
+            std::ostringstream ss;
+            ss << std::fixed << std::setprecision(decimals) << x * 100;
+            return trimTrailingZeros(ss.str()) + "%";
         }
     };
 }
