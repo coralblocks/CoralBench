@@ -16,6 +16,8 @@ using std::runtime_error;
 using std::string;
 using std::stringstream;
 using std::map;
+using std::fixed;
+using std::setprecision;
 
 namespace CoralBlocks::CoralBench::Util {
 
@@ -89,6 +91,13 @@ namespace CoralBlocks::CoralBench::Util {
 
         double getAverage() const {
             return avg();
+        }
+
+        string formatToThreeDecimals(double value) const {
+            stringstream ss;
+            ss << fixed << setprecision(3);
+            ss << value;
+            return ss.str();
         }
 
         string getResults() {
@@ -173,22 +182,23 @@ namespace CoralBlocks::CoralBench::Util {
         string& convertNanoTime(double nanoTime, string& result) const {
             if (nanoTime >= 1000000000L) {
                 double seconds = round(nanoTime / 1000000000.0);
-                result += std::to_string(seconds) + (seconds > 1 ? " secs" : " sec");
+                result += formatToThreeDecimals(seconds) + (seconds > 1 ? " secs" : " sec");
             } else if (nanoTime >= 1000000L) {
                 double millis = round(nanoTime / 1000000.0);
-                result += std::to_string(millis) + (millis > 1 ? " millis" : " milli");
+                result += formatToThreeDecimals(millis) + (millis > 1 ? " millis" : " milli");
             } else if (nanoTime >= 1000L) {
                 double micros = round(nanoTime / 1000.0);
-                result += std::to_string(micros) + (micros > 1 ? " micros" : " micro");
+                result += formatToThreeDecimals(micros) + (micros > 1 ? " micros" : " micro");
             } else {
                 double nanos = round(nanoTime);
-                result += std::to_string(nanos) + (nanos > 1 ? " nanos" : " nano");
+                result += formatToThreeDecimals(nanos) + (nanos > 1 ? " nanos" : " nano");
             }
             return result;
         }
 
         string formatter(int value) const {
             stringstream ss;
+            ss.imbue(std::locale("en_US")); // for #,###
             ss << std::fixed << value;
             return ss.str();
         }
@@ -233,7 +243,7 @@ namespace CoralBlocks::CoralBench::Util {
                                     ++iter2;
                                 }
                                 double stdev = std::sqrt(static_cast<double>(sum) / static_cast<double>(tempList.size()));
-                                double rounded = round(stdev, 2);
+                                double rounded = round(stdev, 3);
                                 stdevTop = rounded;
                             }
 
@@ -261,7 +271,7 @@ namespace CoralBlocks::CoralBench::Util {
             if (INCLUDE_TOTALS) result += " (" + formatter(iTop) + ")";
             result += " = [avg: " + convertNanoTime(sumTop / iTop);
             if (INCLUDE_STDEV) {
-                result += ", stdev: " + std::to_string(stdevTop) + " nanos";
+                result += ", stdev: " + formatToThreeDecimals(stdevTop) + " nanos";
             }
             result += ", max: " + convertNanoTime(maxTop) + ']';
             if (INCLUDE_WORST_PERCS) {
@@ -280,8 +290,8 @@ namespace CoralBlocks::CoralBench::Util {
                             ++iter2;
                         }
                         double stdevBottom = std::sqrt(static_cast<double>(sum) / static_cast<double>(tempList.size()));
-                        double rounded = round(stdevBottom, 2);
-                        result += std::to_string(rounded) + " nanos";
+                        double rounded = round(stdevBottom, 3);
+                        result += formatToThreeDecimals(rounded) + " nanos";
                     } else {
                         result += "?";
                     }
