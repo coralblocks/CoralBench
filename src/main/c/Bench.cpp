@@ -39,14 +39,14 @@ private:
     static const bool INCLUDE_TOTALS = false;
 
     long time;
-    long count;
+    int count;
+    int size;
     long totalTime;
     int warmup;
     long minTime;
     long maxTime;
     struct timespec ts;
 
-    int size;
     std::list<MutableInt> pool;
     std::unordered_map<long, MutableInt> results;
     std::vector<long> tempList;
@@ -92,7 +92,7 @@ public:
         return warmup <= count;
     }
 
-    long getCount() const {
+    int getCount() const {
         return count;
     }
 
