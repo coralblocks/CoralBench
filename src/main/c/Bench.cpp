@@ -6,7 +6,6 @@
 #include <iterator>
 #include <algorithm>
 #include <vector>
-#include <chrono>
 #include <thread>
 #include <map>
 #include <sstream>
@@ -39,17 +38,23 @@ private:
     static const bool INCLUDE_WORST_PERCS = false;
     static const bool INCLUDE_TOTALS = false;
 
-    std::chrono::high_resolution_clock::time_point time;
+    long time;
     long count;
     long totalTime;
     int warmup;
     long minTime;
     long maxTime;
+    struct timespec ts;
 
     int size;
     std::list<MutableInt> pool;
     std::unordered_map<long, MutableInt> results;
     std::vector<long> tempList;
+
+    long get_nano_ts() {
+        clock_gettime(CLOCK_MONOTONIC, &ts);
+        return ts.tv_sec * 1000000000 + ts.tv_nsec;
+    }
 
 public:
     Bench() : Bench(DEFAULT_WARMUP) {}
@@ -59,7 +64,7 @@ public:
     }
 
     void reset(bool repeatWarmup) {
-        time = std::chrono::high_resolution_clock::now();
+        time = 0;
         count = 0;
         totalTime = 0;
         if (!repeatWarmup) warmup = 0;
@@ -71,15 +76,9 @@ public:
         pool.clear();
     }
 
-    std::chrono::high_resolution_clock::time_point mark() {
-        time = std::chrono::high_resolution_clock::now();
-        return time;
-    }
-
     long measure() {
-        if (time.time_since_epoch().count() > 0) {
-            auto now = std::chrono::high_resolution_clock::now();
-            auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(now - time).count();
+        if (time > 0) {
+            long elapsed = get_nano_ts() - time;
             if (elapsed < 0) throw std::runtime_error("Found a negative elapsed time");
             const bool counted = measure(elapsed);
             if (counted) {
@@ -128,6 +127,11 @@ private:
         pool.push_back(mi);
     }
 
+    long mark() {
+        time = get_nano_ts();
+        return time;
+    }
+
     bool measure(long lastNanoTime) {
         if (++count > warmup) {
             totalTime += lastNanoTime;
@@ -151,7 +155,7 @@ private:
             return 0;
         }
         const double avg = static_cast<double>(totalTime) / static_cast<double>(realCount);
-        const double rounded = round(avg, NUMBER_OF_DECIMALS);
+        const double rounded = std::round(avg * 100.0) / 100.0;
         return rounded;
     }
 
