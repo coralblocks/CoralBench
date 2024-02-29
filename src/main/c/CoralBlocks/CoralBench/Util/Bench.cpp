@@ -18,6 +18,7 @@ using std::stringstream;
 using std::map;
 using std::fixed;
 using std::setprecision;
+using std::round;
 
 namespace CoralBlocks::CoralBench::Util {
 
@@ -93,17 +94,10 @@ namespace CoralBlocks::CoralBench::Util {
             return avg();
         }
 
-        string formatToThreeDecimals(double value) const {
-            stringstream ss;
-            ss << fixed << setprecision(3);
-            ss << value;
-            return ss.str();
-        }
-
         string getResults() {
             string result;
             int realCount = count - warmup;
-            result += "Iterations: " + formatter(realCount) + " | Warm-Up: " + formatter(warmup) + " | Avg Time: " + convertNanoTime(avg());
+            result += "Iterations: " + formatWithCommas(realCount) + " | Warm-Up: " + formatWithCommas(warmup) + " | Avg Time: " + convertNanoTime(avg());
             if (realCount > 0) {
                 result += " | Min Time: " + convertNanoTime(minTime) + " | Max Time: " + convertNanoTime(maxTime);
             }
@@ -161,46 +155,8 @@ namespace CoralBlocks::CoralBench::Util {
             int realCount = count - warmup;
             if (realCount <= 0) return 0;
             double avg = static_cast<double>(totalTime) / static_cast<double>(realCount);
-            double rounded = std::round(avg * 100.0) / 100.0;
-            return rounded;
-        }
-
-        double round(double d, int decimals) const {
-            double pow = std::pow(10, decimals);
-            return std::round(d * pow) / pow;
-        }
-
-        double round(double d) const {
-            return round(d, NUMBER_OF_DECIMALS);
-        }
-
-        string convertNanoTime(double nanoTime) const {
-            string result;
-            return convertNanoTime(nanoTime, result);
-        }
-
-        string& convertNanoTime(double nanoTime, string& result) const {
-            if (nanoTime >= 1000000000L) {
-                double seconds = round(nanoTime / 1000000000.0);
-                result += formatToThreeDecimals(seconds) + (seconds > 1 ? " secs" : " sec");
-            } else if (nanoTime >= 1000000L) {
-                double millis = round(nanoTime / 1000000.0);
-                result += formatToThreeDecimals(millis) + (millis > 1 ? " millis" : " milli");
-            } else if (nanoTime >= 1000L) {
-                double micros = round(nanoTime / 1000.0);
-                result += formatToThreeDecimals(micros) + (micros > 1 ? " micros" : " micro");
-            } else {
-                double nanos = round(nanoTime);
-                result += formatToThreeDecimals(nanos) + (nanos > 1 ? " nanos" : " nano");
-            }
-            return result;
-        }
-
-        string formatter(int value) const {
-            stringstream ss;
-            ss.imbue(std::locale("en_US")); // for #,###
-            ss << std::fixed << value;
-            return ss.str();
+            std::cout << std::to_string(avg) << std::endl;
+            return avg;
         }
 
         void addPercentile(string& result, double perc, std::map<long, int>& treeMap) {
@@ -243,7 +199,7 @@ namespace CoralBlocks::CoralBench::Util {
                                     ++iter2;
                                 }
                                 double stdev = std::sqrt(static_cast<double>(sum) / static_cast<double>(tempList.size()));
-                                double rounded = round(stdev, 3);
+                                double rounded = roundToThreeDecimals(stdev);
                                 stdevTop = rounded;
                             }
 
@@ -268,7 +224,7 @@ namespace CoralBlocks::CoralBench::Util {
             END_LOOP:
 
             result += " | " + formatPercentage(perc, 8);
-            if (INCLUDE_TOTALS) result += " (" + formatter(iTop) + ")";
+            if (INCLUDE_TOTALS) result += " (" + formatWithCommas(iTop) + ")";
             result += " = [avg: " + convertNanoTime(sumTop / iTop);
             if (INCLUDE_STDEV) {
                 result += ", stdev: " + formatToThreeDecimals(stdevTop) + " nanos";
@@ -276,7 +232,7 @@ namespace CoralBlocks::CoralBench::Util {
             result += ", max: " + convertNanoTime(maxTop) + ']';
             if (INCLUDE_WORST_PERCS) {
                 result += " - " + formatPercentage(1 - perc, 8);
-                if (INCLUDE_TOTALS) result += " (" + (iBottom > 0 ? formatter(iBottom) : "0") + ")";
+                if (INCLUDE_TOTALS) result += " (" + (iBottom > 0 ? formatWithCommas(iBottom) : "0") + ")";
                 result += " = [avg: " + (iBottom > 0 ? convertNanoTime(sumBottom / iBottom) : "?");
                 if (INCLUDE_STDEV) {
                     result += ", stdev: ";
@@ -290,7 +246,7 @@ namespace CoralBlocks::CoralBench::Util {
                             ++iter2;
                         }
                         double stdevBottom = std::sqrt(static_cast<double>(sum) / static_cast<double>(tempList.size()));
-                        double rounded = round(stdevBottom, 3);
+                        double rounded = roundToThreeDecimals(stdevBottom);
                         result += formatToThreeDecimals(rounded) + " nanos";
                     } else {
                         result += "?";
@@ -298,6 +254,13 @@ namespace CoralBlocks::CoralBench::Util {
                 }
                 result += ", min: " + (minBottom != -1 ? convertNanoTime(minBottom) : "?") + ']';
             }
+        }
+
+        string formatWithCommas(int value) const {
+            stringstream ss;
+            ss.imbue(std::locale("en_US")); // for #,###
+            ss << std::fixed << value;
+            return ss.str();
         }
 
         string trimTrailingZeros(const string& input) {
@@ -321,6 +284,36 @@ namespace CoralBlocks::CoralBench::Util {
             std::ostringstream ss;
             ss << std::fixed << std::setprecision(decimals) << x * 100;
             return trimTrailingZeros(ss.str()) + "%";
+        }
+
+        double roundToThreeDecimals(double d) const {
+            double pow = std::pow(10, 3);
+            return round(d * pow) / pow;
+        }
+
+        string formatToThreeDecimals(double value) const {
+            stringstream ss;
+            ss << fixed << setprecision(3);
+            ss << value;
+            return ss.str();
+        }
+
+        string convertNanoTime(double nanoTime) const {
+            string result;
+            if (nanoTime >= 1000000000L) {
+                double seconds = nanoTime / 1000000000.0;
+                result += formatToThreeDecimals(seconds) + (seconds > 1 ? " secs" : " sec");
+            } else if (nanoTime >= 1000000L) {
+                double millis = nanoTime / 1000000.0;
+                result += formatToThreeDecimals(millis) + (millis > 1 ? " millis" : " milli");
+            } else if (nanoTime >= 1000L) {
+                double micros = nanoTime / 1000.0;
+                result += formatToThreeDecimals(micros) + (micros > 1 ? " micros" : " micro");
+            } else {
+                double nanos = nanoTime;
+                result += formatToThreeDecimals(nanos) + (nanos > 1 ? " nanos" : " nano");
+            }
+            return result;
         }
     };
 }
