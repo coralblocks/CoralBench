@@ -8,9 +8,18 @@ namespace CoralBlocks::CoralBench::Util {
 
     private:
         long seed;
+        const long originalSeed;
 
     public:
-        Random(long seed) : seed(seed) {}
+        Random(long seed) : seed(seed), originalSeed(seed) {}
+
+        long getSeed() const {
+            return originalSeed;
+        }
+
+        void reset() {
+            seed = originalSeed;
+        }
 
         long nextLong() {
             seed = (seed * 1664525L + 1013904223L) & 0xFFFFFFFFL;

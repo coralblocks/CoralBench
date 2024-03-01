@@ -3,9 +3,19 @@ package com.coralblocks.coralbench.util;
 public class Random {
 	
     private long seed;
+    private final long originalSeed;
 
     public Random(long seed) {
         this.seed = seed;
+        this.originalSeed = seed;
+    }
+    
+    public long getSeed() {
+    	return originalSeed;
+    }
+    
+    public void reset() {
+    	this.seed = originalSeed;
     }
 
     public long nextLong() {
