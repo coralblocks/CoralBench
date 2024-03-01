@@ -80,8 +80,6 @@ public class Bench {
 			releaseMutableInt(iter.next());
 		}
 		results.clear();
-		
-		System.gc(); // Good opportunity
 	}
 	
 	public final long mark() {
