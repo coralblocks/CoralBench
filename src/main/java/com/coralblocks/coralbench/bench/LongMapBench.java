@@ -87,7 +87,12 @@ public class LongMapBench {
 		
 		System.out.println("Benchmarking remove operation...\n");
 		
+		map.clear();
+		
 		for(int pass = 0; pass < passes; pass++) {
+			
+			rand.reset();
+			for(int i = 0; i < iterations; i++) map.put(rand.nextLong(), filler);
 			
 			bench.reset();
 			rand.reset();
