@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 
     string filler("FILLER");
 
-    cout << "\nBenchmarking put operation...\n";
+    cout << "\nBenchmarking put operation...\n\n";
 
     for (int pass = 0; pass < passes; pass++) {
 
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
         bench.printResults();
     }
 
-    cout << "\nBenchmarking get operation...\n";
+    cout << "Benchmarking get operation...\n\n";
 
     for (int pass = 0; pass < passes; pass++) {
         
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
         bench.printResults();
     }
 
-    cout << "\nBenchmarking remove operation...\n";
+    cout << "Benchmarking remove operation...\n\n";
 
     map.clear();
 
