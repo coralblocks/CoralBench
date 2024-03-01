@@ -42,51 +42,7 @@ int main(int argc, char* argv[]) {
 
     string filler("FILLER");
 
-    cout << "\nBenchmarking put operation...\n\n";
-
-    for (int pass = 0; pass < passes; pass++) {
-
-        map.clear();  // we will re-insert everything...
-        bench.reset();
-        rand.reset();
-
-        for (int i = 0; i < iterations; i++) {
-            long key = rand.nextLong();  // this is deterministic (pseudo-random)
-
-            bench.mark();
-            map.put(key, filler);
-            bench.measure();
-        }
-
-        cout << "Final size of map: " << map.size() << endl << endl;
-        bench.printResults();
-    }
-
-    cout << "Benchmarking get operation...\n\n";
-
-    for (int pass = 0; pass < passes; pass++) {
-        
-        bench.reset();
-        rand.reset();
-
-        string* gotten;
-
-        for (int i = 0; i < iterations; i++) {
-
-            long key = rand.nextLong();  // this is deterministic (pseudo-random)
-
-            bench.mark();
-            gotten = map.get(key);
-            bench.measure();
-        }
-
-        cout << "Last object gotten: " << *gotten << endl << endl;
-        bench.printResults();
-    }
-
-    cout << "Benchmarking remove operation...\n\n";
-
-    map.clear();
+    cout << "Benchmarking REMOVE operation...\n\n";
 
     for (int pass = 0; pass < passes; pass++) {
 

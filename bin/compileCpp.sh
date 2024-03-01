@@ -10,6 +10,8 @@ g++ -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/Random.cpp src/main/c/Test
 
 g++ -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/ThreadPinning.cpp src/main/c/TestThreadPinning.cpp -o src/main/c/TestThreadPinning
 
-g++ -O3 -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/MathUtils.cpp src/main/c/CoralBlocks/CoralBench/Bench/LongMapBench.cpp -o src/main/c/LongMapBench
+g++ -O3 -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/MathUtils.cpp src/main/c/CoralBlocks/CoralBench/Bench/LongMapGetBench.cpp -o src/main/c/LongMapGetBench
+
+g++ -O3 -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/MathUtils.cpp src/main/c/CoralBlocks/CoralBench/Bench/LongMapRemoveBench.cpp -o src/main/c/LongMapRemoveBench
 
 

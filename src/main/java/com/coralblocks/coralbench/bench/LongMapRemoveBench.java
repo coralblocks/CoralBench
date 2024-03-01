@@ -5,7 +5,7 @@ import com.coralblocks.coralbench.util.LongMap;
 import com.coralblocks.coralbench.util.Random;
 import com.coralblocks.coralbench.util.ThreadPinning;
 
-public class LongMapBench {
+public class LongMapRemoveBench {
 	
 	private static final long THE_SEED = 123456789L;
 	
@@ -27,54 +27,7 @@ public class LongMapBench {
 		
 		Bench bench = new Bench();
 		
-		System.out.println("\nBenchmarking put operation...\n");
-		
-		for(int pass = 0; pass < passes; pass++) {
-
-			map.clear(); // we will re-insert everything...
-			bench.reset();
-			rand.reset();
-			
-			for(int i = 0; i < iterations; i++) {
-				
-				long key = rand.nextLong(); // this is deterministic (pseudo-random)
-				
-				bench.mark();
-				map.put(key, filler);
-				bench.measure();
-			}
-			
-			System.out.println("Final size of map: " + map.size());
-			System.out.println();
-			bench.printResults();
-		}
-		
-		System.out.println("Benchmarking get operation...\n");
-		
-		for(int pass = 0; pass < passes; pass++) {
-			
-			bench.reset();
-			rand.reset();
-			
-			String gotten = null;
-		
-			for(int i = 0; i < iterations; i++) {
-				
-				long key = rand.nextLong(); // this is deterministic (pseudo-random)
-				
-				bench.mark();
-				gotten = map.get(key);
-				bench.measure();
-			}
-			
-			System.out.println("Last object gotten: " + gotten);
-			System.out.println();
-			bench.printResults();
-		}
-		
-		System.out.println("Benchmarking remove operation...\n");
-		
-		map.clear();
+		System.out.println("Benchmarking REMOVE operation...\n");
 		
 		for(int pass = 0; pass < passes; pass++) {
 			
