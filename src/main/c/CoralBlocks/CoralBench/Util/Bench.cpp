@@ -18,8 +18,6 @@ using std::fixed;
 using std::setprecision;
 using std::cout;
 using std::endl;
-using std::this_thread::sleep_for;
-using std::chrono::nanoseconds;
 
 namespace CoralBlocks::CoralBench::Util {
 
@@ -127,9 +125,14 @@ namespace CoralBlocks::CoralBench::Util {
             cout << getResults() << endl << endl;
         }
 
+        void sleepFor(long nanos) {
+            long total = get_nano_ts();
+            while(get_nano_ts() - total < nanos);
+        }
+
         static void doSleep(Bench& bench) {
             bench.mark();
-            sleep_for(nanoseconds(1000));
+            bench.sleepFor(1000);
             bench.measure();
         }
 
