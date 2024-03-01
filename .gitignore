@@ -3,4 +3,5 @@ src/main/c/TestLongMap
 src/main/c/TestBench
 src/main/c/TestThreadPinning
 src/main/c/TestRandom
+src/main/c/LongMapBench
 
