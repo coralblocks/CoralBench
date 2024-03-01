@@ -9,7 +9,7 @@ import com.sun.jna.ptr.LongByReference;
 
 public class ThreadPinning {
 	
-	private static boolean DEBUG = true;
+	private static boolean DEBUG = false;
 	
 	interface CLibrary extends Library {
 		
