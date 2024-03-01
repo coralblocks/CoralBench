@@ -8,4 +8,6 @@ g++ -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/Bench.cpp src/main/c/TestB
 
 g++ -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/Random.cpp src/main/c/TestRandom.cpp -o src/main/c/TestRandom
 
+g++ -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/ThreadPinning.cpp src/main/c/TestThreadPinning.cpp -o src/main/c/TestThreadPinning
+
 
