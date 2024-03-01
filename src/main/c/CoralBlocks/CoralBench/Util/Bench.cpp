@@ -3,6 +3,10 @@
 #include <thread>
 #include <map>
 #include <sstream>
+#include <unordered_map>
+#include <vector>
+#include <climits>
+#include <cmath>
 
 using std::unordered_map;
 using std::vector;
