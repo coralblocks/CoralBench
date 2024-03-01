@@ -42,8 +42,6 @@ int main(int argc, char* argv[]) {
 
     string filler("FILLER");
 
-    cout << "Benchmarking REMOVE operation...\n\n";
-
     for (int pass = 0; pass < passes; pass++) {
 
         rand.reset();
@@ -52,19 +50,15 @@ int main(int argc, char* argv[]) {
         bench.reset();
         rand.reset();
 
-        string* removed;
-
         for (int i = 0; i < iterations; i++) {
 
             long key = rand.nextLong();  // this is deterministic (pseudo-random)
 
             bench.mark();
-            removed = map.remove(key);
+            map.remove(key);
             bench.measure();
         }
 
-        cout << "Last object gotten: " << *removed << endl;
-        cout << "Final size of map: " << map.size() << endl << endl;
         bench.printResults();
     }
 

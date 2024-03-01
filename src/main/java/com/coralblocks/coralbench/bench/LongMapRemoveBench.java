@@ -27,8 +27,6 @@ public class LongMapRemoveBench {
 		
 		Bench bench = new Bench();
 		
-		System.out.println("Benchmarking REMOVE operation...\n");
-		
 		for(int pass = 0; pass < passes; pass++) {
 			
 			rand.reset();
@@ -37,20 +35,15 @@ public class LongMapRemoveBench {
 			bench.reset();
 			rand.reset();
 			
-			String removed = null;
-		
 			for(int i = 0; i < iterations; i++) {
 				
 				long key = rand.nextLong(); // this is deterministic (pseudo-random)
 				
 				bench.mark();
-				removed = map.remove(key);
+				map.remove(key);
 				bench.measure();
 			}
 			
-			System.out.println("Last object removed: " + removed);
-			System.out.println("Final size of map: " + map.size());
-			System.out.println();
 			bench.printResults();
 		}
 	}

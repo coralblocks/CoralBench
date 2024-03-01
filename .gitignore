@@ -5,4 +5,5 @@ src/main/c/TestThreadPinning
 src/main/c/TestRandom
 src/main/c/LongMapGetBench
 src/main/c/LongMapRemoveBench
+src/main/c/LongMapPutBench
 

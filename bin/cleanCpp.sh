@@ -7,4 +7,5 @@ rm -f src/main/c/TestRandom
 rm -f src/main/c/TestThreadPinning
 rm -f src/main/c/LongMapGetBench
 rm -f src/main/c/LongMapRemoveBench
+rm -f src/main/c/LongMapPutBench
 

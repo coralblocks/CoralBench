@@ -42,10 +42,9 @@ int main(int argc, char* argv[]) {
 
     string filler("FILLER");
 
-    for (int i = 0; i < iterations; i++) map.put(rand.nextLong(), filler);
-
     for (int pass = 0; pass < passes; pass++) {
-        
+
+        map.clear();
         bench.reset();
         rand.reset();
 
@@ -54,7 +53,7 @@ int main(int argc, char* argv[]) {
             long key = rand.nextLong();  // this is deterministic (pseudo-random)
 
             bench.mark();
-            map.get(key);
+            map.put(key, filler);
             bench.measure();
         }
 

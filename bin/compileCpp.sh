@@ -14,4 +14,6 @@ g++ -O3 -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/MathUtils.cpp src/main
 
 g++ -O3 -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/MathUtils.cpp src/main/c/CoralBlocks/CoralBench/Bench/LongMapRemoveBench.cpp -o src/main/c/LongMapRemoveBench
 
+g++ -O3 -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/MathUtils.cpp src/main/c/CoralBlocks/CoralBench/Bench/LongMapPutBench.cpp -o src/main/c/LongMapPutBench
+
 
