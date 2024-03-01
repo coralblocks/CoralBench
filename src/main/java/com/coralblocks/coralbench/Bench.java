@@ -5,7 +5,6 @@ import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.locks.LockSupport;
 
 import com.coralblocks.coralbench.util.FastObjectList;
 import com.coralblocks.coralbench.util.LinkedObjectList;
@@ -396,9 +395,14 @@ public class Bench {
 		bench.printResults();
 	}
 	
+	private final static void sleepFor(long nanos) {
+		long time = System.nanoTime();
+		while((System.nanoTime() - time) < nanos);
+	}
+	
 	private final static void doSleep(Bench bench) {
 		bench.mark();
-		LockSupport.parkNanos(1000);
+		sleepFor(1000);
 		bench.measure();
 	}
 }
