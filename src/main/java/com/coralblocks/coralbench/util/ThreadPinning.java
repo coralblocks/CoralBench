@@ -54,45 +54,43 @@ public class ThreadPinning {
 	public static class PinnedThread extends Thread {
 		
 		private int coreId;
-		private boolean isRunning = false;
+		private volatile boolean isRunning = false;
 		
 		public PinnedThread(int coreId) {
 			super();
 			this.coreId = coreId;
 		}
 		
-		public synchronized int getCoreId() {
-			return coreId;
-		}
-		
 		public synchronized void setCoreId(int coreId) {
 			this.coreId = coreId;
 		}
 		
-		public synchronized void stopMe() {
+		public void stopMe() {
 			isRunning = false;
 		}
 		
-		public synchronized boolean isRunning() {
+		public boolean isRunning() {
 			return isRunning;
 		}
 		
 		@Override
 		public void run() {
 
+			isRunning = true;
+			
+			int currCoreId;
+			
 			synchronized(this) {
-				isRunning = true;
+				currCoreId = coreId;
+				pinCurrentThread(currCoreId);
 			}
 			
-			int currCoreId = getCoreId();
-			
-			pinCurrentThread(currCoreId);
-			
-			while(isRunning()) {
-				int cId = getCoreId();
-				if (cId != currCoreId) {
-					pinCurrentThread(cId);
-					currCoreId = cId;
+			while(isRunning) {
+				synchronized(this) {
+					if (currCoreId != coreId) {
+						pinCurrentThread(coreId);
+						currCoreId = coreId;
+					}
 				}
 			}
 			
