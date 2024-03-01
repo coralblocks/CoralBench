@@ -1,11 +1,5 @@
 #include <iostream>
 #include <iomanip>
-#include <list>
-#include <unordered_map>
-#include <cmath>
-#include <iterator>
-#include <algorithm>
-#include <vector>
 #include <thread>
 #include <map>
 #include <sstream>
