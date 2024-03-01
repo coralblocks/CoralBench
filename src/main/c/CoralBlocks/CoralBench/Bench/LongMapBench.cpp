@@ -17,18 +17,6 @@ using std::atoi;
 using namespace CoralBlocks::CoralBench;
 using namespace CoralBlocks::CoralBench::Util;
 
-long get_nano_ts(struct timespec &ts) {
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return ts.tv_sec * 1000000000 + ts.tv_nsec;
-}
-
-string formatWithCommas(long value) {
-    stringstream ss;
-    ss.imbue(std::locale("en_US")); // for #,###
-    ss << std::fixed << value;
-    return ss.str();
-}
-
 int main(int argc, char* argv[]) {
 
     const long THE_SEED = 123456789L;
@@ -52,7 +40,6 @@ int main(int argc, char* argv[]) {
     Random& rand = *randPointer;
     Bench& bench = *benchPointer;
 
-    struct timespec ts;
     string filler("FILLER");
 
     cout << "\nBenchmarking put operation...\n";
@@ -63,8 +50,6 @@ int main(int argc, char* argv[]) {
         bench.reset();
         rand.reset();
 
-        long time = get_nano_ts(ts);
-
         for (int i = 0; i < iterations; i++) {
             long key = rand.nextLong();  // this is deterministic (pseudo-random)
 
@@ -73,14 +58,11 @@ int main(int argc, char* argv[]) {
             bench.measure();
         }
 
-        time = get_nano_ts(ts) - time;
-
-        cout << "Total time in nanoseconds: " << formatWithCommas(time) << endl;
         cout << "Final size of map: " << map.size() << endl << endl;
         bench.printResults();
     }
 
-    cout << "Benchmarking get operation...\n";
+    cout << "\nBenchmarking get operation...\n";
 
     for (int pass = 0; pass < passes; pass++) {
         
@@ -88,8 +70,6 @@ int main(int argc, char* argv[]) {
         rand.reset();
 
         string* gotten;
-
-        long time = get_nano_ts(ts);
 
         for (int i = 0; i < iterations; i++) {
 
@@ -100,14 +80,11 @@ int main(int argc, char* argv[]) {
             bench.measure();
         }
 
-        time = get_nano_ts(ts) - time;
-
-        cout << "Total time in nanoseconds: " << formatWithCommas(time) << endl;
         cout << "Last object gotten: " << *gotten << endl << endl;
         bench.printResults();
     }
 
-    cout << "Benchmarking remove operation...\n";
+    cout << "\nBenchmarking remove operation...\n";
 
     map.clear();
 
@@ -121,8 +98,6 @@ int main(int argc, char* argv[]) {
 
         string* removed;
 
-        long time = get_nano_ts(ts);
-
         for (int i = 0; i < iterations; i++) {
 
             long key = rand.nextLong();  // this is deterministic (pseudo-random)
@@ -132,9 +107,6 @@ int main(int argc, char* argv[]) {
             bench.measure();
         }
 
-        time = get_nano_ts(ts) - time;
-
-        cout << "Total time in nanoseconds: " << formatWithCommas(time) << endl;
         cout << "Last object gotten: " << *removed << endl;
         cout << "Final size of map: " << map.size() << endl << endl;
         bench.printResults();
