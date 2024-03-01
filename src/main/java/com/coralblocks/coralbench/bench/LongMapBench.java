@@ -14,13 +14,11 @@ public class LongMapBench {
 	
 	public static void main(String[] args) {
 		
-		final int warmupIterations = Integer.parseInt(args[0]);
+		final int iterations = Integer.parseInt(args[0]);
 		
-		final int benchIterations = Integer.parseInt(args[1]);
+		final int passes = Integer.parseInt(args[1]);
 		
-		final int passes = Integer.parseInt(args[2]);
-		
-		final int coreId = Integer.parseInt(args[3]);
+		final int coreId = Integer.parseInt(args[2]);
 		
 		if (coreId >= 0) ThreadPinning.pinCurrentThread(coreId);
 		
@@ -30,31 +28,21 @@ public class LongMapBench {
 		
 		Random rand = new Random(THE_SEED);
 		
-		Bench bench = new Bench(warmupIterations);
+		Bench bench = new Bench();
 		
-		System.out.println();
-		
-		System.out.println("Benchmarking put operation...");
-		
-		System.out.println();
+		System.out.println("\nBenchmarking put operation...\n");
 		
 		for(int pass = 0; pass < passes; pass++) {
 
-			if (pass > 0) { // no need to reset on the first pass...
-				bench.reset(false);
-				rand.reset();
-			}
+			map.clear(); // we will re-insert everything...
+			bench.reset();
+			rand.reset();
 			
-			// first pass has warmup... after that there is no warmup for subsequent passes...
-			int totalIterations = pass == 0 ? (warmupIterations + benchIterations) : benchIterations;
-			
-			map.clear();
-		
 			long time = System.nanoTime();
 			
-			for(int i = 0; i < totalIterations; i++) {
+			for(int i = 0; i < iterations; i++) {
 				
-				long key = rand.nextLong();
+				long key = rand.nextLong(); // this is deterministic (pseudo-random)
 				
 				bench.mark();
 				map.put(key, filler);
@@ -63,35 +51,26 @@ public class LongMapBench {
 			
 			time = System.nanoTime() - time;
 			
-			System.out.println("Total time in nanoseconds: " + FORMATTER.format(time) +  " (" + (pass == 0 ? "with" : "without") + " warmup)");
+			System.out.println("Total time in nanoseconds: " + FORMATTER.format(time));
 			System.out.println("Final size of map: " + map.size());
 			System.out.println();
 			bench.printResults();
 		}
 		
-		System.out.println("Benchmarking get operation...");
-		
-		System.out.println();
-		
-		rand.reset(); // first pass below will not be reset so reset here...
+		System.out.println("Benchmarking get operation...\n");
 		
 		for(int pass = 0; pass < passes; pass++) {
 			
-			if (pass > 0) { // no need to reset on the first pass...
-				bench.reset(false);
-				rand.reset();
-			}
-			
-			// first pass has warmup... after that there is no warmup for subsequent passes...
-			int totalIterations = pass == 0 ? (warmupIterations + benchIterations) : benchIterations;
+			bench.reset();
+			rand.reset();
 			
 			String gotten = null;
 		
 			long time = System.nanoTime();
 			
-			for(int i = 0; i < totalIterations; i++) {
+			for(int i = 0; i < iterations; i++) {
 				
-				long key = rand.nextLong();
+				long key = rand.nextLong(); // this is deterministic (pseudo-random)
 				
 				bench.mark();
 				gotten = map.get(key);
@@ -100,8 +79,37 @@ public class LongMapBench {
 			
 			time = System.nanoTime() - time;
 			
-			System.out.println("Total time in nanoseconds: " + FORMATTER.format(time) +  " (" + (pass == 0 ? "with" : "without") + " warmup)");
+			System.out.println("Total time in nanoseconds: " + FORMATTER.format(time));
 			System.out.println("Last object gotten: " + gotten);
+			System.out.println();
+			bench.printResults();
+		}
+		
+		System.out.println("Benchmarking remove operation...\n");
+		
+		for(int pass = 0; pass < passes; pass++) {
+			
+			bench.reset();
+			rand.reset();
+			
+			String removed = null;
+		
+			long time = System.nanoTime();
+			
+			for(int i = 0; i < iterations; i++) {
+				
+				long key = rand.nextLong(); // this is deterministic (pseudo-random)
+				
+				bench.mark();
+				removed = map.remove(key);
+				bench.measure();
+			}
+			
+			time = System.nanoTime() - time;
+			
+			System.out.println("Total time in nanoseconds: " + FORMATTER.format(time));
+			System.out.println("Last object removed: " + removed);
+			System.out.println("Final size of map: " + map.size());
 			System.out.println();
 			bench.printResults();
 		}

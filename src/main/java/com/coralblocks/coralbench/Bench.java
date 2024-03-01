@@ -65,6 +65,10 @@ public class Bench {
 	private final void releaseMutableInt(MutableInt mi) {
 		pool.addLast(mi);
 	}
+	
+	public void reset() {
+		reset(false);
+	}
 
 	public void reset(boolean repeatWarmup) {
 		time = 0;
