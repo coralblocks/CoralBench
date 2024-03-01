@@ -1,40 +1,49 @@
 package com.coralblocks.coralbench.util;
 
-import com.sun.jna.Platform;
+import com.sun.jna.LastErrorException;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.Platform;
+import com.sun.jna.PointerType;
+import com.sun.jna.ptr.LongByReference;
 
 public class ThreadPinning {
 	
+	private static boolean DEBUG = true;
+	
 	interface CLibrary extends Library {
-	    // Define the library methods
-	    int sched_setaffinity(int pid, int cpusetsize, long[] mask);
+		
+		public int sched_setaffinity(final int pid, final int cpusetsize, final PointerType cpuset) throws LastErrorException;
 	}
 	
-    private static int getProcessId() {
-        // Accessing the process ID in a platform-dependent way
-        return (int) ProcessHandle.current().pid();
-    }
-    
-    public static void pinCurrentThread(int coreId, int pid) {
-    	pinCurrentThread(coreId, pid, Long.BYTES);
-    }
-
-	public static void pinCurrentThread(int coreId, int pid, int cpusetsize) {
+	private static CLibrary cLibrary = null;
+	
+	static {
+		
+		 if (Platform.isLinux()) {
+			 // Load the C library using JNA
+			 cLibrary = Native.load("c", CLibrary.class);
+			 if (DEBUG) System.out.println("CLibrary loaded for thread pinning!");
+		 } else {
+			 if (DEBUG) System.out.println("Not on Linux! Thread pinning will have no effect!");
+		 }
+	}
+	
+	public static void pinCurrentThread(int coreId) {
 		
 		try {
 		
-	        if (Platform.isLinux()) {
-	            // Load the C library using JNA
-	            CLibrary cLibrary = Native.load("c", CLibrary.class);
+	        if (cLibrary != null) {
 	
 	            // Create a mask with the specified core index
-	            long[] mask = { 1L << coreId };
+	            long mask =  1L << (long) coreId;
 	
 	            // Set CPU affinity using sched_setaffinity
-	            int result = cLibrary.sched_setaffinity(pid, cpusetsize, mask);
+	            int result = cLibrary.sched_setaffinity(0, Long.BYTES, new LongByReference(mask));
 	
 	            if (result != 0) throw new RuntimeException("Cannot pin thread!");
+	            
+	            if (DEBUG) System.out.println("Set affinity to " + coreId + " for thread " + Thread.currentThread().getName());
 	        }
 	        
 		} catch(Exception e) {
@@ -44,31 +53,20 @@ public class ThreadPinning {
 	
 	public static class PinnedThread extends Thread {
 		
-		private final int initialCoreId;
-		private volatile int pid = -1;
+		private int coreId;
 		private boolean isRunning = false;
 		
-		public PinnedThread(int initialCoreId) {
+		public PinnedThread(int coreId) {
 			super();
-			this.initialCoreId = initialCoreId;
+			this.coreId = coreId;
 		}
 		
-		@Override
-		public void run() {
-			
-			pid = getProcessId();
-			
-			pinCurrentThread(initialCoreId, pid);
-			
-			synchronized(this) {
-				isRunning = true;
-			}
-			
-			while(isRunning()) {
-				// busyspin...
-			}
-			
-			System.out.println("Thread exited!");
+		public synchronized int getCoreId() {
+			return coreId;
+		}
+		
+		public synchronized void setCoreId(int coreId) {
+			this.coreId = coreId;
 		}
 		
 		public synchronized void stopMe() {
@@ -79,10 +77,33 @@ public class ThreadPinning {
 			return isRunning;
 		}
 		
-		public int getPid() { // Does access around pid need to be synchronized?
-							  // I don't think so but I can be wrong
-			return pid;
+		@Override
+		public void run() {
+			
+			int currCoreId = getCoreId();
+			
+			pinCurrentThread(currCoreId);
+			
+			synchronized(this) {
+				isRunning = true;
+			}
+			
+			while(isRunning()) {
+				int cId = getCoreId();
+				if (cId != currCoreId) {
+					pinCurrentThread(cId);
+					currCoreId = cId;
+				}
+			}
+			
+			System.out.println("Thread exited!");
 		}
+	}
+	
+	private static void sleep() throws Exception {
+		if (DEBUG) System.out.print("Sleeping...");
+		Thread.sleep(12000);
+		if (DEBUG) System.out.println(" WOKE UP!");
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -91,20 +112,26 @@ public class ThreadPinning {
 		
 		pThread.start();
 		
-		Thread.sleep(6000);
+		sleep();
 		
-		pinCurrentThread(2, pThread.getPid());
+		pThread.setCoreId(2);
+
+		sleep();
 		
-		Thread.sleep(6000);
+		pThread.setCoreId(3);
 		
-		pinCurrentThread(3, pThread.getPid());
+		sleep();
 		
-		Thread.sleep(6000);
+		pThread.setCoreId(1);
 		
-		pinCurrentThread(1, pThread.getPid());
-		
-		Thread.sleep(6000);
+		sleep();
 		
 		pThread.stopMe();
+		
+		if (DEBUG) System.out.println("Thread stopped!");
+		
+		pThread.join();
+		
+		if (DEBUG) System.out.println("Thread really died!");
 	}
 }
