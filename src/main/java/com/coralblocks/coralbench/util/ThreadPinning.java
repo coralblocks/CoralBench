@@ -79,14 +79,14 @@ public class ThreadPinning {
 		
 		@Override
 		public void run() {
+
+			synchronized(this) {
+				isRunning = true;
+			}
 			
 			int currCoreId = getCoreId();
 			
 			pinCurrentThread(currCoreId);
-			
-			synchronized(this) {
-				isRunning = true;
-			}
 			
 			while(isRunning()) {
 				int cId = getCoreId();
