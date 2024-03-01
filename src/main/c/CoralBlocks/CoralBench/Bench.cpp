@@ -58,6 +58,10 @@ namespace CoralBlocks::CoralBench {
             reset(true);
         }
 
+        void reset() {
+            reset(false);
+        }
+
         void reset(bool repeatWarmup) {
             time = 0;
             count = 0;
