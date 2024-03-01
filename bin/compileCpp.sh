@@ -6,4 +6,6 @@ g++ -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/MathUtils.cpp src/main/c/T
 
 g++ -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/Bench.cpp src/main/c/TestBench.cpp -o src/main/c/TestBench
 
+g++ -std=c++17 src/main/c/CoralBlocks/CoralBench/Util/Random.cpp src/main/c/TestRandom.cpp -o src/main/c/TestRandom
+
 
