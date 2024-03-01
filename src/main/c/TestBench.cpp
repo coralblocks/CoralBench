@@ -1,6 +1,6 @@
-#include "CoralBlocks/CoralBench/Util/Bench.cpp"
+#include "CoralBlocks/CoralBench/Bench.cpp"
 
-using namespace CoralBlocks::CoralBench::Util;
+using namespace CoralBlocks::CoralBench;
 
 int main() {
 

@@ -19,7 +19,7 @@ using std::setprecision;
 using std::cout;
 using std::endl;
 
-namespace CoralBlocks::CoralBench::Util {
+namespace CoralBlocks::CoralBench {
 
     class Bench {
         
