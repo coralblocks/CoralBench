@@ -87,6 +87,10 @@ namespace CoralBlocks::CoralBench::Util {
             return count;
         }
 
+        int getSize() const {
+            return size;
+        }
+
         double getAverage() const {
             return avg();
         }
