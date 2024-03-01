@@ -20,6 +20,8 @@ using std::fixed;
 using std::setprecision;
 using std::cout;
 using std::endl;
+using std::this_thread::sleep_for;
+using std::chrono::nanoseconds;
 
 namespace CoralBlocks::CoralBench::Util {
 
@@ -125,7 +127,7 @@ namespace CoralBlocks::CoralBench::Util {
 
         static void doSleep(Bench& bench) {
             bench.mark();
-            std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+            sleep_for(nanoseconds(1000));
             bench.measure();
         }
 
