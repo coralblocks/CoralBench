@@ -18,7 +18,7 @@ public class Random {
 
     public long nextLong(long bound) {
         if (bound <= 0) {
-            throw new IllegalArgumentException("bound must be positive");
+            throw new IllegalArgumentException("Bound must be positive");
         }
         return nextLong() % bound;
     }
@@ -30,7 +30,7 @@ public class Random {
 
     public int nextInt(int bound) {
         if (bound <= 0) {
-            throw new IllegalArgumentException("bound must be positive");
+            throw new IllegalArgumentException("Bound must be positive");
         }
         return nextInt() % bound;
     }
