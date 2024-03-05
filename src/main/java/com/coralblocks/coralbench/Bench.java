@@ -157,10 +157,11 @@ public class Bench {
 			}
 		}
 		
-		sb.append(" | ").append(formatPercentage(perc, 8));
+		sb.append(formatPercentage(perc, 8));
 		sb.append(" = [");
 		sb.append("avg: ").append(convertNanoTime(sumTop / iTop));
 		sb.append(", max: ").append(convertNanoTime(maxTop)).append(']');
+		sb.append('\n');
 	}
 	
     public int getCount() {
@@ -204,32 +205,37 @@ public class Bench {
 		if (nanoTime >= 1000000000L) {
 			// seconds...
 			double seconds = round(nanoTime / 1000000000D);
-			sb.append(seconds).append(seconds > 1 ? " secs" : " sec");
+			sb.append(formatThreeDecimals(seconds)).append(seconds > 1 ? " secs" : " sec");
 		} else if (nanoTime >= 1000000L) {
 			// millis...
 			double millis = round(nanoTime / 1000000D);
-			sb.append(millis).append(millis > 1 ? " millis" : " milli");
+			sb.append(formatThreeDecimals(millis)).append(millis > 1 ? " millis" : " milli");
 		} else if (nanoTime >= 1000L) {
 			// micros...
 			double micros = round(nanoTime / 1000D);
-			sb.append(micros).append(micros > 1 ? " micros" : " micro");
+			sb.append(formatThreeDecimals(micros)).append(micros > 1 ? " micros" : " micro");
 		} else {
 			double nanos = round(nanoTime);
-			sb.append(nanos).append(nanos > 1 ? " nanos" : " nano");
+			sb.append(formatThreeDecimals(nanos)).append(nanos > 1 ? " nanos" : " nano");
 		}
 		return sb;
+	}
+	
+	private static String formatThreeDecimals(double d) {
+		return String.format("%.3f", d);
 	}
 
 	public String results() {
 		final StringBuilder sb = new StringBuilder(128);
 		final long realCount = count - warmup;
 		sb.append("Iterations: ").append(formatter.format(realCount));
-		sb.append(" | Warm-Up: ").append(formatter.format(warmup));
-		sb.append(" | Avg Time: ").append(convertNanoTime(avg()));
+		sb.append(" | Warm-Up: ").append(formatter.format(warmup)).append('\n');
+		sb.append("Avg Time: ").append(convertNanoTime(avg()));
 		if (realCount > 0) {
 			sb.append(" | Min Time: ").append(convertNanoTime(minTime));
 			sb.append(" | Max Time: ").append(convertNanoTime(maxTime));
 		}
+		sb.append('\n');
 		
 		TreeMap<Long, MutableInt> treeMap = new TreeMap<Long, MutableInt>();
 		Iterator<MutableInt> iter = results.iterator();
@@ -251,7 +257,6 @@ public class Bench {
 	
 	public void printResults() {
 		System.out.println(results());
-		System.out.println();
 	}
 	
 }

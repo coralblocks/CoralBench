@@ -97,10 +97,12 @@ namespace CoralBlocks::CoralBench {
         string getResults() {
             string result;
             int realCount = count - warmup;
-            result += "Iterations: " + formatWithCommas(realCount) + " | Warm-Up: " + formatWithCommas(warmup) + " | Avg Time: " + convertNanoTime(avg());
+            result += "Iterations: " + formatWithCommas(realCount) + " | Warm-Up: " + formatWithCommas(warmup) + "\n";
+            result += "Avg Time: " + convertNanoTime(avg());
             if (realCount > 0) {
                 result += " | Min Time: " + convertNanoTime(minTime) + " | Max Time: " + convertNanoTime(maxTime);
             }
+            result += "\n";
 
             map<long, int> treeMap(results.begin(), results.end());
 
@@ -177,9 +179,9 @@ namespace CoralBlocks::CoralBench {
             }
             END_LOOP:
 
-            result += " | " + formatPercentage(perc, 8);
+            result += formatPercentage(perc, 8);
             result += " = [avg: " + convertNanoTime(sumTop / iTop);
-            result += ", max: " + convertNanoTime(maxTop) + ']';
+            result += ", max: " + convertNanoTime(maxTop) + "]\n";
         }
 
         string formatWithCommas(int value) const {
