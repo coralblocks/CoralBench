@@ -38,20 +38,6 @@ int main(int argc, char* argv[]) {
 
     bench.printResults();
 
-    bench.reset(false); // false because we don't want to repeat warmup
-
-    x = 0;
-
-    for (int i = 0; i < measurementIterations; i++) {
-        bench.mark();
-        x += doSomething(load, i);
-        bench.measure();
-    }
-
-    cout << "Value computed: " << x << endl;
-
-    bench.printResults();
-
     delete &bench;
 
     return 0;

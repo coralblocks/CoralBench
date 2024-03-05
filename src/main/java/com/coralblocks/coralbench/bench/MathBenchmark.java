@@ -39,19 +39,5 @@ public class MathBenchmark {
 		System.out.println("Value computed: " + x);
 		
 		bench.printResults();
-		
-		bench.reset(false); // false because we don't want to repeat warmup
-		
-		x = 0;
-		
-		for(int i = 0; i < measurementIterations; i++) {
-			bench.mark();
-			x += doSomething(load, i);
-			bench.measure();
-		}
-		
-		System.out.println("Value computed: " + x);
-		
-		bench.printResults();
 	}
 }

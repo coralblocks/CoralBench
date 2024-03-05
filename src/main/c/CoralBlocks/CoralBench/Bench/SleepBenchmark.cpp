@@ -33,14 +33,6 @@ int main() {
 
     bench.printResults();
 
-    bench.reset(false); // false because we don't want to repeat warmup
-
-    while (bench.getCount() < measurementIterations) {
-        doSleep(bench);
-    }
-
-    bench.printResults();
-
     delete &bench;
 
     return 0;
