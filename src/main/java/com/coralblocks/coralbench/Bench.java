@@ -6,15 +6,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.coralblocks.coralbench.util.FastObjectList;
 import com.coralblocks.coralbench.util.LinkedObjectList;
 import com.coralblocks.coralbench.util.LongMap;
 import com.coralblocks.coralbench.util.MutableInt;
 
 public class Bench {
 
-	private static boolean INCLUDE_STDEV = true;
-	
 	private static final int DEFAULT_WARMUP = 0;
 	private static final int NUMBER_OF_DECIMALS = 3;
 
@@ -30,7 +27,6 @@ public class Bench {
 	
 	private final LinkedObjectList<MutableInt> pool = new LinkedObjectList<MutableInt>(1024);
 	private final LongMap<MutableInt> results = new LongMap<MutableInt>(4194304); // 2 ^ 22
-	private final FastObjectList<Long> tempList = new FastObjectList<Long>(1024 * 1024 * 10);
 	
 	public Bench() {
 		this(DEFAULT_WARMUP);
@@ -130,21 +126,12 @@ public class Bench {
 		return percentFormat.format(x);
 	}
 	
-	private void addTempTime(Long time) {
-		if (!tempList.add(time)) {
-			tempList.grow();
-			tempList.add(time);
-		}
-	}
-	
 	private void addPercentile(StringBuilder sb, double perc, TreeMap<Long, MutableInt> treeMap) {
 		
 		if (treeMap.isEmpty()) {
 			return;
 		}
 
-		tempList.clear();
-		double stdevTop = -1;
 		long maxTop = -1;
 		
 		long x = Math.round(perc * size);
@@ -163,30 +150,8 @@ public class Bench {
 				iTop++;
 				sumTop += time;
 				
-				addTempTime(time);
-				
 				if (iTop == x) {
-					
 					maxTop = time;
-					
-					if (INCLUDE_STDEV) {
-						
-						double avg = (double) sumTop / (double) iTop;
-						long sum = 0;
-						
-						Iterator<Long> iter2 = tempList.iterator();
-						
-						while(iter2.hasNext()) {
-							Long t = iter2.next();
-							sum += (avg - t) * (avg - t);
-						}
-						
-						double stdev = Math.sqrt(((double) sum / (double) tempList.size()));
-						double rounded = Math.round(stdev * 100D) / 100D;
-						
-						stdevTop = rounded;
-					}
-					
 					break LOOP;
 				}
 			}
@@ -195,9 +160,6 @@ public class Bench {
 		sb.append(" | ").append(formatPercentage(perc, 8));
 		sb.append(" = [");
 		sb.append("avg: ").append(convertNanoTime(sumTop / iTop));
-		if (INCLUDE_STDEV) {
-			sb.append(", stdev: ").append(stdevTop).append(" nanos");
-		}
 		sb.append(", max: ").append(convertNanoTime(maxTop)).append(']');
 	}
 	
@@ -263,7 +225,7 @@ public class Bench {
 		final long realCount = count - warmup;
 		sb.append("Iterations: ").append(formatter.format(realCount));
 		sb.append(" | Warm-Up: ").append(formatter.format(warmup));
-		addAverage(sb);
+		sb.append(" | Avg Time: ").append(convertNanoTime(avg()));
 		if (realCount > 0) {
 			sb.append(" | Min Time: ").append(convertNanoTime(minTime));
 			sb.append(" | Max Time: ").append(convertNanoTime(maxTime));
@@ -285,28 +247,6 @@ public class Bench {
 		addPercentile(sb, 0.99999D, treeMap);
 		
 		return sb.toString();
-	}
-	
-	private void addAverage(StringBuilder sb) {
-		sb.append(" | Avg Time: ").append(convertNanoTime(avg()));
-		if (INCLUDE_STDEV) {
-			sb.append(" | StDev: ");
-			double avg = avg();
-			Iterator<MutableInt> iter = results.iterator();
-			long sum = 0;
-			long total = 0;
-			while(iter.hasNext()) {
-				MutableInt counter = iter.next();
-				Long time = results.getCurrIteratorKey();
-				for(int a = 0; a < counter.get(); a++) {
-					sum += (avg - time) * (avg - time);
-					total++;
-				}
-			}
-			final double stdev = Math.sqrt(((double) sum / (double) total));
-			final double rounded = Math.round(stdev * 100D) / 100D;
-			sb.append(rounded).append(" nanos");
-		}
 	}
 	
 	public void printResults() {

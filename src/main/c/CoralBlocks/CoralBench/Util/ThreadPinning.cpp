@@ -7,6 +7,7 @@ using std::runtime_error;
 namespace CoralBlocks::CoralBench::Util {
 
     class ThreadPinning {
+        
     public:
         static void pinCurrentThread(int proc) {
 

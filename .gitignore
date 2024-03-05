@@ -1,9 +1,2 @@
-src/main/c/TestMathUtils
-src/main/c/TestLongMap
-src/main/c/TestBench
-src/main/c/TestThreadPinning
-src/main/c/TestRandom
-src/main/c/LongMapGetBench
-src/main/c/LongMapRemoveBench
-src/main/c/LongMapPutBench
+src/main/c/SleepBenchmark
 

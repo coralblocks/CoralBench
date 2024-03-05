@@ -28,11 +28,6 @@ namespace CoralBlocks::CoralBench {
         static const int DEFAULT_WARMUP = 0;
         static const int NUMBER_OF_DECIMALS = 3;
         
-        static const bool INCLUDE_STDEV = true;
-        static const bool INCLUDE_MORE_PERCS = false;
-        static const bool INCLUDE_WORST_PERCS = false;
-        static const bool INCLUDE_TOTALS = false;
-
         long time;
         int count;
         int size;
@@ -43,7 +38,6 @@ namespace CoralBlocks::CoralBench {
 
         struct timespec ts;
         std::unordered_map<long, int> results;
-        std::vector<long> tempList;
 
         long get_nano_ts() {
             clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -71,7 +65,6 @@ namespace CoralBlocks::CoralBench {
             minTime = LONG_MAX;
             maxTime = LONG_MIN;
             results.clear();
-            tempList.clear();
         }
 
         long measure() {
@@ -117,27 +110,12 @@ namespace CoralBlocks::CoralBench {
             addPercentile(result, 0.999, treeMap);
             addPercentile(result, 0.9999, treeMap);
             addPercentile(result, 0.99999, treeMap);
-            if (INCLUDE_MORE_PERCS) {
-                addPercentile(result, 0.999999, treeMap);
-                addPercentile(result, 0.9999999, treeMap);
-            }
 
             return result;
         }
 
         void printResults() {
             cout << getResults() << endl << endl;
-        }
-
-        void sleepFor(long nanos) {
-            long total = get_nano_ts();
-            while(get_nano_ts() - total < nanos);
-        }
-
-        static void doSleep(Bench& bench) {
-            bench.mark();
-            bench.sleepFor(1000);
-            bench.measure();
         }
 
         long mark() {
@@ -177,56 +155,22 @@ namespace CoralBlocks::CoralBench {
                 return;
             }
 
-            tempList.clear();
-            double stdevTop = -1;
-
             long maxTop = -1;
-            long minBottom = -1;
-
             long x = std::round(perc * size);
             auto iter = treeMap.begin();
             int iTop = 0;
-            int iBottom = 0;
             long sumTop = 0;
-            long sumBottom = 0;
-            bool trueForTopFalseForBottom = true;
+
             while (iter != treeMap.end()) {
                 const long time = iter->first;
                 const int count = iter->second;
                 for (int a = 0; a < count; a++) {
-                    if (trueForTopFalseForBottom) {
-                        iTop++;
-                        sumTop += time;
-                        tempList.push_back(time);
-                        if (iTop == x) {
-                            maxTop = time;
 
-                            if (INCLUDE_STDEV) {
-                                double avg = static_cast<double>(sumTop) / static_cast<double>(iTop);
-                                long sum = 0;
-                                auto iter2 = tempList.begin();
-                                while (iter2 != tempList.end()) {
-                                    long t = *iter2;
-                                    sum += (avg - t) * (avg - t);
-                                    ++iter2;
-                                }
-                                stdevTop = std::sqrt(static_cast<double>(sum) / static_cast<double>(tempList.size()));
-                            }
-
-                            if (INCLUDE_WORST_PERCS) {
-                                trueForTopFalseForBottom = false;
-                                tempList.clear();
-                            } else {
-                                goto END_LOOP;
-                            }
-                        }
-                    } else {
-                        iBottom++;
-                        sumBottom += time;
-                        if (minBottom == -1) {
-                            minBottom = time;
-                        }
-                        tempList.push_back(time);
+                    iTop++;
+                    sumTop += time;
+                    if (iTop == x) {
+                        maxTop = time;
+                        goto END_LOOP;
                     }
                 }
                 ++iter;
@@ -234,35 +178,8 @@ namespace CoralBlocks::CoralBench {
             END_LOOP:
 
             result += " | " + formatPercentage(perc, 8);
-            if (INCLUDE_TOTALS) result += " (" + formatWithCommas(iTop) + ")";
             result += " = [avg: " + convertNanoTime(sumTop / iTop);
-            if (INCLUDE_STDEV) {
-                result += ", stdev: " + formatToThreeDecimals(stdevTop) + " nanos";
-            }
             result += ", max: " + convertNanoTime(maxTop) + ']';
-            if (INCLUDE_WORST_PERCS) {
-                result += " - " + formatPercentage(1 - perc, 8);
-                if (INCLUDE_TOTALS) result += " (" + (iBottom > 0 ? formatWithCommas(iBottom) : "0") + ")";
-                result += " = [avg: " + (iBottom > 0 ? convertNanoTime(sumBottom / iBottom) : "?");
-                if (INCLUDE_STDEV) {
-                    result += ", stdev: ";
-                    if (iBottom > 0) {
-                        double avg = static_cast<double>(sumBottom) / static_cast<double>(iBottom);
-                        long sum = 0;
-                        auto iter2 = tempList.begin();
-                        while (iter2 != tempList.end()) {
-                            long t = *iter2;
-                            sum += (avg - t) * (avg - t);
-                            ++iter2;
-                        }
-                        double stdevBottom = std::sqrt(static_cast<double>(sum) / static_cast<double>(tempList.size()));
-                        result += formatToThreeDecimals(stdevBottom) + " nanos";
-                    } else {
-                        result += "?";
-                    }
-                }
-                result += ", min: " + (minBottom != -1 ? convertNanoTime(minBottom) : "?") + ']';
-            }
         }
 
         string formatWithCommas(int value) const {
