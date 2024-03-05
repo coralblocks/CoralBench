@@ -20,9 +20,9 @@ long doSomething(int load, int i) {
 
 int main(int argc, char* argv[]) {
 
-    const int warmupIterations = atoi(argv[1]);
-    const int measurementIterations = atoi(argv[2]);
-    const int load = atoi(argv[3]);
+    const int warmupIterations = 1000000;
+    const int measurementIterations = 9000000;
+    const int load = 10000;
 
     Bench& bench = *(new Bench(warmupIterations)); // don't want to use -> to dereference
 

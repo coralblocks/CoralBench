@@ -1,5 +1,5 @@
 #!/bin/bash
 
-./src/main/c/MathBenchmark 1000000 9000000 10000
+./src/main/c/MathBenchmark 
 
 
