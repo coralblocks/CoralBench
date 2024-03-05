@@ -117,7 +117,7 @@ namespace CoralBlocks::CoralBench {
         }
 
         void printResults() {
-            cout << getResults() << endl << endl;
+            cout << getResults() << endl;
         }
 
         long mark() {
