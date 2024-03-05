@@ -13,10 +13,7 @@ import com.coralblocks.coralbench.util.MutableInt;
 
 public class Bench {
 
-	public static boolean INCLUDE_STDEV = true;
-	public static boolean INCLUDE_MORE_PERCS = false; // 99.9999% and 99.99999% (usually unnecessary)
-	public static boolean INCLUDE_WORST_PERCS = false; // include the bottom percentile after the top (Ex: 90% and 10%)
-	public static boolean INCLUDE_TOTALS = false; // corresponding number of iterations for the given percentile
+	private static boolean INCLUDE_STDEV = true;
 	
 	private static final int DEFAULT_WARMUP = 0;
 	private static final int NUMBER_OF_DECIMALS = 3;
@@ -148,114 +145,60 @@ public class Bench {
 
 		tempList.clear();
 		double stdevTop = -1;
-		
 		long maxTop = -1;
-		long minBottom = -1;
 		
 		long x = Math.round(perc * size);
 		Iterator<Map.Entry<Long, MutableInt>> iter = treeMap.entrySet().iterator();
 		int iTop = 0;
-		int iBottom = 0;
 		long sumTop = 0;
-		long sumBottom = 0;
-		boolean trueForTopFalseForBottom = true;
+		
 		LOOP: while(iter.hasNext()) {
+			
 			Map.Entry<Long, MutableInt> entry = iter.next();
 			Long time = entry.getKey();
 			MutableInt count = entry.getValue();
+			
 			for(int a = 0; a < count.get(); a++) {
 				
-				if (trueForTopFalseForBottom) {
+				iTop++;
+				sumTop += time;
 				
-    				iTop++;
-    				sumTop += time;
-    				
-    				addTempTime(time);
-    				
-    				if (iTop == x) {
-    					maxTop = time;
-    					
-    					if (INCLUDE_STDEV) {
-    						
-    						double avg = (double) sumTop / (double) iTop;
-    						long sum = 0;
-    						
-    						Iterator<Long> iter2 = tempList.iterator();
-    						
-    						while(iter2.hasNext()) {
-    							Long t = iter2.next();
-    							sum += (avg - t) * (avg - t);
-    						}
-    						
-    						double stdev = Math.sqrt(((double) sum / (double) tempList.size()));
-    						double rounded = Math.round(stdev * 100D) / 100D;
-    						
-    						stdevTop = rounded;
-    					}
-    					
-    					if (INCLUDE_WORST_PERCS) {
-    						trueForTopFalseForBottom = false;
-    						tempList.clear();
-    					} else {
-    						break LOOP;
-    					}
-    				}
-    				
-				} else {
+				addTempTime(time);
+				
+				if (iTop == x) {
 					
-					iBottom++;
-					sumBottom += time;
-					if (minBottom == -1) {
-						minBottom = time;
+					maxTop = time;
+					
+					if (INCLUDE_STDEV) {
+						
+						double avg = (double) sumTop / (double) iTop;
+						long sum = 0;
+						
+						Iterator<Long> iter2 = tempList.iterator();
+						
+						while(iter2.hasNext()) {
+							Long t = iter2.next();
+							sum += (avg - t) * (avg - t);
+						}
+						
+						double stdev = Math.sqrt(((double) sum / (double) tempList.size()));
+						double rounded = Math.round(stdev * 100D) / 100D;
+						
+						stdevTop = rounded;
 					}
 					
-					addTempTime(time);
+					break LOOP;
 				}
 			}
 		}
 		
 		sb.append(" | ").append(formatPercentage(perc, 8));
-		if (INCLUDE_TOTALS) sb.append(" (").append(formatter.format(iTop)).append(")");
 		sb.append(" = [");
 		sb.append("avg: ").append(convertNanoTime(sumTop / iTop));
 		if (INCLUDE_STDEV) {
 			sb.append(", stdev: ").append(stdevTop).append(" nanos");
 		}
 		sb.append(", max: ").append(convertNanoTime(maxTop)).append(']');
-		if (INCLUDE_WORST_PERCS) {
-			sb.append(" - ").append(formatPercentage(1 - perc, 8));
-			if (INCLUDE_TOTALS) sb.append(" (").append(iBottom > 0 ? formatter.format(iBottom) : "0").append(")");
-			sb.append(" = [");
-			sb.append("avg: ").append(iBottom > 0 ? convertNanoTime(sumBottom / iBottom) : "?");
-			if (INCLUDE_STDEV) {
-				
-				sb.append(", stdev: ");
-				
-				if (iBottom > 0) {
-				
-    				double avg = (double) sumBottom / (double) iBottom;
-    				long sum = 0;
-    				
-    				Iterator<Long> iter2 = tempList.iterator();
-    				
-    				while(iter2.hasNext()) {
-    					Long t = iter2.next();
-    					sum += (avg - t) * (avg - t);
-    				}
-    				
-    				double stdevBottom = Math.sqrt(((double) sum / (double) tempList.size()));
-    				double rounded = Math.round(stdevBottom * 100D) / 100D;
-    				
-    				sb.append(rounded).append(" nanos");
-    				
-				} else {
-					
-					sb.append("?");
-				}
-				
-			}
-			sb.append(", min: ").append(minBottom != -1 ? convertNanoTime(minBottom) : "?").append(']');
-		}
 	}
 	
     public int getCount() {
@@ -340,15 +283,11 @@ public class Bench {
 		addPercentile(sb, 0.999D, treeMap);
 		addPercentile(sb, 0.9999D, treeMap);
 		addPercentile(sb, 0.99999D, treeMap);
-		if (INCLUDE_MORE_PERCS) {
-			addPercentile(sb, 0.999999D, treeMap);
-			addPercentile(sb, 0.9999999D, treeMap);
-		}
 		
 		return sb.toString();
 	}
 	
-	protected void addAverage(StringBuilder sb) {
+	private void addAverage(StringBuilder sb) {
 		sb.append(" | Avg Time: ").append(convertNanoTime(avg()));
 		if (INCLUDE_STDEV) {
 			sb.append(" | StDev: ");
@@ -375,6 +314,19 @@ public class Bench {
 		System.out.println();
 	}
 	
+	/// TEST
+	
+	private final static void sleepFor(long nanos) {
+		long time = System.nanoTime();
+		while((System.nanoTime() - time) < nanos);
+	}
+	
+	private final static void doSleep(Bench bench) {
+		bench.mark();
+		sleepFor(1000);
+		bench.measure();
+	}
+	
 	public static void main(String[] args) {
 		
 		int warmupIterations = 1000000;
@@ -395,17 +347,6 @@ public class Bench {
 		}
 		
 		bench.printResults();
-	}
-	
-	private final static void sleepFor(long nanos) {
-		long time = System.nanoTime();
-		while((System.nanoTime() - time) < nanos);
-	}
-	
-	private final static void doSleep(Bench bench) {
-		bench.mark();
-		sleepFor(1000);
-		bench.measure();
 	}
 }
 
