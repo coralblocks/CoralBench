@@ -37,16 +37,16 @@ public class MathBenchmark {
     
 	public static void main(String[] args) {
 		
-		final int warmupIterations = 1000000;
-		final int measurementIterations = 9000000;
-		final int total = measurementIterations + warmupIterations;
+		final int warmupIterations = 1_000_000;
+		final int measurementIterations = 9_000_000;
+		final int totalIterations = measurementIterations + warmupIterations;
 		final int load = 10000;
 		
 		Bench bench = new Bench(warmupIterations);
 		
 		long x = 0;
 		
-		for(int i = 0; i < total; i++) {
+		for(int i = 0; i < totalIterations; i++) {
 			bench.mark();
 			x += doSomething(load, i);
 			bench.measure();

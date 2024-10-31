@@ -25,8 +25,8 @@ public class BubbleSortBenchmark {
      
     public static void main(String[] args) {
          
-        final int measurements = 10000000;
-        final int warmup = 1000000;
+        final int measurements = 10_000_000;
+        final int warmup = 1_000_000;
         final int total = measurements + warmup;
         final int arraySize = 60;
          

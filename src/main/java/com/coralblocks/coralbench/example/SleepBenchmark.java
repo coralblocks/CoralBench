@@ -25,20 +25,20 @@ public class SleepBenchmark {
 	}
 	
 	private final static void doSleep(Bench bench) {
-		bench.mark();
+		bench.mark(); // <===== timer starts
 		sleepFor(1000);
-		bench.measure();
+		bench.measure(); // <===== timer stops
 	}
 	
 	public static void main(String[] args) {
 		
-		final int warmupIterations = 1000000;
-		final int measurementIterations = 1000000;
-		final int total = measurementIterations + warmupIterations;
+		final int warmupIterations = 1_000_000;
+		final int measurementIterations = 2_000_000;
+		final int totalIterations = measurementIterations + warmupIterations;
 		
-		Bench bench = new Bench(warmupIterations);
+		Bench bench = new Bench(warmupIterations); // specify the number of warmup iterations to ignore
 		
-		while(bench.getCount() < total) {
+		while(bench.getCount() < totalIterations) {
 			doSleep(bench);
 		}
 		
