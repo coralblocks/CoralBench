@@ -17,12 +17,13 @@ public class SleepBenchmark {
 	
 	public static void main(String[] args) {
 		
-		int warmupIterations = 1000000;
-		int measurementIterations = 1000000;
+		final int warmupIterations = 1000000;
+		final int measurementIterations = 1000000;
+		final int total = measurementIterations + warmupIterations;
 		
 		Bench bench = new Bench(warmupIterations);
 		
-		while(bench.getCount() < measurementIterations + warmupIterations) {
+		while(bench.getCount() < total) {
 			doSleep(bench);
 		}
 		

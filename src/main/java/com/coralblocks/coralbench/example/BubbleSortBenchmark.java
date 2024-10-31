@@ -10,9 +10,10 @@ public class BubbleSortBenchmark {
      
     public static void main(String[] args) {
          
-        int measurements = 10000000;
-        int warmup = 1000000;
-        int arraySize = 60;
+        final int measurements = 10000000;
+        final int warmup = 1000000;
+        final int total = measurements + warmup;
+        final int arraySize = 60;
          
         HEAP_ARRAY = new int[arraySize];
          
@@ -20,7 +21,7 @@ public class BubbleSortBenchmark {
          
         long x = 0;
          
-        for(int i = 0; i < measurements + warmup; i++) {
+        for(int i = 0; i < total; i++) {
              
             bench.mark();
              
