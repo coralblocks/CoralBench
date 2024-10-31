@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.coralblocks</groupId>
   <artifactId>coralbench</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.1-SNAPSHOT</version>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -13,8 +13,8 @@
   <scm>
     <connection>scm:git:https://github.com/coralblocks/CoralBench</connection>
     <developerConnection>scm:git:https://github.com/coralblocks/CoralBench</developerConnection>
-    <url>https://github.com/coralblocks/CoralBench</url>
-    <tag>1.1.1</tag>
+    <url>https://coralblocks@github.com/coralblocks/CoralBench</url>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
