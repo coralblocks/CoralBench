@@ -11,8 +11,8 @@
   </properties>
 
   <scm>
-    <connection>scm:git:https://github.com/coralblocks/CoralBench</connection>
-    <developerConnection>scm:git:https://github.com/coralblocks/CoralBench</developerConnection>
+    <connection>scm:git:https://coralblocks@github.com/coralblocks/CoralBench</connection>
+    <developerConnection>scm:git:https://coralblocks@github.com/coralblocks/CoralBench</developerConnection>
     <url>https://coralblocks@github.com/coralblocks/CoralBench</url>
     <tag>HEAD</tag>
   </scm>
