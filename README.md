@@ -1,2 +1,3 @@
 # CoralBench
-The same code, written in C++ and Java, benchmarked for speed.
+A <code>Benchmark</code> class to measure latency in Java code with percentiles. See example below:
+
