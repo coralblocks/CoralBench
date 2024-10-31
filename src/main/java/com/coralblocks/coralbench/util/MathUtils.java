@@ -15,12 +15,30 @@
  */
 package com.coralblocks.coralbench.util;
 
+/**
+ * This utility class provides methods to work with mathematics in an efficient way and without producing any garbage. 
+ */
 public class MathUtils {
 	
+	private MathUtils() {
+		
+	}
+	
+	/**
+	 * Is the given long a power of two?
+	 * 
+	 * @param l the long to check
+	 * @return true if it is a power of two
+	 */
 	public final static boolean isPowerOfTwo(long l) {
 	    return (l & (l - 1)) == 0;
 	}
 	
+	/**
+	 * Ensure the given number (long) is a power of two of throw an IllegalArgumentException.
+	 *  
+	 * @param number the number to check
+	 */
 	public final static void ensurePowerOfTwo(long number) {
 		if (!isPowerOfTwo(number)) {
 			throw new IllegalArgumentException("Not a power of two: " + number);
