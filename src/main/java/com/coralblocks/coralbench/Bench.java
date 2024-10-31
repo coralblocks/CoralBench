@@ -228,8 +228,9 @@ public class Bench {
 	public String results() {
 		final StringBuilder sb = new StringBuilder(128);
 		final long realCount = count - warmup;
-		sb.append("Iterations: ").append(formatter.format(realCount));
-		sb.append(" | Warm-Up: ").append(formatter.format(warmup)).append('\n');
+		sb.append("Measurements: ").append(formatter.format(realCount));
+		sb.append(" | Warm-Up: ").append(formatter.format(warmup));
+		sb.append(" | Iterations: ").append(formatter.format(count)).append('\n');
 		sb.append("Avg Time: ").append(convertNanoTime(avg()));
 		if (realCount > 0) {
 			sb.append(" | Min Time: ").append(convertNanoTime(minTime));
