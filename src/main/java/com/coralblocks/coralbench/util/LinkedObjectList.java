@@ -17,6 +17,14 @@ package com.coralblocks.coralbench.util;
 
 import java.util.Iterator;
 
+/**
+ * A fast and garbage-free double-linked list.
+ * 
+ * <p><b>NOTE:</b> This data structure is designed on purpose to be used by <b>single-threaded systems</b>, in other words, 
+ *  it will break if used concurrently by multiple threads.</p>
+ * 
+ * @param <E> the type of objects this object list will hold
+ */
 public class LinkedObjectList<E> implements Iterable<E> {
 
 	private static class Entry<E> {
@@ -31,6 +39,11 @@ public class LinkedObjectList<E> implements Iterable<E> {
 	private Entry<E> tail = null;
 	private int size = 0;
 
+	/**
+	 * Creates a LinkedObjectList
+	 * 
+	 * @param initialCapacity the initial number of preallocated internal entries
+	 */
 	public LinkedObjectList(int initialCapacity) {
 		for(int i = 0; i < initialCapacity; i++) {
 			releaseEntryBackToPool(new Entry<E>());
@@ -56,6 +69,9 @@ public class LinkedObjectList<E> implements Iterable<E> {
 		poolHead = entry;
 	}
 	
+	/**
+	 * Clears this list. The list will be empty after this operation.
+	 */
 	public void clear() {
 		while(head != null) {
 			Entry<E> saveNext = head.next;
@@ -66,6 +82,11 @@ public class LinkedObjectList<E> implements Iterable<E> {
 		size = 0;
 	}
 	
+	/**
+	 * Adds an element to the head of the list.
+	 * 
+	 * @param value the value to be added
+	 */
 	public void addFirst(E value) {
 		Entry<E> entry = getEntryFromPool();
 		entry.value = value;
@@ -83,6 +104,11 @@ public class LinkedObjectList<E> implements Iterable<E> {
 		size++;
 	}
 	
+	/**
+	 * Adds an element to the tail of the list.
+	 * 
+	 * @param value the value to be added
+	 */
 	public void addLast(E value) {
 		Entry<E> entry = getEntryFromPool();
 		entry.value = value;
@@ -100,11 +126,21 @@ public class LinkedObjectList<E> implements Iterable<E> {
 		size++;
 	}
 	
+	/**
+	 * Returns the element on the head of the list.
+	 * 
+	 * @return the first element in the list
+	 */
 	public E first() {
 		if (head == null) return null;
 		return head.value;
 	}
 	
+	/**
+	 * Removes the element from the head of the list.
+	 * 
+	 * @return the first element from the list that was removed
+	 */
 	public E removeFirst() {
 		if (head == null) return null;
 		Entry<E> entry = head;
@@ -116,12 +152,21 @@ public class LinkedObjectList<E> implements Iterable<E> {
 		return toReturn;
 	}
 	
-	
+	/**
+	 * Returns the element on the tail of the list.
+	 * 
+	 * @return the last element in the list
+	 */
 	public E last() {
 		if (tail == null) return null;
 		return tail.value;
 	}
 	
+	/**
+	 * Removes the element from the tail of the list.
+	 * 
+	 * @return the last element from the list that was removed
+	 */
 	public E removeLast() {
 		if (tail == null) return null;
 		Entry<E> entry = tail;
@@ -133,10 +178,20 @@ public class LinkedObjectList<E> implements Iterable<E> {
 		return toReturn;
 	}
 	
+	/**
+	 * Is this list empty? (with size 0)
+	 * 
+	 * @return true if empty
+	 */
 	public boolean isEmpty() {
 		return size == 0;
 	}
 	
+	/**
+	 * Returns the number of elements currently present in the list
+	 * 
+	 * @return the number of elements currently present in the list
+	 */
 	public int size() {
 		return size;
 	}
@@ -190,6 +245,11 @@ public class LinkedObjectList<E> implements Iterable<E> {
 	
 	private ReusableIterator reusableIter = new ReusableIterator();
 	
+	/**
+	 * Return the same iterator instance (garbage-free operation)
+	 * 
+	 * @return the same instance of the iterator
+	 */
 	@Override
 	public Iterator<E> iterator() {
 		reusableIter.reset();
