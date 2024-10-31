@@ -25,6 +25,19 @@ import com.coralblocks.coralbench.util.LinkedObjectList;
 import com.coralblocks.coralbench.util.LongMap;
 import com.coralblocks.coralbench.util.MutableInt;
 
+/**
+ * <p>A class to benchmark Java code for latency. It prints some pretty results with percentiles. See an example below:</p>
+ * <pre>
+ * Measurements: 2,000,000 | Warm-Up: 1,000,000 | Iterations: 3,000,000
+ * Avg Time: 1.025 micros | Min Time: 1.000 micro | Max Time: 56.500 micros
+ * 75% = [avg: 1.016 micros, max: 1.042 micros]
+ * 90% = [avg: 1.020 micros, max: 1.042 micros]
+ * 99% = [avg: 1.022 micros, max: 1.042 micros]
+ * 99.9% = [avg: 1.022 micros, max: 1.125 micros]
+ * 99.99% = [avg: 1.023 micros, max: 7.791 micros]
+ * 99.999% = [avg: 1.024 micros, max: 15.959 micros]
+ * </pre> 
+ */
 public class Bench {
 
 	private static final int DEFAULT_WARMUP = 0;
@@ -43,10 +56,18 @@ public class Bench {
 	private final LinkedObjectList<MutableInt> pool = new LinkedObjectList<MutableInt>(1024);
 	private final LongMap<MutableInt> results = new LongMap<MutableInt>(4194304); // 2 ^ 22
 	
+	/**
+	 * Creates a <code>Bench</code> object without any warmup (warmup count is assumed to be zero)
+	 */
 	public Bench() {
 		this(DEFAULT_WARMUP);
 	}
 
+	/**
+	 * Creates a <code>Bench</code> object with the given warmup count
+	 * 
+	 * @param warmup how many iterations to warmup and ignore results
+	 */
 	public Bench(final int warmup) {
 		
 		this.warmup = warmup;
@@ -74,10 +95,18 @@ public class Bench {
 		pool.addLast(mi);
 	}
 	
+	/**
+	 * Reset this benchmark so that it can be re-used for a new and fresh benchmark. If this benchmark has a warmup count, it will NOT be repeated.
+	 */
 	public void reset() {
 		reset(false);
 	}
 
+	/**
+	 * Reset this benchmark so that it can be re-used for a new and fresh benchmark.
+	 * 
+	 * @param repeatWarmup should warmup be repeated or not?
+	 */
 	public void reset(boolean repeatWarmup) {
 		time = 0;
 		count = 0;
@@ -94,11 +123,21 @@ public class Bench {
 		results.clear();
 	}
 	
+	/**
+	 * Starts the timer to measure
+	 * 
+	 * @return the start timestamp in nanoseconds
+	 */
 	public final long mark() {
 		time = System.nanoTime();
 		return time;
 	}
 	
+	/**
+	 * Measure (and possibly store if not warming up) the elapsed time
+	 * 
+	 * @return the elapsed time in nanoseconds
+	 */
 	public long measure() {
 		if (time > 0) {
 			long now = System.nanoTime();
@@ -112,10 +151,21 @@ public class Bench {
 		return -1;
 	}
 	
+	/**
+	 * Are we currently warming up or are we currently measuring?
+	 * 
+	 * @return true if warming up
+	 */
 	public final boolean isWarmingUp() {
 		return warmup <= count;
 	}
 
+	/**
+	 * Register and take into account (and possibly store if not warming up) the provided elapsed time
+	 * 
+	 * @param lastNanoTime the elapsed time you want to take into account
+	 * @return true if it was taken into account because we are not warming up
+	 */
 	public final boolean measure(long lastNanoTime) {
 		
 		if (++count > warmup) {
@@ -181,14 +231,29 @@ public class Bench {
 		sb.append('\n');
 	}
 	
-    public int getCount() {
+	/**
+	 * How many iterations have we done so far, including warming up?
+	 * 
+	 * @return the total number of iterations so far
+	 */
+    public int getIterations() {
     	return count;
     }
     
-    public int getSize() {
+    /**
+     * How many measurements have we done so far, excluding warming up?
+     * 
+     * @return the total number of measurements so far
+     */
+    public int getMeasurements() {
     	return size;
     }
 	
+    /**
+     * Return the average latency of all measurements
+     * 
+     * @return the average latency
+     */
 	public final double getAverage() {
 		return avg();
 	}
@@ -212,13 +277,13 @@ public class Bench {
 		return ((double) Math.round(d * pow)) / pow;
 	}
 	
-	public static String convertNanoTime(double nanoTime) {
+	private static String convertNanoTime(double nanoTime) {
 		StringBuilder sb = new StringBuilder();
 		convertNanoTime(nanoTime, sb);
 		return sb.toString();
 	}
 	
-	public static StringBuilder convertNanoTime(double nanoTime, StringBuilder sb) {
+	private static StringBuilder convertNanoTime(double nanoTime, StringBuilder sb) {
 		if (nanoTime >= 1000000000L) {
 			// seconds...
 			double seconds = round(nanoTime / 1000000000D);
@@ -242,6 +307,11 @@ public class Bench {
 		return String.format("%.3f", d);
 	}
 
+	/**
+	 * Get the results as a string
+	 * 
+	 * @return the results as a string
+	 */
 	public String results() {
 		final StringBuilder sb = new StringBuilder(128);
 		final long realCount = count - warmup;
@@ -273,6 +343,9 @@ public class Bench {
 		return sb.toString();
 	}
 	
+	/**
+	 * Print the results to stdout
+	 */
 	public void printResults() {
 		System.out.println(results());
 	}
