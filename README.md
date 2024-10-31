@@ -46,12 +46,12 @@ Avg Time: 1.025 micros | Min Time: 1.000 micro | Max Time: 56.500 micros
 
 ### Measuring the elapsed time yourself
 ```Java
-	private final static void doSleep(Bench bench) {
-		long start = System.nanoTime(); // <===== timer starts
-		sleepFor(1000);
-		long elapsed = System.nanoTime() - start; // <===== timer stops
-		bench.measure(elapsed); // <===== provide the elapsed time yourself
-	}
+private final static void doSleep(Bench bench) {
+	long start = System.nanoTime(); // <===== timer starts
+	sleepFor(1000);
+	long elapsed = System.nanoTime() - start; // <===== timer stops
+	bench.measure(elapsed); // <===== provide the elapsed time yourself
+}
 ```
 ## More examples
 - [MathBenchmark.java](src/main/java/com/coralblocks/coralbench/example/MathBenchmark.java)
