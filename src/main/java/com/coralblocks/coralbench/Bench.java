@@ -116,7 +116,8 @@ public class Bench {
 		return warmup <= count;
 	}
 
-	private final boolean measure(long lastNanoTime) {
+	public final boolean measure(long lastNanoTime) {
+		
 		if (++count > warmup) {
 
 			totalTime += lastNanoTime;
@@ -132,6 +133,7 @@ public class Bench {
 			size++;
 			return true;
 		}
+		
 		return false;
 	}
 	
