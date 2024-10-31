@@ -38,7 +38,7 @@ public class SleepBenchmark {
 		
 		Bench bench = new Bench(warmupIterations); // specify the number of warmup iterations to ignore
 		
-		while(bench.getCount() < totalIterations) {
+		while(bench.getCount() < totalIterations) { // note that we always perform warmup + measurement iterations
 			doSleep(bench);
 		}
 		
