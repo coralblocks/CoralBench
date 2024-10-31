@@ -1,4 +1,4 @@
-package com.coralblocks.coralbench.bench;
+package com.coralblocks.coralbench.example;
 
 import com.coralblocks.coralbench.Bench;
 
