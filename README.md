@@ -146,3 +146,53 @@ Avg Time: 1.043 micros | Min Time: 1.030 micros | Max Time: 25.722 micros
 99.999% = [avg: 1.043 micros, max: 15.760 micros]
 ```
 
+#### MathBenchmark
+HotSpotVM JIT:
+```
+java -cp target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark
+```
+```
+Value computed: -550000000000
+Measurements: 9,000,000 | Warm-Up: 1,000,000 | Iterations: 10,000,000
+Avg Time: 217.690 nanos | Min Time: 148.000 nanos | Max Time: 24.736 micros
+75% = [avg: 198.000 nanos, max: 271.000 nanos]
+90% = [avg: 210.000 nanos, max: 271.000 nanos]
+99% = [avg: 216.000 nanos, max: 273.000 nanos]
+99.9% = [avg: 217.000 nanos, max: 484.000 nanos]
+99.99% = [avg: 217.000 nanos, max: 1.185 micros]
+99.999% = [avg: 217.000 nanos, max: 5.538 micros]
+```
+GraalVM AOT without profiling:
+```
+native-image -cp target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark \
+             -o bin/MathBenchmark -march=native --gc=G1 -O3 --native-compiler-options="-O3"
+```
+```
+Value computed: -550000000000
+Measurements: 9,000,000 | Warm-Up: 1,000,000 | Iterations: 10,000,000
+Avg Time: 15.420 nanos | Min Time: 14.000 nanos | Max Time: 23.545 micros
+75% = [avg: 15.000 nanos, max: 16.000 nanos]
+90% = [avg: 15.000 nanos, max: 16.000 nanos]
+99% = [avg: 15.000 nanos, max: 17.000 nanos]
+99.9% = [avg: 15.000 nanos, max: 17.000 nanos]
+99.99% = [avg: 15.000 nanos, max: 21.000 nanos]
+99.999% = [avg: 15.000 nanos, max: 28.000 nanos]
+```
+GraalVM AOT with profiling:
+```
+native-image -cp target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark \
+             -o bin/MathBenchmark -march=native --gc=G1 --pgo-instrument --native-compiler-options="-O3"
+native-image -cp target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark \
+             -o bin/MathBenchmark -march=native --gc=G1 --pgo=default.iprof --native-compiler-options="-O3"
+```
+```
+Value computed: -550000000000
+Measurements: 9,000,000 | Warm-Up: 1,000,000 | Iterations: 10,000,000
+Avg Time: 14.980 nanos | Min Time: 13.000 nanos | Max Time: 15.185 micros
+75% = [avg: 14.000 nanos, max: 15.000 nanos]
+90% = [avg: 14.000 nanos, max: 16.000 nanos]
+99% = [avg: 14.000 nanos, max: 16.000 nanos]
+99.9% = [avg: 14.000 nanos, max: 16.000 nanos]
+99.99% = [avg: 14.000 nanos, max: 22.000 nanos]
+99.999% = [avg: 14.000 nanos, max: 906.000 nanos]
+```
