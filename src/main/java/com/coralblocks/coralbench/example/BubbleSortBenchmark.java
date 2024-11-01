@@ -24,9 +24,9 @@ public class BubbleSortBenchmark {
     private static int[] HEAP_ARRAY;
      
     public static void main(String[] args) {
-         
-        final int measurements = 10_000_000;
-        final int warmup = 1_000_000;
+
+    	final int warmup = args.length > 0 ? Integer.parseInt(args[0]) : 1_000_000;
+        final int measurements = args.length > 1 ? Integer.parseInt(args[1]) : 10_000_000;
         final int total = measurements + warmup;
         final int arraySize = 60;
          

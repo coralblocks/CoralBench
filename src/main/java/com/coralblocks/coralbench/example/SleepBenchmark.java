@@ -32,8 +32,8 @@ public class SleepBenchmark {
 	
 	public static void main(String[] args) {
 		
-		final int warmupIterations = 1_000_000;
-		final int measurementIterations = 2_000_000;
+		final int warmupIterations = args.length > 0 ? Integer.parseInt(args[0]) : 1_000_000;
+		final int measurementIterations = args.length > 1 ? Integer.parseInt(args[1]) : 2_000_000;
 		final int totalIterations = measurementIterations + warmupIterations;
 		
 		Bench bench = new Bench(warmupIterations); // specify the number of warmup iterations to ignore
