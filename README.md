@@ -196,3 +196,57 @@ Avg Time: 14.980 nanos | Min Time: 13.000 nanos | Max Time: 15.185 micros
 99.99% = [avg: 14.000 nanos, max: 22.000 nanos]
 99.999% = [avg: 14.000 nanos, max: 906.000 nanos]
 ```
+
+#### BubbleSortBenchmark
+HotSpotVM JIT:
+```
+java -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark
+```
+```
+Value computed: 20130000000
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 10,000,000 | Warm-Up: 1,000,000 | Iterations: 11,000,000
+Avg Time: 838.090 nanos | Min Time: 804.000 nanos | Max Time: 379.253 micros
+75% = [avg: 829.000 nanos, max: 840.000 nanos]
+90% = [avg: 831.000 nanos, max: 845.000 nanos]
+99% = [avg: 833.000 nanos, max: 864.000 nanos]
+99.9% = [avg: 836.000 nanos, max: 1.491 micros]
+99.99% = [avg: 837.000 nanos, max: 2.376 micros]
+99.999% = [avg: 837.000 nanos, max: 16.052 micros]
+```
+GraalVM AOT without profiling:
+```
+native-image -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark \
+             -o bin/BubbleSortBenchmark -march=native --gc=G1 -O3 --native-compiler-options="-O3"
+```
+```
+Value computed: 20130000000
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 10,000,000 | Warm-Up: 1,000,000 | Iterations: 11,000,000
+Avg Time: 2.184 micros | Min Time: 2.083 micros | Max Time: 373.551 micros
+75% = [avg: 2.154 micros, max: 2.190 micros]
+90% = [avg: 2.164 micros, max: 2.246 micros]
+99% = [avg: 2.174 micros, max: 2.339 micros]
+99.9% = [avg: 2.180 micros, max: 3.643 micros]
+99.99% = [avg: 2.181 micros, max: 8.462 micros]
+99.999% = [avg: 2.183 micros, max: 19.133 micros]
+```
+GraalVM AOT with profiling:
+```
+native-image -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark \
+             -o bin/BubbleSortBenchmark -march=native --gc=G1 --pgo-instrument --native-compiler-options="-O3"
+native-image -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark \
+             -o bin/BubbleSortBenchmark -march=native --gc=G1 --pgo=default.iprof --native-compiler-options="-O3"
+```
+```
+Value computed: 20130000000
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 10,000,000 | Warm-Up: 1,000,000 | Iterations: 11,000,000
+Avg Time: 2.050 micros | Min Time: 1.971 micros | Max Time: 39.075 micros
+75% = [avg: 2.028 micros, max: 2.052 micros]
+90% = [avg: 2.033 micros, max: 2.065 micros]
+99% = [avg: 2.038 micros, max: 2.194 micros]
+99.9% = [avg: 2.046 micros, max: 3.706 micros]
+99.99% = [avg: 2.048 micros, max: 8.486 micros]
+99.999% = [avg: 2.049 micros, max: 18.493 micros]
+```
