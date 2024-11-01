@@ -58,7 +58,7 @@ private final static void doSleep(Bench bench) {
 - [MathBenchmark](src/main/java/com/coralblocks/coralbench/example/MathBenchmark.java)
 - [BubbleSortBenchmark](src/main/java/com/coralblocks/coralbench/example/BubbleSortBenchmark.java)
 - [SleepBenchmark](src/main/java/com/coralblocks/coralbench/example/SleepBenchmark.java)
-
+<!--
 ## The battle between JIT (HotSpotVM) and AOT (GraalVM)
 
 Here we run all our example benchmarks in three different ways, to compare the performance:
@@ -250,3 +250,4 @@ Avg Time: 2.050 micros | Min Time: 1.971 micros | Max Time: 39.075 micros
 99.99% = [avg: 2.048 micros, max: 8.486 micros]
 99.999% = [avg: 2.049 micros, max: 18.493 micros]
 ```
+-->
