@@ -99,7 +99,7 @@ Substrate VM Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11, serial gc, compressed 
 ```
 
 #### SleepBenchmark
-HotSpotVM:
+HotSpotVM JIT:
 ```
 java -cp target/coralbench-all.jar com.coralblocks.coralbench.example.SleepBenchmark
 ```
@@ -113,9 +113,36 @@ Avg Time: 1.043 micros | Min Time: 1.030 micros | Max Time: 30.578 micros
 99.99% = [avg: 1.042 micros, max: 1.923 micros]
 99.999% = [avg: 1.042 micros, max: 15.565 micros]
 ```
-GraalVM without profiling:
+GraalVM AOT without profiling:
 ```
 native-image -cp target/coralbench-all.jar com.coralblocks.coralbench.example.SleepBenchmark \
              -o bin/SleepBenchmark -march=native --gc=G1 -O3 --native-compiler-options="-O3"
+```
+```
+Measurements: 2,000,000 | Warm-Up: 1,000,000 | Iterations: 3,000,000
+Avg Time: 1.041 micros | Min Time: 1.034 micros | Max Time: 342.684 micros
+75% = [avg: 1.039 micros, max: 1.041 micros]
+90% = [avg: 1.039 micros, max: 1.042 micros]
+99% = [avg: 1.039 micros, max: 1.045 micros]
+99.9% = [avg: 1.040 micros, max: 1.053 micros]
+99.99% = [avg: 1.040 micros, max: 1.903 micros]
+99.999% = [avg: 1.040 micros, max: 15.600 micros]
+```
+GraalVM AOT with profiling:
+```
+native-image -cp target/coralbench-all.jar com.coralblocks.coralbench.example.SleepBenchmark \
+             -o bin/SleepBenchmark -march=native --gc=G1 --pgo-instrument --native-compiler-options="-O3"
+native-image -cp target/coralbench-all.jar com.coralblocks.coralbench.example.SleepBenchmark \
+             -o bin/SleepBenchmark -march=native --gc=G1 --pgo=default.iprof -O3 --native-compiler-options="-O3"
+```
+```
+Measurements: 2,000,000 | Warm-Up: 1,000,000 | Iterations: 3,000,000
+Avg Time: 1.043 micros | Min Time: 1.030 micros | Max Time: 25.722 micros
+75% = [avg: 1.040 micros, max: 1.046 micros]
+90% = [avg: 1.041 micros, max: 1.048 micros]
+99% = [avg: 1.042 micros, max: 1.051 micros]
+99.9% = [avg: 1.042 micros, max: 1.090 micros]
+99.99% = [avg: 1.042 micros, max: 1.920 micros]
+99.999% = [avg: 1.043 micros, max: 15.760 micros]
 ```
 
