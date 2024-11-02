@@ -42,6 +42,8 @@ public class Bench {
 
 	private static final int DEFAULT_WARMUP = 0;
 	private static final int NUMBER_OF_DECIMALS = 3;
+	private static final String VERBOSE = "\n==CoralBenchVerbose==> ";
+	private static final int DEFAULT_LOG_EVERY = 10000;
 
 	private final DecimalFormat formatter = new DecimalFormat("#,###");
 	
@@ -55,6 +57,8 @@ public class Bench {
 	
 	private final LinkedObjectList<MutableInt> pool = new LinkedObjectList<MutableInt>(1024);
 	private final LongMap<MutableInt> results = new LongMap<MutableInt>(4194304); // 2 ^ 22
+	private final boolean verbose;
+	private final int verboseLogEvery;
 	
 	/**
 	 * Creates a <code>Bench</code> object without any warmup (warmup count is assumed to be zero)
@@ -77,6 +81,16 @@ public class Bench {
 			Class.forName("java.lang.Math");
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
+		}
+		
+		String s = System.getProperty("coralBenchVerbose");
+		this.verbose = s != null && s.equalsIgnoreCase("true");
+		
+		s = System.getProperty("coralBenchVerboseLogEvery");
+		if (s == null) {
+			this.verboseLogEvery = DEFAULT_LOG_EVERY;
+		} else {
+			this.verboseLogEvery = Integer.parseInt(s);
 		}
 		
 		reset(true);
@@ -166,9 +180,11 @@ public class Bench {
 	 * @param lastNanoTime the elapsed time you want to take into account
 	 * @return true if it was taken into account because we are not warming up
 	 */
-	public final boolean measure(long lastNanoTime) {
+	public final boolean measure(final long lastNanoTime) {
 		
-		if (++count > warmup) {
+		final boolean isToMeasure = ++count > warmup;
+		
+		if (isToMeasure) {
 
 			totalTime += lastNanoTime;
 			minTime = Math.min(minTime, lastNanoTime);
@@ -181,10 +197,13 @@ public class Bench {
 				count.set(count.get() + 1);
 			}
 			size++;
-			return true;
 		}
 		
-		return false;
+		if (verbose) {
+			if (count == 1 || count % verboseLogEvery == 0) System.out.println(VERBOSE + "Iteration " + count + " => " + lastNanoTime); 
+		}
+		
+		return isToMeasure;
 	}
 	
 	private String formatPercentage(double x, int decimals) {
