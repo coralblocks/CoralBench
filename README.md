@@ -68,7 +68,7 @@ The HotSpot JVM offers an interesting option to compile every method right befor
 Below we explore some of our benchmark examples to better understand the difference in performance that these approaches can make.
 
 <details>
-  <summary>Benchamark Environment</summary>
+  <summary>Benchmark Environment</summary>
     
 ```
 $ java -version
