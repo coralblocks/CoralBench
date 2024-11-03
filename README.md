@@ -189,5 +189,57 @@ Avg Time: 1.126 micros | Min Time: 1.079 micros | Max Time: 7.655 micros
 99.999% = [avg: 1.126 micros, max: 7.655 micros]
 ```
 </details>
+<details>
+  <summary>SleepBenchmark Numbers</summary>
+    
+#### Regular JIT <i>with</i> warm-up
+```
+$ java -cp target/coralbench-all.jar com.coralblocks.coralbench.example.SleepBenchmark 1000000 1000
+Measurements: 1,000 | Warm-Up: 1,000,000 | Iterations: 1,001,000
+Avg Time: 1.088 micros | Min Time: 1.038 micros | Max Time: 8.965 micros
+75% = [avg: 1.053 micros, max: 1.078 micros]
+90% = [avg: 1.060 micros, max: 1.110 micros]
+99% = [avg: 1.066 micros, max: 1.189 micros]
+99.9% = [avg: 1.080 micros, max: 7.271 micros]
+99.99% = [avg: 1.088 micros, max: 8.965 micros]
+99.999% = [avg: 1.088 micros, max: 8.965 micros]
+```
+#### Regular JIT <i>without</i> warm-up
+```
+$ java -cp target/coralbench-all.jar com.coralblocks.coralbench.example.SleepBenchmark 5 1000
+Measurements: 1,000 | Warm-Up: 5 | Iterations: 1,005
+Avg Time: 1.149 micros | Min Time: 1.068 micros | Max Time: 9.275 micros
+75% = [avg: 1.107 micros, max: 1.138 micros]
+90% = [avg: 1.114 micros, max: 1.161 micros]
+99% = [avg: 1.123 micros, max: 1.740 micros]
+99.9% = [avg: 1.140 micros, max: 5.375 micros]
+99.99% = [avg: 1.149 micros, max: 9.275 micros]
+99.999% = [avg: 1.149 micros, max: 9.275 micros]
+```
+#### -Xcomp -XX:-TieredCompilation <i>with</i> warm-up
+```
+$ java -Xcomp -XX:-TieredCompilation -cp target/coralbench-all.jar com.coralblocks.coralbench.example.SleepBenchmark 1000000 1000
+Measurements: 1,000 | Warm-Up: 1,000,000 | Iterations: 1,001,000
+Avg Time: 1.046 micros | Min Time: 1.035 micros | Max Time: 1.095 micros
+75% = [avg: 1.045 micros, max: 1.048 micros]
+90% = [avg: 1.046 micros, max: 1.048 micros]
+99% = [avg: 1.046 micros, max: 1.049 micros]
+99.9% = [avg: 1.046 micros, max: 1.089 micros]
+99.99% = [avg: 1.046 micros, max: 1.095 micros]
+99.999% = [avg: 1.046 micros, max: 1.095 micros]
+```
+#### -Xcomp -XX:-TieredCompilation <i>without</i> warm-up
+```
+$ java -Xcomp -XX:-TieredCompilation -cp target/coralbench-all.jar com.coralblocks.coralbench.example.SleepBenchmark 5 1000
+Measurements: 1,000 | Warm-Up: 5 | Iterations: 1,005
+Avg Time: 1.048 micros | Min Time: 1.034 micros | Max Time: 3.490 micros
+75% = [avg: 1.044 micros, max: 1.048 micros]
+90% = [avg: 1.045 micros, max: 1.049 micros]
+99% = [avg: 1.045 micros, max: 1.050 micros]
+99.9% = [avg: 1.045 micros, max: 1.073 micros]
+99.99% = [avg: 1.048 micros, max: 3.490 micros]
+99.999% = [avg: 1.048 micros, max: 3.490 micros]
+```
+</details>
 
 As you can see from the latency numbers above, by using `-Xcomp -XX:-TieredCompilation` you may be able to <b>completely eliminate the need for your application to warm up</b>, without even having to pay a price in performance. Of course this conclusion cannot be generalized for every application as it will depend heavily on the characteristics and particularies of the source code of your application. `But it is worth giving -Xcomp -XX:-TieredCompilation a try to see what kind of numbers you get.`
