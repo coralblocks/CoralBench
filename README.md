@@ -59,3 +59,11 @@ private final static void doSleep(Bench bench) {
 - [BubbleSortBenchmark](src/main/java/com/coralblocks/coralbench/example/BubbleSortBenchmark.java)
 - [SleepBenchmark](src/main/java/com/coralblocks/coralbench/example/SleepBenchmark.java)
 
+## Forcing the HotSpot JVM to optimize at startup (-Xcomp -XX:-TieredCompilation)
+
+By default, the HotSpot JVM will take some time to profile a running Java application for hot spots in the code and then optimize by compiling (to assembly) and inlining these hot spot methods. That's great because the HotSpot JVM can surgically and agressively optimize the parts of your program that matter the most instead of taking the AoT (ahead-of-time) approach of compiling and trying to optimize the whole thing. `For example, method inlining is an aggressive form of optimization that usually requires runtime profiling information since inlining everything is impractical/impossible.`
+
+The HotSpot JVM offers an interesting option to compile every method right before its first invocation. The drawback is that without any profiling this optimization is conservative. `For example, even though some basic method inlining is still performed, a more agressive inlining approach does not happen.` The advantage is that your application will be able to perform at a native/assembly level <strong>right when it starts</strong>, without having to wait until the HotSpot JVM have gathered enough profiling to compile and optimize the hot methods.
+
+Below we explore some of our benchmark examples to better understand the different approaches offered by the HotSpot JVM:
+
