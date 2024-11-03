@@ -67,3 +67,67 @@ The HotSpot JVM offers an interesting option to compile every method right befor
 
 Below we explore some of our benchmark examples to better understand the different approaches offered by the HotSpot JVM:
 
+```
+$ java -version
+java version "23.0.1" 2024-10-15
+Java(TM) SE Runtime Environment (build 23.0.1+11-39)
+Java HotSpot(TM) 64-Bit Server VM (build 23.0.1+11-39, mixed mode, sharing)
+```
+
+#### Regular JIT <i>with</i> warm-up
+```
+$ java -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark 1000000 1000
+Value computed: 1831830000
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 1,000 | Warm-Up: 1,000,000 | Iterations: 1,001,000
+Avg Time: 1.228 micros | Min Time: 807.000 nanos | Max Time: 10.977 micros
+75% = [avg: 1.145 micros, max: 1.312 micros]
+90% = [avg: 1.177 micros, max: 1.375 micros]
+99% = [avg: 1.198 micros, max: 1.478 micros]
+99.9% = [avg: 1.218 micros, max: 9.687 micros]
+99.99% = [avg: 1.227 micros, max: 10.977 micros]
+99.999% = [avg: 1.227 micros, max: 10.977 micros]
+```
+#### Regular JIT <i>without</i> warm-up
+```
+$ java -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark 5 1000
+Value computed: 1839150
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 1,000 | Warm-Up: 5 | Iterations: 1,005
+Avg Time: 11.005 micros | Min Time: 916.000 nanos | Max Time: 91.532 micros
+75% = [avg: 5.231 micros, max: 16.042 micros]
+90% = [avg: 7.125 micros, max: 17.370 micros]
+99% = [avg: 10.347 micros, max: 71.260 micros]
+99.9% = [avg: 10.924 micros, max: 84.416 micros]
+99.99% = [avg: 11.004 micros, max: 91.532 micros]
+99.999% = [avg: 11.004 micros, max: 91.532 micros]
+```
+#### -Xcomp -XX:-TieredCompilation <i>with</i> warm-up
+```
+$ java -Xcomp -XX:-TieredCompilation -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark 1000000 1000
+Value computed: 1831830000
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 1,000 | Warm-Up: 1,000,000 | Iterations: 1,001,000
+Avg Time: 1.114 micros | Min Time: 1.083 micros | Max Time: 1.696 micros
+75% = [avg: 1.107 micros, max: 1.118 micros]
+90% = [avg: 1.109 micros, max: 1.125 micros]
+99% = [avg: 1.111 micros, max: 1.146 micros]
+99.9% = [avg: 1.113 micros, max: 1.682 micros]
+99.99% = [avg: 1.113 micros, max: 1.696 micros]
+99.999% = [avg: 1.113 micros, max: 1.696 micros]
+```
+#### -Xcomp -XX:-TieredCompilation <i>without</i> warm-up
+```
+$ java -Xcomp -XX:-TieredCompilation -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark 5 1000
+Value computed: 1839150
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 1,000 | Warm-Up: 5 | Iterations: 1,005
+Avg Time: 1.126 micros | Min Time: 1.079 micros | Max Time: 7.655 micros
+75% = [avg: 1.109 micros, max: 1.128 micros]
+90% = [avg: 1.113 micros, max: 1.142 micros]
+99% = [avg: 1.116 micros, max: 1.164 micros]
+99.9% = [avg: 1.119 micros, max: 1.875 micros]
+99.99% = [avg: 1.126 micros, max: 7.655 micros]
+99.999% = [avg: 1.126 micros, max: 7.655 micros]
+```
+As you can see from the latency numbers above, by using `-Xcomp -XX:-TieredCompilation` you may be able to <b>completely eliminate the need for your application to warm up</b>, without even having to pay a price in performance. Of course this conclusion cannot be generalized for every application, but it is worth giving `-Xcomp -XX:-TieredCompilation` a try to see what kind of numbers you get with and without warm-up.
