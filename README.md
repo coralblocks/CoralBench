@@ -65,10 +65,10 @@ By default, the HotSpot JVM will take some time to profile a running Java applic
 
 The HotSpot JVM offers an interesting option to compile every method right before its first invocation. The drawback is that without any profiling this optimization is conservative. `For example, even though some basic method inlining is still performed, a more agressive inlining approach does not happen.` The advantage is that your application will be able to perform at a native/assembly level <strong>right when it starts</strong>, without having to wait until the HotSpot JVM have gathered enough profiling to compile and optimize the hot methods.
 
-Below we explore some of our benchmark examples to better understand the different approaches offered by the HotSpot JVM:
+Below we explore some of our benchmark examples to better understand the difference in performance that these approaches can make.
 
 <details>
-  <summary>Test Environment</summary>
+  <summary>Benchamark Environment</summary>
     
 ```
 $ java -version
