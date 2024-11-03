@@ -35,7 +35,7 @@ public class MathBenchmark {
         return x;
     }
     
-	public static void main(String[] args) {
+	public final static void main(String[] args) {
 		
 		final int warmupIterations = args.length > 0 ? Integer.parseInt(args[0]) : 1_000_000;
 		final int measurementIterations = args.length > 1 ? Integer.parseInt(args[1]) : 9_000_000;
