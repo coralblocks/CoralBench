@@ -242,4 +242,4 @@ Avg Time: 1.048 micros | Min Time: 1.034 micros | Max Time: 3.490 micros
 ```
 </details>
 
-As you can see from the latency numbers above, by using `-Xcomp -XX:-TieredCompilation` you may be able to <b>completely eliminate the need for your application to warm up</b>, without even having to pay a price in performance. Of course this conclusion cannot be generalized for every application as it will depend heavily on the characteristics and particularies of the source code of your application. `But it is worth giving -Xcomp -XX:-TieredCompilation a try to see what kind of numbers you get.`
+As you can see from the latency numbers above, by using `-Xcomp -XX:-TieredCompilation` you may be able to <b>completely eliminate the need for your application to warm up</b>, without even having to pay a price in performance (or paying a small/acceptable price). Of course this conclusion cannot be generalized for every application as it will depend heavily on the characteristics and particularies of the source code. `But it is worth giving -Xcomp -XX:-TieredCompilation a try to see what kind of numbers you get.`
