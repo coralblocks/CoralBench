@@ -82,14 +82,8 @@ Linux hivelocity 4.15.0-20-generic #21-Ubuntu SMP Tue Apr 24 06:16:15 UTC 2018 x
 $ cat /etc/issue | head -n 1
 Ubuntu 18.04.6 LTS \n \l
 
-$ gcc --version | head -n 1
-gcc (Ubuntu 11.1.0-1ubuntu1~18.04.1) 11.1.0
-
 $ cat /proc/cpuinfo | grep "model name" | head -n 1 | awk -F ": " '{print $NF}'
 Intel(R) Xeon(R) E-2288G CPU @ 3.70GHz
-
-$ arch
-x86_64
 ```
 </details>
 
