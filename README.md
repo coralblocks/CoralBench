@@ -21,10 +21,12 @@ public class SleepBenchmark {
         final int warmupIterations = 1_000_000;
         final int measurementIterations = 2_000_000;
         final int totalIterations = measurementIterations + warmupIterations;
-        
-        Bench bench = new Bench(warmupIterations); // specify the number of warmup iterations to ignore
-        
-        while(bench.getIterations() < totalIterations) { // note that we always perform warmup + measurement iterations
+
+        // specify the number of warmup iterations to ignore
+        Bench bench = new Bench(warmupIterations);
+
+        // note that we always perform warmup + measurement iterations
+        while(bench.getIterations() < totalIterations) {
             doSleep(bench);
         }
         
