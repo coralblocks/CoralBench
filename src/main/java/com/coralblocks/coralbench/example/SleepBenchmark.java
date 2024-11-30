@@ -19,18 +19,18 @@ import com.coralblocks.coralbench.Bench;
 
 public class SleepBenchmark {
 	
-	private final static void sleepFor(long nanos) {
+	private static final void sleepFor(long nanos) {
 		long time = System.nanoTime();
 		while((System.nanoTime() - time) < nanos);
 	}
 	
-	private final static void doSleep(Bench bench) {
+	private static final void doSleep(Bench bench) {
 		bench.mark(); // <===== timer starts
 		sleepFor(1000);
 		bench.measure(); // <===== timer stops
 	}
 	
-	public final static void main(String[] args) {
+	public static final void main(String[] args) {
 		
 		final int warmupIterations = args.length > 0 ? Integer.parseInt(args[0]) : 1_000_000;
 		final int measurementIterations = args.length > 1 ? Integer.parseInt(args[1]) : 2_000_000;

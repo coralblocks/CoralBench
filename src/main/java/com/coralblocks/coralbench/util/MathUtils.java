@@ -30,7 +30,7 @@ public class MathUtils {
 	 * @param l the long to check
 	 * @return true if it is a power of two
 	 */
-	public final static boolean isPowerOfTwo(long l) {
+	public static final boolean isPowerOfTwo(long l) {
 	    return (l & (l - 1)) == 0;
 	}
 	
@@ -39,7 +39,7 @@ public class MathUtils {
 	 *  
 	 * @param number the number to check
 	 */
-	public final static void ensurePowerOfTwo(long number) {
+	public static final void ensurePowerOfTwo(long number) {
 		if (!isPowerOfTwo(number)) {
 			throw new IllegalArgumentException("Not a power of two: " + number);
 		}

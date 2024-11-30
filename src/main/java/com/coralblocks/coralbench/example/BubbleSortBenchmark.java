@@ -23,7 +23,7 @@ public class BubbleSortBenchmark {
     
     private static int[] HEAP_ARRAY;
      
-    public final static void main(String[] args) {
+    public static final void main(String[] args) {
 
     	final int warmup = args.length > 0 ? Integer.parseInt(args[0]) : 1_000_000;
         final int measurements = args.length > 1 ? Integer.parseInt(args[1]) : 10_000_000;
@@ -54,13 +54,13 @@ public class BubbleSortBenchmark {
         bench.printResults();
     }
      
-    private final static void swapping(int[] array, int x, int y) {
+    private static final void swapping(int[] array, int x, int y) {
         int temp = array[x];
         array[x] = array[y];
         array[y] = temp;
     }
      
-    private final static void bubbleSort(int[] array, int size) {
+    private static final void bubbleSort(int[] array, int size) {
         for(int i = 0; i < size; i++) {
             int swaps = 0; // flag to detect any swap is there or not
             for(int j = 0; j < size - i - 1; j++) {
@@ -73,7 +73,7 @@ public class BubbleSortBenchmark {
         }
     }
      
-    private final static void doSomething(int[] array, int size) {
+    private static final void doSomething(int[] array, int size) {
          
         for(int z = 0; z < size; z++) {
             array[z] = size - z;
