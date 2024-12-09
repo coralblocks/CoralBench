@@ -58,6 +58,10 @@ private final static void doSleep(Bench bench) {
     bench.measure(elapsed); // <===== provide the elapsed time yourself
 }
 ```
+
+The C++ 'Bench' class [is here](src/main/c/bench.cpp).
+
+
 ## More examples
 - [MathBenchmark](src/main/java/com/coralblocks/coralbench/example/MathBenchmark.java)
 - [BubbleSortBenchmark](src/main/java/com/coralblocks/coralbench/example/BubbleSortBenchmark.java)
