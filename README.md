@@ -262,3 +262,209 @@ As you can see from the latency numbers above, by using `-Xcomp -XX:-TieredCompi
 
 ###### For how this applies to [CoralSequencer](https://www.coralblocks.com/coralsequencer) you can check [this article](https://www.coralblocks.com/index.php/hotspot-jit-aot-and-warm-up/).
 
+## HotSpotVM (-Xcomp and JIT) vs LLVM (clang) vs GraalVM
+
+In this section, we compare the `HotSpotVM` JIT against three forms of AOT: `LLVM` (clang), `GraalVM` (native-image), and `-Xcomp`. To ensure a fair and unbiased comparison, all Java and C++ source code is designed to be _equivalent_. Not only the `IntMap` class, which is the code being measured, but also the `Bench` class, which performs the measurements. `We made every effort to maintain consistency and fairness in the comparison but there might be aspects we have overlooked.` **If you notice anything that seems incorrect or could be improved, especially in the C++ code, please feel free to open an issue or submit a pull request.**
+
+The Java `IntMap` implementation [is here](src/main/java/com/coralblocks/coralbench/example/IntMap.java). The C++ `IntMap` implementation [is here](src/main/c/int_map.cpp).<br/>
+The Java benchmark code [is here](src/main/java/com/coralblocks/coralbench/example/IntMapBenchmark.java). The C++ benchmark code [is here](src/main/c/int_map_benchmark.cpp).<br/>
+The Java `Bench` class [is here](src/main/java/com/coralblocks/coralbench/Bench.java). The C++ `Bench` class [is here](src/main/c/bench.cpp).<br/>
+
+### Test Environment
+
+```
+$ uname -a
+Linux hivelocity 4.15.0-20-generic #21-Ubuntu SMP Tue Apr 24 06:16:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+
+$ cat /etc/issue | head -n 1
+Ubuntu 18.04.6 LTS \n \l
+
+$ cat /proc/cpuinfo | grep "model name" | head -n 1 | awk -F ": " '{print $NF}'
+Intel(R) Xeon(R) E-2288G CPU @ 3.70GHz
+
+$ arch
+x86_64
+
+$ clang++ --version
+Ubuntu clang version 18.1.0 (++20240220094926+390dcd4cbbf5-1~exp1~20240220214944.50)
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+
+$ java -version
+java version "23.0.1" 2024-10-15
+Java(TM) SE Runtime Environment Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11-jvmci-b01)
+Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11-jvmci-b01, mixed mode, sharing)
+
+$ native-image --version
+native-image 23.0.1 2024-10-15
+GraalVM Runtime Environment Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11-jvmci-b01)
+Substrate VM Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11, serial gc, compressed references)
+```
+
+### HotSpotVM JIT
+
+```
+$ java -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
+       -cp target/classes:target/coralbench-all.jar \
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+
+Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+
+Benchmarking put...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 22.690 nanos | Min Time: 18.000 nanos | Max Time: 32.311 micros
+75% = [avg: 20.000 nanos, max: 22.000 nanos]
+90% = [avg: 20.000 nanos, max: 28.000 nanos]
+99% = [avg: 21.000 nanos, max: 59.000 nanos]
+99.9% = [avg: 22.000 nanos, max: 103.000 nanos]
+99.99% = [avg: 22.000 nanos, max: 408.000 nanos]
+99.999% = [avg: 22.000 nanos, max: 4.592 micros]
+
+Benchmarking get...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 18.930 nanos | Min Time: 14.000 nanos | Max Time: 23.941 micros
+75% = [avg: 16.000 nanos, max: 18.000 nanos]
+90% = [avg: 16.000 nanos, max: 27.000 nanos]
+99% = [avg: 18.000 nanos, max: 76.000 nanos]
+99.9% = [avg: 18.000 nanos, max: 96.000 nanos]
+99.99% = [avg: 18.000 nanos, max: 383.000 nanos]
+99.999% = [avg: 18.000 nanos, max: 2.139 micros]
+
+Benchmarking remove...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 21.680 nanos | Min Time: 16.000 nanos | Max Time: 39.305 micros
+75% = [avg: 19.000 nanos, max: 22.000 nanos]
+90% = [avg: 19.000 nanos, max: 26.000 nanos]
+99% = [avg: 20.000 nanos, max: 79.000 nanos]
+99.9% = [avg: 21.000 nanos, max: 123.000 nanos]
+99.99% = [avg: 21.000 nanos, max: 421.000 nanos]
+99.999% = [avg: 21.000 nanos, max: 13.391 micros]
+```
+
+### HotSpot -Xcomp
+
+```
+$ java -Xcomp -XX:-TieredCompilation \
+       -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
+       -cp target/classes:target/coralbench-all.jar \
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+
+Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+
+Benchmarking put...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 32.550 nanos | Min Time: 28.000 nanos | Max Time: 3.969 millis
+75% = [avg: 30.000 nanos, max: 32.000 nanos]
+90% = [avg: 31.000 nanos, max: 34.000 nanos]
+99% = [avg: 31.000 nanos, max: 39.000 nanos]
+99.9% = [avg: 31.000 nanos, max: 100.000 nanos]
+99.99% = [avg: 31.000 nanos, max: 363.000 nanos]
+99.999% = [avg: 31.000 nanos, max: 13.340 micros]
+
+Benchmarking get...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 26.710 nanos | Min Time: 21.000 nanos | Max Time: 1.394 millis
+75% = [avg: 24.000 nanos, max: 27.000 nanos]
+90% = [avg: 25.000 nanos, max: 29.000 nanos]
+99% = [avg: 25.000 nanos, max: 39.000 nanos]
+99.9% = [avg: 26.000 nanos, max: 97.000 nanos]
+99.99% = [avg: 26.000 nanos, max: 389.000 nanos]
+99.999% = [avg: 26.000 nanos, max: 13.194 micros]
+
+Benchmarking remove...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 28.920 nanos | Min Time: 23.000 nanos | Max Time: 1.787 millis
+75% = [avg: 26.000 nanos, max: 29.000 nanos]
+90% = [avg: 27.000 nanos, max: 31.000 nanos]
+99% = [avg: 27.000 nanos, max: 41.000 nanos]
+99.9% = [avg: 28.000 nanos, max: 100.000 nanos]
+99.99% = [avg: 28.000 nanos, max: 395.000 nanos]
+99.999% = [avg: 28.000 nanos, max: 13.416 micros]
+```
+
+### LLVM (clang)
+
+```
+$ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/int_map.cpp -o ./target/cpp/int_map.o
+$ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/bench.cpp -o ./target/cpp/bench.o
+$ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/int_map_benchmark.cpp -o ./target/cpp/int_map_benchmark.o
+$ clang++ -Ofast -march=native -flto -std=c++17 -o ./target/cpp/int_map_benchmark ./target/cpp/int_map.o ./target/cpp/bench.o ./target/cpp/int_map_benchmark.o
+
+$ ./target/cpp/int_map_benchmark 0 10000000 5000000
+
+Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+
+Benchmarking put...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 38.597 nanos | Min Time: 30.000 nanos | Max Time: 31.107 micros
+75% = [avg: 32.235 nanos, max: 33.000 nanos]
+90% = [avg: 32.501 nanos, max: 35.000 nanos]
+99% = [avg: 33.093 nanos, max: 106.000 nanos]
+99.9% = [avg: 37.288 nanos, max: 884.000 nanos]
+99.99% = [avg: 38.177 nanos, max: 1.316 micros]
+99.999% = [avg: 38.438 nanos, max: 15.270 micros]
+
+Benchmarking get...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 24.109 nanos | Min Time: 19.000 nanos | Max Time: 15.886 micros
+75% = [avg: 21.578 nanos, max: 25.000 nanos]
+90% = [avg: 22.200 nanos, max: 26.000 nanos]
+99% = [avg: 22.978 nanos, max: 91.000 nanos]
+99.9% = [avg: 23.639 nanos, max: 160.000 nanos]
+99.99% = [avg: 23.884 nanos, max: 432.000 nanos]
+99.999% = [avg: 23.963 nanos, max: 13.451 micros]
+
+Benchmarking remove...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 24.279 nanos | Min Time: 19.000 nanos | Max Time: 29.132 micros
+75% = [avg: 21.899 nanos, max: 24.000 nanos]
+90% = [avg: 22.426 nanos, max: 26.000 nanos]
+99% = [avg: 23.140 nanos, max: 91.000 nanos]
+99.9% = [avg: 23.798 nanos, max: 153.000 nanos]
+99.99% = [avg: 24.017 nanos, max: 426.000 nanos]
+99.999% = [avg: 24.125 nanos, max: 13.548 micros]
+```
+
+### GraalVM (native-image)
+
+```
+$ native-image --gc=G1 -R:+AlwaysPreTouch -R:InitialHeapSize=4g -R:MaxHeapSize=4g \
+               -R:InitialHeapSize=512m -R:MaxHeapSize=1024m -march=native \
+               -cp target/coralbench-all.jar com.coralblocks.coralbench.example.IntMapBenchmark \
+               -o target/graal/IntMapBenchmark --no-fallback -O3 --initialize-at-build-time
+
+$ ./target/graal/IntMapBenchmark 0 10000000 5000000
+
+Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+
+Benchmarking put...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 41.110 nanos | Min Time: 25.000 nanos | Max Time: 21.841 millis
+75% = [avg: 29.000 nanos, max: 31.000 nanos]
+90% = [avg: 29.000 nanos, max: 32.000 nanos]
+99% = [avg: 30.000 nanos, max: 41.000 nanos]
+99.9% = [avg: 30.000 nanos, max: 100.000 nanos]
+99.99% = [avg: 30.000 nanos, max: 339.000 nanos]
+99.999% = [avg: 30.000 nanos, max: 1.573 micros]
+
+Benchmarking get...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 24.560 nanos | Min Time: 19.000 nanos | Max Time: 15.679 micros
+75% = [avg: 22.000 nanos, max: 25.000 nanos]
+90% = [avg: 23.000 nanos, max: 26.000 nanos]
+99% = [avg: 23.000 nanos, max: 39.000 nanos]
+99.9% = [avg: 24.000 nanos, max: 97.000 nanos]
+99.99% = [avg: 24.000 nanos, max: 382.000 nanos]
+99.999% = [avg: 24.000 nanos, max: 550.000 nanos]
+
+Benchmarking remove...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 35.800 nanos | Min Time: 23.000 nanos | Max Time: 165.095 micros
+75% = [avg: 30.000 nanos, max: 33.000 nanos]
+90% = [avg: 30.000 nanos, max: 36.000 nanos]
+99% = [avg: 31.000 nanos, max: 93.000 nanos]
+99.9% = [avg: 32.000 nanos, max: 123.000 nanos]
+99.99% = [avg: 32.000 nanos, max: 457.000 nanos]
+99.999% = [avg: 34.000 nanos, max: 63.089 micros]
+```
