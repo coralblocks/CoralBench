@@ -6,7 +6,8 @@ Bench::Bench(int warmupCount)
       measurementCount(0),
       sum(0),
       minTime(numeric_limits<long long>::max()),
-      maxTime(numeric_limits<long long>::min()) {}
+      maxTime(numeric_limits<long long>::min()),
+      size(0) {}
 
 void Bench::mark() {
     startTime = chrono::steady_clock::now();
@@ -21,6 +22,15 @@ void Bench::measure() {
         sum += elapsed;
         if (elapsed < minTime) minTime = elapsed;
         if (elapsed > maxTime) maxTime = elapsed;
+
+        // Increment the frequency of this elapsed time
+        auto it = results.find(elapsed);
+        if (it == results.end()) {
+            results.insert({elapsed, 1});
+        } else {
+            it->second++;
+        }
+        size++;
     }
 }
 
@@ -29,9 +39,11 @@ void Bench::reset() {
     sum = 0;
     minTime = numeric_limits<long long>::max();
     maxTime = numeric_limits<long long>::min();
+    results.clear();
+    size = 0;
 }
 
-void Bench::report() const {
+void Bench::printResults() const {
     int effectiveCount = measurementCount - warmupCount;
     if (effectiveCount <= 0) {
         cout << "Not enough measurements after warmup to report statistics." << endl;
@@ -58,6 +70,8 @@ void Bench::report() const {
     cout << "Avg Time: " << avgVal << " " << avgUnit << " | "
          << "Min Time: " << minVal << " " << minUnit << " | "
          << "Max Time: " << maxVal << " " << maxUnit << endl;
+
+    printPercentiles();
 }
 
 string Bench::formatWithCommas(long long value) {
@@ -72,22 +86,100 @@ string Bench::formatWithCommas(long long value) {
 }
 
 pair<double, string> Bench::formatTime(double nanos) {
-    // Convert nanos to the largest possible unit
-    // nanos < 1,000 -> nanos
-    // nanos < 1,000,000 -> micros
-    // nanos < 1,000,000,000 -> millis
-    // else seconds
-
-    if (nanos < 1000.0) {
-        return {nanos, "nanos"};
-    } else if (nanos < 1'000'000.0) {
-        double micros = nanos / 1000.0;
-        return {micros, "micros"};
-    } else if (nanos < 1'000'000'000.0) {
-        double millis = nanos / 1'000'000.0;
-        return {millis, "millis"};
-    } else {
+    // Convert nanos into the largest possible unit
+    if (nanos >= 1'000'000'000.0) {
         double seconds = nanos / 1'000'000'000.0;
-        return {seconds, "seconds"};
+        return {roundToDecimals(seconds, 3), seconds > 1 ? "seconds" : "second"};
+    } else if (nanos >= 1'000'000.0) {
+        double millis = nanos / 1'000'000.0;
+        return {roundToDecimals(millis, 3), millis > 1 ? "millis" : "milli"};
+    } else if (nanos >= 1000.0) {
+        double micros = nanos / 1000.0;
+        return {roundToDecimals(micros, 3), micros > 1 ? "micros" : "micro"};
+    } else {
+        double ns = nanos;
+        return {roundToDecimals(ns, 3), ns > 1 ? "nanos" : "nano"};
     }
+}
+
+double Bench::roundToDecimals(double d, int decimals) {
+    double pow10 = std::pow(10.0, decimals);
+    return std::round(d * pow10) / pow10;
+}
+
+void Bench::printPercentiles() const {
+
+    if (size == 0) return;
+
+    // Percentiles to print
+    double percentiles[] = {0.75, 0.90, 0.99, 0.999, 0.9999, 0.99999};
+
+    for (double p : percentiles) {
+        addPercentile(p);
+    }
+}
+
+std::string Bench::formatPercentage(double perc) {
+    double p = perc * 100.0;
+
+    // We'll use a string stream to format up to 6 decimal places initially
+    // since some of your percentiles can have many decimal places (like 99.999%).
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(6) << p;
+
+    std::string s = oss.str();
+    // Now strip trailing zeros:
+    // 1. Remove trailing zeros
+    while (s.back() == '0') {
+        s.pop_back();
+    }
+
+    // 2. If the last character is now a '.', remove it
+    if (s.back() == '.') {
+        s.pop_back();
+    }
+
+    // Append the '%' sign
+    s += "%";
+    return s;
+}
+
+void Bench::addPercentile(double perc) const {
+
+    if (results.empty()) return;
+
+    long long target = static_cast<long long>(std::llround(perc * size));
+    if (target == 0) return;
+    if (target > size) target = size;
+
+    // Iterate through the map to find the top element at position target
+    long long iTop = 0;
+    long long sumTop = 0;
+    long long maxTop = -1;
+
+    for (auto &entry : results) {
+        long long time = entry.first;
+        long long count = entry.second;
+
+        for (int i = 0; i < count; i++) {
+            iTop++;
+            sumTop += time;
+            if (iTop == target) {
+                maxTop = time;
+                goto FOUND;
+            }
+        }
+    }
+
+FOUND:;
+
+    double avgTop = static_cast<double>(sumTop) / iTop;
+    auto [avgVal, avgUnit] = formatTime(avgTop);
+    auto [maxVal, maxUnit] = formatTime(static_cast<double>(maxTop));
+
+    // Print percentile line
+    // example: "75% = [avg: 1.016 micros, max: 1.042 micros]"
+    cout << fixed << setprecision(3);
+    cout << formatPercentage(perc) << " = [avg: " << avgVal << " " << avgUnit
+         << ", max: " << maxVal << " " << maxUnit << "]\n";
 }

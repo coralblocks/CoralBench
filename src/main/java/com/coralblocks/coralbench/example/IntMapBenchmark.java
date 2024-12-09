@@ -41,7 +41,7 @@ public class IntMapBenchmark {
 			map.put(i, dummy);
 			bench.measure();
 		}
-		bench.printResults(false);
+		bench.printResults();
 		
 		System.out.println("Benchmarking get...");
 		bench.reset(true);
@@ -50,7 +50,7 @@ public class IntMapBenchmark {
 			map.get(i);
 			bench.measure();
 		}
-		bench.printResults(false);
+		bench.printResults();
 		
 		System.out.println("Benchmarking remove...");
 		bench.reset(true);
@@ -59,7 +59,7 @@ public class IntMapBenchmark {
 			map.remove(i);
 			bench.measure();
 		}
-		bench.printResults(false);
+		bench.printResults();
 	}
 
 	static class IntMap<E> {

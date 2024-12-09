@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
         map->put(i, dummy);
         bench.measure();
     }
-    bench.report();
+    bench.printResults();
     cout << endl;
 
     // Benchmark for get
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
         volatile auto val = map->get(i); // volatile to prevent optimization out
         bench.measure();
     }
-    bench.report();
+    bench.printResults();
     cout << endl;
 
     // Benchmark for remove
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
         map->remove(i);
         bench.measure();
     }
-    bench.report();
+    bench.printResults();
     cout << endl;
 
     delete map; 
