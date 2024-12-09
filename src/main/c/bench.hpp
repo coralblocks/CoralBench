@@ -13,6 +13,7 @@
 class Bench {
 public:
     Bench(int warmupCount = 0);
+    ~Bench();
 
     void mark();
     void measure();
@@ -26,7 +27,7 @@ private:
     long long minTime;      // min measurement post-warmup
     long long maxTime;      // max measurement post-warmup
     int size;               // number of measurements post-warmup
-    std::map<long long, long long> results;
+    std::map<long long, long long>* results;
     std::chrono::steady_clock::time_point startTime;
     
     static std::string formatWithCommas(long long value);

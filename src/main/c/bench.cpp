@@ -7,7 +7,15 @@ Bench::Bench(int warmupCount)
       sum(0),
       minTime(numeric_limits<long long>::max()),
       maxTime(numeric_limits<long long>::min()),
-      size(0) {}
+      size(0) {
+
+        results = new std::map<long long, long long>();
+
+}
+
+Bench::~Bench() {
+    delete results;
+}
 
 void Bench::mark() {
     startTime = chrono::steady_clock::now();
@@ -24,9 +32,9 @@ void Bench::measure() {
         if (elapsed > maxTime) maxTime = elapsed;
 
         // Increment the frequency of this elapsed time
-        auto it = results.find(elapsed);
-        if (it == results.end()) {
-            results.insert({elapsed, 1});
+        auto it = results->find(elapsed);
+        if (it == results->end()) {
+            results->insert({elapsed, 1});
         } else {
             it->second++;
         }
@@ -39,7 +47,7 @@ void Bench::reset() {
     sum = 0;
     minTime = numeric_limits<long long>::max();
     maxTime = numeric_limits<long long>::min();
-    results.clear();
+    results->clear();
     size = 0;
 }
 
@@ -146,7 +154,7 @@ std::string Bench::formatPercentage(double perc) {
 
 void Bench::addPercentile(double perc) const {
 
-    if (results.empty()) return;
+    if (results->empty()) return;
 
     long long target = static_cast<long long>(std::llround(perc * size));
     if (target == 0) return;
@@ -157,7 +165,7 @@ void Bench::addPercentile(double perc) const {
     long long sumTop = 0;
     long long maxTop = -1;
 
-    for (auto &entry : results) {
+    for (auto &entry : *results) {
         long long time = entry.first;
         long long count = entry.second;
 
