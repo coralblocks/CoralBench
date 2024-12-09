@@ -21,16 +21,18 @@ public class IntMapBenchmark {
 	
 	public static void main(String[] args) {
 		
-		final int warmupIterations = args.length > 0 ? Integer.parseInt(args[0]) : 1_000_000;
-		final int measurementIterations = args.length > 1 ? Integer.parseInt(args[1]) : 1_000_000;
-		final int totalIterations = measurementIterations + warmupIterations;
+		final int warmup = args.length > 0 ? Integer.parseInt(args[0]) : 1_000_000;
+		final int measurements = args.length > 1 ? Integer.parseInt(args[1]) : 1_000_000;
+		final int totalIterations = measurements + warmup;
 		final int mapCapacity = args.length > 2 ? Integer.parseInt(args[2]) : 100_000;
+		
+		System.out.println("\nArguments: warmup=" + warmup + " measurements=" + measurements + " mapCapacity=" + mapCapacity + "\n");
 		
 		IntMap<Object> map = new IntMap<Object>(mapCapacity); // Object source code is down below...
 		
 		final Object dummy = new Object();
 		
-		Bench bench = new Bench(warmupIterations);
+		Bench bench = new Bench(warmup);
 
 		System.out.println("Benchmarking put...");
 		bench.reset(true);
