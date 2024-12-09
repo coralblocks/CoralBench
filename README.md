@@ -59,7 +59,7 @@ private final static void doSleep(Bench bench) {
 }
 ```
 
-The C++ 'Bench' class [is here](src/main/c/bench.cpp).
+The C++ `Bench` class [is here](src/main/c/bench.cpp).
 
 
 ## More examples
