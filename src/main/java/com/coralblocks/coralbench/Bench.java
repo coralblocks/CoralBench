@@ -329,9 +329,10 @@ public class Bench {
 	/**
 	 * Get the results as a string
 	 * 
+	 * @param includePercentiles true to include percentiles
 	 * @return the results as a string
 	 */
-	public String results() {
+	public String results(boolean includePercentiles) {
 		final StringBuilder sb = new StringBuilder(128);
 		final long realCount = count - warmup;
 		sb.append("Measurements: ").append(formatter.format(realCount));
@@ -344,29 +345,49 @@ public class Bench {
 		}
 		sb.append('\n');
 		
-		TreeMap<Long, MutableInt> treeMap = new TreeMap<Long, MutableInt>();
-		Iterator<MutableInt> iter = results.iterator();
-		while(iter.hasNext()) {
-			MutableInt counter = iter.next();
-			Long time = results.getCurrIteratorKey();
-			treeMap.put(time, counter);
+		if (includePercentiles) {
+			TreeMap<Long, MutableInt> treeMap = new TreeMap<Long, MutableInt>();
+			Iterator<MutableInt> iter = results.iterator();
+			while(iter.hasNext()) {
+				MutableInt counter = iter.next();
+				Long time = results.getCurrIteratorKey();
+				treeMap.put(time, counter);
+			}
+	
+			addPercentile(sb, 0.75D, treeMap);
+			addPercentile(sb, 0.9D, treeMap);
+			addPercentile(sb, 0.99D, treeMap);
+			addPercentile(sb, 0.999D, treeMap);
+			addPercentile(sb, 0.9999D, treeMap);
+			addPercentile(sb, 0.99999D, treeMap);
 		}
-
-		addPercentile(sb, 0.75D, treeMap);
-		addPercentile(sb, 0.9D, treeMap);
-		addPercentile(sb, 0.99D, treeMap);
-		addPercentile(sb, 0.999D, treeMap);
-		addPercentile(sb, 0.9999D, treeMap);
-		addPercentile(sb, 0.99999D, treeMap);
 		
 		return sb.toString();
 	}
 	
 	/**
+	 * This method simply calls <code>results(true)</code>.
+	 * 
+	 *  @return the results as a string
+	 */
+	public String results() {
+		return results(true);
+	}
+	
+	/**
 	 * Print the results to stdout
+	 * 
+	 * @param includePercentiles true to include percentiles
+	 */
+	public void printResults(boolean includePercentiles) {
+		System.out.println(results(includePercentiles));
+	}
+	
+	/**
+	 * This method simply calls <code>printResults(true)</code>.
 	 */
 	public void printResults() {
-		System.out.println(results());
+		printResults(true);
 	}
 	
 }
