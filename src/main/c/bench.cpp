@@ -60,7 +60,6 @@ void Bench::printResults() const {
 
     double avg = static_cast<double>(sum) / effectiveCount;
 
-    // Print counts with commas
     string effCountStr = formatWithCommas(effectiveCount);
     string warmupStr = formatWithCommas(warmupCount);
     string totalStr = formatWithCommas(measurementCount);
@@ -69,7 +68,6 @@ void Bench::printResults() const {
          << " | Warm-Up: " << warmupStr
          << " | Iterations: " << totalStr << endl;
 
-    // Format times
     auto [avgVal, avgUnit] = formatTime(avg);
     auto [minVal, minUnit] = formatTime(static_cast<double>(minTime));
     auto [maxVal, maxUnit] = formatTime(static_cast<double>(maxTime));
@@ -83,7 +81,6 @@ void Bench::printResults() const {
 }
 
 string Bench::formatWithCommas(long long value) {
-    // Convert number to string
     std::string numStr = std::to_string(value);
     int insertPosition = static_cast<int>(numStr.length()) - 3;
     while (insertPosition > 0) {
@@ -94,7 +91,6 @@ string Bench::formatWithCommas(long long value) {
 }
 
 pair<double, string> Bench::formatTime(double nanos) {
-    // Convert nanos into the largest possible unit
     if (nanos >= 1'000'000'000.0) {
         double seconds = nanos / 1'000'000'000.0;
         return {roundToDecimals(seconds, 3), seconds > 1 ? "seconds" : "second"};
@@ -119,7 +115,6 @@ void Bench::printPercentiles() const {
 
     if (size == 0) return;
 
-    // Percentiles to print
     double percentiles[] = {0.75, 0.90, 0.99, 0.999, 0.9999, 0.99999};
 
     for (double p : percentiles) {
@@ -130,25 +125,23 @@ void Bench::printPercentiles() const {
 std::string Bench::formatPercentage(double perc) {
     double p = perc * 100.0;
 
-    // We'll use a string stream to format up to 6 decimal places initially
-    // since some of your percentiles can have many decimal places (like 99.999%).
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(6) << p;
 
     std::string s = oss.str();
-    // Now strip trailing zeros:
-    // 1. Remove trailing zeros
+    // remove trailing zeros
     while (s.back() == '0') {
         s.pop_back();
     }
 
-    // 2. If the last character is now a '.', remove it
+    // if the last character is now a '.', remove it
     if (s.back() == '.') {
         s.pop_back();
     }
 
     // Append the '%' sign
     s += "%";
+
     return s;
 }
 
@@ -185,8 +178,6 @@ FOUND:;
     auto [avgVal, avgUnit] = formatTime(avgTop);
     auto [maxVal, maxUnit] = formatTime(static_cast<double>(maxTop));
 
-    // Print percentile line
-    // example: "75% = [avg: 1.016 micros, max: 1.042 micros]"
     cout << fixed << setprecision(3);
     cout << formatPercentage(perc) << " = [avg: " << avgVal << " " << avgUnit
          << ", max: " << maxVal << " " << maxUnit << "]\n";

@@ -60,7 +60,6 @@ public:
     ~IntMap() {
         clear();
         
-        // Delete all entries in the free list
         while (head != nullptr) {
             Entry<E>* temp = head;
             head = head->next;

@@ -8,9 +8,9 @@ struct Dummy {};
 
 int main(int argc, char* argv[]) {
 
-    int warmupCount = 1000000;    // default
-    int measureCount = 1000000;   // default
-    int capacity = 100000;        // default
+    int warmupCount = 1000000;
+    int measureCount = 1000000;
+    int capacity = 100000;
 
     if (argc > 1) {
         warmupCount = atoi(argv[1]);
@@ -30,8 +30,8 @@ int main(int argc, char* argv[]) {
     Bench bench(warmupCount);
     Dummy dummy;
 
-    // Benchmark for put
     cout << "Benchmarking put..." << endl;
+    bench.reset();
     for (int i = 0; i < iterations; i++) {
         bench.mark();
         map->put(i, dummy);
@@ -40,9 +40,8 @@ int main(int argc, char* argv[]) {
     bench.printResults();
     cout << endl;
 
-    // Benchmark for get
     cout << "Benchmarking get..." << endl;
-    bench.reset(); // Reset the bench before next benchmark
+    bench.reset();
     for (int i = 0; i < iterations; i++) {
         bench.mark();
         volatile auto val = map->get(i); // volatile to prevent optimization out
@@ -51,9 +50,8 @@ int main(int argc, char* argv[]) {
     bench.printResults();
     cout << endl;
 
-    // Benchmark for remove
     cout << "Benchmarking remove..." << endl;
-    bench.reset(); // Reset before remove benchmark
+    bench.reset();
     for (int i = 0; i < iterations; i++) {
         bench.mark();
         map->remove(i);

@@ -22,11 +22,11 @@ public:
 
 private:
     int warmupCount;
-    int measurementCount;   // total measurements done
-    long long sum;          // sum of all measurements post-warmup
-    long long minTime;      // min measurement post-warmup
-    long long maxTime;      // max measurement post-warmup
-    int size;               // number of measurements post-warmup
+    int measurementCount;
+    long long sum;
+    long long minTime;
+    long long maxTime;
+    int size;
     std::map<long long, long long>* results;
     std::chrono::steady_clock::time_point startTime;
     
