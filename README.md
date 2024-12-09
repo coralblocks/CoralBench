@@ -1,5 +1,5 @@
 # CoralBench
-A <code>Benchmark</code> class for Java and C++ to measure latency in nanoseconds with percentiles. Equivalent benchmarks for Java and C++ for performance comparison and research.
+A <code>Benchmark</code> class for Java and C++ to measure latency in nanoseconds with percentiles. Equivalent benchmarks in Java and C++ for performance comparison and research.
 
 ## How to use it
 ```Java
