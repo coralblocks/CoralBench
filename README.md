@@ -362,33 +362,33 @@ Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
 
 Benchmarking put...
 Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 38.597 nanos | Min Time: 30.000 nanos | Max Time: 31.107 micros
-75% = [avg: 32.235 nanos, max: 33.000 nanos]
-90% = [avg: 32.501 nanos, max: 35.000 nanos]
-99% = [avg: 33.093 nanos, max: 106.000 nanos]
-99.9% = [avg: 37.288 nanos, max: 884.000 nanos]
-99.99% = [avg: 38.177 nanos, max: 1.316 micros]
-99.999% = [avg: 38.438 nanos, max: 15.270 micros]
+Avg Time: 39.008 nanos | Min Time: 30.000 nanos | Max Time: 30.516 micros
+75% = [avg: 32.357 nanos, max: 35.000 nanos]
+90% = [avg: 32.846 nanos, max: 36.000 nanos]
+99% = [avg: 33.495 nanos, max: 105.000 nanos]
+99.9% = [avg: 37.728 nanos, max: 888.000 nanos]
+99.99% = [avg: 38.611 nanos, max: 1.244 micros]
+99.999% = [avg: 38.848 nanos, max: 15.107 micros]
 
 Benchmarking get...
 Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 24.109 nanos | Min Time: 19.000 nanos | Max Time: 15.886 micros
-75% = [avg: 21.578 nanos, max: 25.000 nanos]
-90% = [avg: 22.200 nanos, max: 26.000 nanos]
-99% = [avg: 22.978 nanos, max: 91.000 nanos]
-99.9% = [avg: 23.639 nanos, max: 160.000 nanos]
-99.99% = [avg: 23.884 nanos, max: 432.000 nanos]
-99.999% = [avg: 23.963 nanos, max: 13.451 micros]
+Avg Time: 24.003 nanos | Min Time: 18.000 nanos | Max Time: 17.977 micros
+75% = [avg: 21.813 nanos, max: 25.000 nanos]
+90% = [avg: 22.344 nanos, max: 25.000 nanos]
+99% = [avg: 22.937 nanos, max: 89.000 nanos]
+99.9% = [avg: 23.572 nanos, max: 151.000 nanos]
+99.99% = [avg: 23.794 nanos, max: 416.000 nanos]
+99.999% = [avg: 23.858 nanos, max: 13.239 micros]
 
 Benchmarking remove...
 Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 24.279 nanos | Min Time: 19.000 nanos | Max Time: 29.132 micros
-75% = [avg: 21.899 nanos, max: 24.000 nanos]
-90% = [avg: 22.426 nanos, max: 26.000 nanos]
-99% = [avg: 23.140 nanos, max: 91.000 nanos]
-99.9% = [avg: 23.798 nanos, max: 153.000 nanos]
-99.99% = [avg: 24.017 nanos, max: 426.000 nanos]
-99.999% = [avg: 24.125 nanos, max: 13.548 micros]
+Avg Time: 23.592 nanos | Min Time: 19.000 nanos | Max Time: 18.954 micros
+75% = [avg: 21.566 nanos, max: 23.000 nanos]
+90% = [avg: 21.919 nanos, max: 25.000 nanos]
+99% = [avg: 22.538 nanos, max: 90.000 nanos]
+99.9% = [avg: 23.192 nanos, max: 133.000 nanos]
+99.99% = [avg: 23.364 nanos, max: 408.000 nanos]
+99.999% = [avg: 23.446 nanos, max: 13.248 micros]
 ```
 
 ### GraalVM (native-image)
