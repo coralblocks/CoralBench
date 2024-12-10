@@ -27,7 +27,7 @@ private:
     template <typename T>
     struct Entry {
         int key;
-        std::optional<T*> value;
+        T* value;
         Entry<T>* next;
     };
 
@@ -53,7 +53,7 @@ private:
     }
 
     void free(Entry<E>* e) {
-        e->value.reset();
+        e->value = nullptr;
         e->next = head;
         head = e;
     }
@@ -64,7 +64,7 @@ private:
 
 public:
 
-    IntMap(int capacity) 
+    IntMap(int capacity)
         : capacity(capacity), count(0), head(nullptr) {
         data = new Entry<E>*[capacity];
         for (int i = 0; i < capacity; i++) {
@@ -74,7 +74,7 @@ public:
 
     ~IntMap() {
         clear();
-        
+
         while (head != nullptr) {
             Entry<E>* temp = head;
             head = head->next;
@@ -88,7 +88,7 @@ public:
         return count;
     }
 
-    std::optional<E*> get(int key) const {
+    E* get(int key) const {
         Entry<E>* e = data[toArrayIndex(key)];
         while (e != nullptr) {
             if (e->key == key) {
@@ -96,17 +96,16 @@ public:
             }
             e = e->next;
         }
-        return std::nullopt;
+        return nullptr;
     }
 
-    
-    std::optional<E*> put(int key, const E& value) {
+    E* put(int key, const E& value) {
         int index = toArrayIndex(key);
         Entry<E>* e = data[index];
 
         while (e != nullptr) {
             if (e->key == key) {
-                std::optional<E*> old = e->value;
+                E* old = e->value;
                 e->value = const_cast<E*>(&value);
                 return old;
             }
@@ -115,10 +114,10 @@ public:
 
         data[index] = newEntry(key, value, data[index]);
         count++;
-        return std::nullopt;
+        return nullptr;
     }
 
-    std::optional<E*> remove(int key) {
+    E* remove(int key) {
         int index = toArrayIndex(key);
         Entry<E>* e = data[index];
         Entry<E>* prev = nullptr;
@@ -131,7 +130,7 @@ public:
                     data[index] = e->next;
                 }
 
-                std::optional<E*> oldValue = e->value;
+                E* oldValue = e->value;
                 free(e);
                 count--;
                 return oldValue;
@@ -139,7 +138,7 @@ public:
             prev = e;
             e = e->next;
         }
-        return std::nullopt;
+        return nullptr;
     }
 
     void clear() {
