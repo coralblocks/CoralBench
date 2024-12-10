@@ -268,9 +268,9 @@ As you can see from the latency numbers above, by using `-Xcomp -XX:-TieredCompi
 
 ###### For how this applies to [CoralSequencer](https://www.coralblocks.com/coralsequencer) you can check [this article](https://www.coralblocks.com/index.php/hotspot-jit-aot-and-warm-up/).
 
-## HotSpotVM (-Xcomp and JIT) vs LLVM (clang) vs GraalVM
+## HotSpotVM (-Xcomp and JIT) vs C++ LLVM (clang) vs GraalVM
 
-In this section, we compare the `HotSpotVM` JIT against three forms of AOT: `LLVM` (clang), `GraalVM` (native-image), and `-Xcomp`. To ensure a fair and unbiased comparison, all Java and C++ source code is designed to be _equivalent_. Not only the `IntMap` class, which is the code being measured, but also the `Bench` class, which performs the measurements. `We made every effort to maintain consistency and fairness in the comparison but there might be aspects we have overlooked.` **If you notice anything that seems incorrect or could be improved, especially in the C++ code, please feel free to open an issue or submit a pull request.**
+In this section, we compare the `HotSpotVM` JIT against three forms of AOT: `C++ LLVM` (clang), `GraalVM` (native-image), and `-Xcomp`. To ensure a fair and unbiased comparison, all Java and C++ source code is designed to be _equivalent_. Not only the `IntMap` class, which is the code being measured, but also the `Bench` class, which performs the measurements. `We made every effort to maintain consistency and fairness in the comparison but there might be aspects we have overlooked.` **If you notice anything that seems incorrect or could be improved, especially in the C++ code, please feel free to open an issue or submit a pull request.**
 
 The Java `IntMap` implementation [is here](src/main/java/com/coralblocks/coralbench/example/IntMap.java). The C++ `IntMap` implementation [is here](src/main/c/int_map.hpp).<br/>
 The Java benchmark code [is here](src/main/java/com/coralblocks/coralbench/example/IntMapBenchmark.java). The C++ benchmark code [is here](src/main/c/int_map_benchmark.cpp).<br/>
@@ -389,7 +389,7 @@ Avg Time: 25.383 nanos | Min Time: 20.000 nanos | Max Time: 24.626 micros
 99.999% = [avg: 25.231 nanos, max: 13.491 micros]
 ```
 
-### LLVM (clang)
+### C++ LLVM (clang)
 
 ```
 $ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/int_map.cpp -o ./target/cpp/int_map.o
