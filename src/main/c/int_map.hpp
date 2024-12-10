@@ -27,7 +27,7 @@ private:
     template <typename T>
     struct Entry {
         int key;
-        std::optional<T> value;
+        std::optional<T*> value;
         Entry<T>* next;
     };
 
@@ -46,7 +46,7 @@ private:
         }
 
         newEntry->key = key;
-        newEntry->value = value;
+        newEntry->value = const_cast<E*>(&value);
         newEntry->next = next;
 
         return newEntry;
@@ -88,7 +88,7 @@ public:
         return count;
     }
 
-    std::optional<E> get(int key) const {
+    std::optional<E*> get(int key) const {
         Entry<E>* e = data[toArrayIndex(key)];
         while (e != nullptr) {
             if (e->key == key) {
@@ -99,14 +99,15 @@ public:
         return std::nullopt;
     }
 
-    std::optional<E> put(int key, const E& value) {
+    
+    std::optional<E*> put(int key, const E& value) {
         int index = toArrayIndex(key);
         Entry<E>* e = data[index];
 
         while (e != nullptr) {
             if (e->key == key) {
-                std::optional<E> old = e->value;
-                e->value = value;
+                std::optional<E*> old = e->value;
+                e->value = const_cast<E*>(&value);
                 return old;
             }
             e = e->next;
@@ -117,7 +118,7 @@ public:
         return std::nullopt;
     }
 
-    std::optional<E> remove(int key) {
+    std::optional<E*> remove(int key) {
         int index = toArrayIndex(key);
         Entry<E>* e = data[index];
         Entry<E>* prev = nullptr;
@@ -130,7 +131,7 @@ public:
                     data[index] = e->next;
                 }
 
-                std::optional<E> oldValue = e->value;
+                std::optional<E*> oldValue = e->value;
                 free(e);
                 count--;
                 return oldValue;
