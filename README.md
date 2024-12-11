@@ -49,7 +49,7 @@ Avg Time: 1.025 micros | Min Time: 1.000 micro | Max Time: 56.500 micros
 ```
 The full <code>SleepBenchmark</code> source code can be seen [here](src/main/java/com/coralblocks/coralbench/example/SleepBenchmark.java)
 
-### Measuring the elapsed time yourself
+#### Measuring the elapsed time yourself
 ```Java
 private final static void doSleep(Bench bench) {
     long start = System.nanoTime(); // <===== timer starts
@@ -58,9 +58,61 @@ private final static void doSleep(Bench bench) {
     bench.measure(elapsed); // <===== provide the elapsed time yourself
 }
 ```
+<br/>
+<details>
+  <summary>&nbsp;&nbsp;<img src="https://cdn3.emoji.gg/emojis/8241-c-plus-plus.png" width="24px" height="24px" alt="c_plus_plus"/>&nbsp;&nbsp;Click here too see the C++ one </summary>
 
-The `C++ Bench` class [is here](src/main/c/bench.hpp).
+&nbsp;<br/>
+```Cpp
+void sleepFor(long nanos) {
+    auto start = std::chrono::high_resolution_clock::now();
+    while (true) {
+        auto now = std::chrono::high_resolution_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(now - start).count();
+        if (elapsed >= nanos) {
+            break;
+        }
+    }
+}
 
+void doSleep(Bench* bench) {
+    bench->mark(); // <===== timer starts
+    sleepFor(1000);
+    bench->measure(); // <===== timer stops
+}
+
+int main() {
+    const int warmupIterations = 1'000'000;
+    const int measurementIterations = 2'000'000;
+    const int totalIterations = measurementIterations + warmupIterations;
+
+    // Specify the number of warmup iterations to ignore
+    Bench* bench = new Bench(warmupIterations);
+
+    // Perform warmup + measurement iterations
+    while (bench->getIterations() < totalIterations) {
+        doSleep(bench);
+    }
+
+    bench->printResults();
+
+    delete bench;
+
+    return 0;
+}
+```
+
+#### Measuring the elapsed time yourself
+```Cpp
+void doSleep(Bench* bench) {
+    auto start = std::chrono::high_resolution_clock::now(); // <===== timer starts
+    sleepFor(1000);
+    auto end = std::chrono::high_resolution_clock::now();   // <===== timer stops
+    long elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+    bench->measure(elapsed); // <===== provide the elapsed time yourself
+}
+```
+</details>
 
 ## More examples
 - [MathBenchmark](src/main/java/com/coralblocks/coralbench/example/MathBenchmark.java)
