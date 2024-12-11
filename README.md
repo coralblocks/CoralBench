@@ -146,6 +146,8 @@ The Java `Bench` class [is here](src/main/java/com/coralblocks/coralbench/Bench.
 <details>
   <summary> Test Environment </summary>
 
+<br/>
+
 ```
 $ uname -a
 Linux hivelocity 4.15.0-20-generic #21-Ubuntu SMP Tue Apr 24 06:16:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
@@ -179,6 +181,8 @@ Substrate VM Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11, serial gc, compressed 
 
 <details>
   <summary> HotSpotVM JIT </summary>
+
+<br/>
 
 ```
 $ java -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
@@ -221,6 +225,8 @@ Avg Time: 21.680 nanos | Min Time: 16.000 nanos | Max Time: 39.305 micros
 
 <details>
   <summary> C++ LLVM (clang) </summary>
+
+<br/>
 
 ```
 $ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/int_map.cpp -o ./target/cpp/int_map.o
@@ -267,6 +273,8 @@ Avg Time: 23.592 nanos | Min Time: 19.000 nanos | Max Time: 18.954 micros
 <details>
   <summary> GraalVM (native-image) </summary>
 
+<br/>
+
 ```
 $ native-image --gc=G1 -R:+AlwaysPreTouch -R:InitialHeapSize=4g -R:MaxHeapSize=4g \
                -R:InitialHeapSize=512m -R:MaxHeapSize=1024m -march=native \
@@ -311,6 +319,8 @@ Avg Time: 35.800 nanos | Min Time: 23.000 nanos | Max Time: 165.095 micros
 
 <details>
   <summary> HotSpot -Xcomp </summary>
+
+<br/>
 
 ```
 $ java -Xcomp -XX:-TieredCompilation \
