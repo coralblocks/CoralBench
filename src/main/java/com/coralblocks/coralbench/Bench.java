@@ -48,9 +48,9 @@ public class Bench {
 	private final DecimalFormat formatter = new DecimalFormat("#,###");
 	
 	private long time;
-	private int count;
-	private int size;
-	private int warmup;
+	private int iterations;
+	private int measurements;
+	private int toWarmup;
 	private long totalTime;
 	private long minTime;
 	private long maxTime;
@@ -74,7 +74,7 @@ public class Bench {
 	 */
 	public Bench(final int warmup) {
 		
-		this.warmup = warmup;
+		this.toWarmup = warmup;
 		
 		try {
 			// initialize it here so when you measure for the first time garbage is not created...
@@ -123,13 +123,13 @@ public class Bench {
 	 */
 	public void reset(boolean repeatWarmup) {
 		time = 0;
-		count = 0;
+		iterations = 0;
 		totalTime = 0;
-		if (!repeatWarmup) warmup = 0;
+		if (!repeatWarmup) toWarmup = 0;
 		minTime = Long.MAX_VALUE;
 		maxTime = Long.MIN_VALUE;
 		
-		size = 0;
+		measurements = 0;
 		Iterator<MutableInt> iter = results.iterator();
 		while(iter.hasNext()) {
 			releaseMutableInt(iter.next());
@@ -171,7 +171,7 @@ public class Bench {
 	 * @return true if warming up
 	 */
 	public final boolean isWarmingUp() {
-		return warmup <= count;
+		return toWarmup <= iterations;
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class Bench {
 	 */
 	public final boolean measure(final long lastNanoTime) {
 		
-		final boolean isToMeasure = ++count > warmup;
+		final boolean isToMeasure = ++iterations > toWarmup;
 		
 		if (isToMeasure) {
 
@@ -196,11 +196,11 @@ public class Bench {
 			} else {
 				count.set(count.get() + 1);
 			}
-			size++;
+			measurements++;
 		}
 		
 		if (verbose) {
-			if (count == 1 || count % verboseLogEvery == 0) System.out.println(VERBOSE + "Iteration " + count + " => " + lastNanoTime); 
+			if (iterations == 1 || iterations % verboseLogEvery == 0) System.out.println(VERBOSE + "Iteration " + iterations + " => " + lastNanoTime); 
 		}
 		
 		return isToMeasure;
@@ -220,7 +220,7 @@ public class Bench {
 
 		long maxTop = -1;
 		
-		long x = Math.round(perc * size);
+		long x = Math.round(perc * measurements);
 		Iterator<Map.Entry<Long, MutableInt>> iter = treeMap.entrySet().iterator();
 		int iTop = 0;
 		long sumTop = 0;
@@ -256,7 +256,7 @@ public class Bench {
 	 * @return the total number of iterations so far
 	 */
     public int getIterations() {
-    	return count;
+    	return iterations;
     }
     
     /**
@@ -265,7 +265,7 @@ public class Bench {
      * @return the total number of measurements so far
      */
     public int getMeasurements() {
-    	return size;
+    	return measurements;
     }
 	
     /**
@@ -278,11 +278,10 @@ public class Bench {
 	}
 
 	private final double avg() {
-		final long realCount = count - warmup;
-		if (realCount <= 0) {
+		if (measurements <= 0) {
 			return 0;
 		}
-		final double avg = ((double) totalTime / (double) realCount);
+		final double avg = ((double) totalTime / (double) measurements);
 		final double rounded = Math.round(avg * 100D) / 100D;
 		return rounded;
 	}
@@ -334,32 +333,32 @@ public class Bench {
 	 */
 	public String results(boolean includePercentiles) {
 		final StringBuilder sb = new StringBuilder(128);
-		final long realCount = count - warmup;
-		sb.append("Measurements: ").append(formatter.format(realCount));
-		sb.append(" | Warm-Up: ").append(formatter.format(warmup));
-		sb.append(" | Iterations: ").append(formatter.format(count)).append('\n');
-		sb.append("Avg Time: ").append(convertNanoTime(avg()));
-		if (realCount > 0) {
+		sb.append("Measurements: ").append(formatter.format(measurements));
+		sb.append(" | Warm-Up: ").append(formatter.format(toWarmup));
+		sb.append(" | Iterations: ").append(formatter.format(iterations)).append('\n');
+		if (measurements > 0) {
+			sb.append("Avg Time: ").append(convertNanoTime(avg()));
 			sb.append(" | Min Time: ").append(convertNanoTime(minTime));
 			sb.append(" | Max Time: ").append(convertNanoTime(maxTime));
-		}
-		sb.append('\n');
+
+			sb.append('\n');
 		
-		if (includePercentiles) {
-			TreeMap<Long, MutableInt> treeMap = new TreeMap<Long, MutableInt>();
-			Iterator<MutableInt> iter = results.iterator();
-			while(iter.hasNext()) {
-				MutableInt counter = iter.next();
-				Long time = results.getCurrIteratorKey();
-				treeMap.put(time, counter);
+			if (includePercentiles) {
+				TreeMap<Long, MutableInt> treeMap = new TreeMap<Long, MutableInt>();
+				Iterator<MutableInt> iter = results.iterator();
+				while(iter.hasNext()) {
+					MutableInt counter = iter.next();
+					Long time = results.getCurrIteratorKey();
+					treeMap.put(time, counter);
+				}
+		
+				addPercentile(sb, 0.75D, treeMap);
+				addPercentile(sb, 0.9D, treeMap);
+				addPercentile(sb, 0.99D, treeMap);
+				addPercentile(sb, 0.999D, treeMap);
+				addPercentile(sb, 0.9999D, treeMap);
+				addPercentile(sb, 0.99999D, treeMap);
 			}
-	
-			addPercentile(sb, 0.75D, treeMap);
-			addPercentile(sb, 0.9D, treeMap);
-			addPercentile(sb, 0.99D, treeMap);
-			addPercentile(sb, 0.999D, treeMap);
-			addPercentile(sb, 0.9999D, treeMap);
-			addPercentile(sb, 0.99999D, treeMap);
 		}
 		
 		return sb.toString();
