@@ -15,7 +15,6 @@
  */
 #include "int_map.hpp"
 #include "bench.hpp"
-#include <iostream>
 
 using namespace std;
 
