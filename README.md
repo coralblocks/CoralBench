@@ -354,11 +354,6 @@ Below we explore some of our benchmark examples to better understand the differe
   <summary>Benchmark Environment</summary>
     
 ```
-$ java -version
-java version "23.0.1" 2024-10-15
-Java(TM) SE Runtime Environment (build 23.0.1+11-39)
-Java HotSpot(TM) 64-Bit Server VM (build 23.0.1+11-39, mixed mode, sharing)
-
 $ uname -a
 Linux hivelocity 4.15.0-20-generic #21-Ubuntu SMP Tue Apr 24 06:16:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
 
@@ -367,6 +362,14 @@ Ubuntu 18.04.6 LTS \n \l
 
 $ cat /proc/cpuinfo | grep "model name" | head -n 1 | awk -F ": " '{print $NF}'
 Intel(R) Xeon(R) E-2288G CPU @ 3.70GHz
+
+$ arch
+x86_64
+
+$ java -version
+java version "23.0.1" 2024-10-15
+Java(TM) SE Runtime Environment (build 23.0.1+11-39)
+Java HotSpot(TM) 64-Bit Server VM (build 23.0.1+11-39, mixed mode, sharing)
 ```
 </details>
 
