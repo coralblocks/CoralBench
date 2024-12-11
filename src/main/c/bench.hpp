@@ -36,6 +36,7 @@ public:
     void reset();
     void reset(bool);
     void printResults() const;
+    void printResults(bool) const;
     bool isWarmingUp() const;
     int getIterations() const;
     int getMeasurements() const;

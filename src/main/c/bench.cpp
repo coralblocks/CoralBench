@@ -104,8 +104,11 @@ double Bench::getAverage() const {
 	return avg();
 }	
 
-
 void Bench::printResults() const {
+	printResults(true);
+}
+
+void Bench::printResults(bool includePercentiles) const {
 
     int effectiveCount = measurementCount - warmupCount;
 
@@ -116,17 +119,20 @@ void Bench::printResults() const {
     cout << "Measurements: " << effCountStr
          << " | Warm-Up: " << warmupStr
          << " | Iterations: " << totalStr << endl;
+         
+  	if (effectiveCount > 0) {
 
-    auto [avgVal, avgUnit] = formatTime(avg());
-    auto [minVal, minUnit] = formatTime(static_cast<double>(minTime));
-    auto [maxVal, maxUnit] = formatTime(static_cast<double>(maxTime));
-
-    cout << fixed << setprecision(3);
-    cout << "Avg Time: " << avgVal << " " << avgUnit << " | "
-         << "Min Time: " << minVal << " " << minUnit << " | "
-         << "Max Time: " << maxVal << " " << maxUnit << endl;
-
-    printPercentiles();
+	    auto [avgVal, avgUnit] = formatTime(avg());
+	    auto [minVal, minUnit] = formatTime(static_cast<double>(minTime));
+	    auto [maxVal, maxUnit] = formatTime(static_cast<double>(maxTime));
+	
+	    cout << fixed << setprecision(3);
+	    cout << "Avg Time: " << avgVal << " " << avgUnit << " | "
+	         << "Min Time: " << minVal << " " << minUnit << " | "
+	         << "Max Time: " << maxVal << " " << maxUnit << endl;
+	
+	    if (includePercentiles) printPercentiles();
+	}
 }
 
 string Bench::formatWithCommas(long long value) {
