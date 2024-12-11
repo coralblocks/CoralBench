@@ -1,7 +1,7 @@
 #!/bin/bash
 
-WARMUP=${1:-1000000}
-MEASUREMENTS=${2:-1000000}
-CAPACITY=${3:-100000}
+WARMUP=${1:-0}
+MEASUREMENTS=${2:-10000000}
+CAPACITY=${3:-5000000}
 
 java -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m -cp target/classes:target/coralbench-all.jar com.coralblocks.coralbench.example.IntMapBenchmark $WARMUP $MEASUREMENTS $CAPACITY
