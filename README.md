@@ -143,7 +143,8 @@ The Java `IntMap` implementation [is here](src/main/java/com/coralblocks/coralbe
 The Java benchmark code [is here](src/main/java/com/coralblocks/coralbench/example/IntMapBenchmark.java). The C++ benchmark code [is here](src/main/c/int_map_benchmark.cpp).<br/>
 The Java `Bench` class [is here](src/main/java/com/coralblocks/coralbench/Bench.java). The C++ `Bench` class [is here](src/main/c/bench.cpp).<br/>
 
-### Test Environment
+<details>
+  <summary> Test Environment </summary>
 
 ```
 $ uname -a
@@ -174,8 +175,10 @@ native-image 23.0.1 2024-10-15
 GraalVM Runtime Environment Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11-jvmci-b01)
 Substrate VM Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11, serial gc, compressed references)
 ```
+</details>
 
-### HotSpotVM JIT
+<details>
+  <summary> HotSpotVM JIT </summary>
 
 ```
 $ java -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
@@ -214,8 +217,10 @@ Avg Time: 21.680 nanos | Min Time: 16.000 nanos | Max Time: 39.305 micros
 99.99% = [avg: 21.000 nanos, max: 421.000 nanos]
 99.999% = [avg: 21.000 nanos, max: 13.391 micros]
 ```
+</details>
 
-### C++ LLVM (clang)
+<details>
+  <summary> C++ LLVM (clang) </summary>
 
 ```
 $ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/int_map.cpp -o ./target/cpp/int_map.o
@@ -257,8 +262,10 @@ Avg Time: 23.592 nanos | Min Time: 19.000 nanos | Max Time: 18.954 micros
 99.99% = [avg: 23.364 nanos, max: 408.000 nanos]
 99.999% = [avg: 23.446 nanos, max: 13.248 micros]
 ```
+</details>
 
-### GraalVM (native-image)
+<details>
+  <summary> GraalVM (native-image) </summary>
 
 ```
 $ native-image --gc=G1 -R:+AlwaysPreTouch -R:InitialHeapSize=4g -R:MaxHeapSize=4g \
@@ -300,8 +307,10 @@ Avg Time: 35.800 nanos | Min Time: 23.000 nanos | Max Time: 165.095 micros
 99.99% = [avg: 32.000 nanos, max: 457.000 nanos]
 99.999% = [avg: 34.000 nanos, max: 63.089 micros]
 ```
+</details>
 
-### HotSpot -Xcomp
+<details>
+  <summary> HotSpot -Xcomp </summary>
 
 ```
 $ java -Xcomp -XX:-TieredCompilation \
@@ -341,6 +350,7 @@ Avg Time: 25.383 nanos | Min Time: 20.000 nanos | Max Time: 24.626 micros
 99.99% = [avg: 25.135 nanos, max: 425.000 nanos]
 99.999% = [avg: 25.231 nanos, max: 13.491 micros]
 ```
+</details>
 <br/>
 
 ## Forcing the JVM to optimize at startup (-Xcomp -XX:-TieredCompilation)
