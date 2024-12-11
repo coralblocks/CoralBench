@@ -117,10 +117,14 @@ The full <code>sleep_benchmark.cpp</code> source code can be seen [here](src/mai
 
 </details>
 
+<br/>
+
 ## More examples
 - [MathBenchmark](src/main/java/com/coralblocks/coralbench/example/MathBenchmark.java)
 - [BubbleSortBenchmark](src/main/java/com/coralblocks/coralbench/example/BubbleSortBenchmark.java)
 - [SleepBenchmark](src/main/java/com/coralblocks/coralbench/example/SleepBenchmark.java)
+
+<br/>
 
 ## HotSpotVM (-Xcomp and JIT) vs C++ LLVM (clang) vs GraalVM
 
