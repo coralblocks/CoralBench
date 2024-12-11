@@ -373,6 +373,8 @@ Below we explore some of our benchmark examples to better understand the differe
 
 <details>
   <summary>Benchmark Environment</summary>
+
+<br/>
     
 ```
 $ uname -a
