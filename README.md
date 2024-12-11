@@ -47,7 +47,7 @@ Avg Time: 1.025 micros | Min Time: 1.000 micro | Max Time: 56.500 micros
 99.99% = [avg: 1.023 micros, max: 7.791 micros]
 99.999% = [avg: 1.024 micros, max: 15.959 micros]
 ```
-The full <code>SleepBenchmark</code> source code can be seen [here](src/main/java/com/coralblocks/coralbench/example/SleepBenchmark.java)
+The full Java <code>SleepBenchmark</code> source code can be seen [here](src/main/java/com/coralblocks/coralbench/example/SleepBenchmark.java)
 
 #### Measuring the elapsed time yourself
 ```Java
@@ -60,7 +60,7 @@ private final static void doSleep(Bench bench) {
 ```
 <br/>
 <details>
-  <summary>&nbsp;&nbsp;<img src="https://cdn3.emoji.gg/emojis/8241-c-plus-plus.png" width="24px" height="24px" alt="c_plus_plus"/>&nbsp;&nbsp;Click here too see the C++ one </summary>
+  <summary>&nbsp;&nbsp;<img src="https://cdn3.emoji.gg/emojis/8241-c-plus-plus.png" width="24px" height="24px" alt="c_plus_plus"/>&nbsp;&nbsp;Click here for the C++ version </summary>
 
 &nbsp;<br/>
 ```Cpp
@@ -112,6 +112,9 @@ void doSleep(Bench* bench) {
     bench->measure(elapsed); // <===== provide the elapsed time yourself
 }
 ```
+
+The full C++ <code>SleepBenchmark</code> source code can be seen [here](src/main/c/sleep_benchmark.cpp)
+
 </details>
 
 ## More examples
