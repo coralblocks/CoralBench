@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
     Dummy dummy;
 
     cout << "Benchmarking put..." << endl;
-    bench.reset();
+    bench.reset(true);
     for (int i = 0; i < iterations; i++) {
         bench.mark();
         map->put(i, dummy);
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
     cout << endl;
 
     cout << "Benchmarking get..." << endl;
-    bench.reset();
+    bench.reset(true);
     for (int i = 0; i < iterations; i++) {
         bench.mark();
         volatile auto val = map->get(i); // volatile to prevent optimization out
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
     cout << endl;
 
     cout << "Benchmarking remove..." << endl;
-    bench.reset();
+    bench.reset(true);
     for (int i = 0; i < iterations; i++) {
         bench.mark();
         map->remove(i);

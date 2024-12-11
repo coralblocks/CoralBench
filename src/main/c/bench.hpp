@@ -32,8 +32,14 @@ public:
 
     void mark();
     void measure();
+    bool measure(long long);
     void reset();
+    void reset(bool);
     void printResults() const;
+    bool isWarmingUp() const;
+    int getIterations() const;
+    int getMeasurements() const;
+    double getAverage() const;
 
 private:
     int warmupCount;
@@ -51,6 +57,7 @@ private:
     static double roundToDecimals(double d, int decimals);
     void printPercentiles() const;
     void addPercentile(double perc) const;
+    double avg() const;
 };
 
 #endif // BENCH_HPP

@@ -24,7 +24,7 @@ Bench::Bench(int warmupCount)
       maxTime(numeric_limits<long long>::min()),
       size(0) {
 
-        results = new std::map<long long, long long>();
+        results = new map<long long, long long>();
 
 }
 
@@ -39,9 +39,14 @@ void Bench::mark() {
 void Bench::measure() {
     auto endTime = chrono::steady_clock::now();
     auto elapsed = chrono::duration_cast<chrono::nanoseconds>(endTime - startTime).count();
-    measurementCount++;
+    measure(elapsed);
+}
 
-    if (measurementCount > warmupCount) {
+bool Bench::measure(long long elapsed) {
+
+    bool isToMeasure = ++measurementCount > warmupCount;
+
+    if (isToMeasure) {
         sum += elapsed;
         if (elapsed < minTime) minTime = elapsed;
         if (elapsed > maxTime) maxTime = elapsed;
@@ -55,25 +60,54 @@ void Bench::measure() {
         }
         size++;
     }
+    
+    return isToMeasure;
+}
+
+int Bench::getIterations() const {
+	return measurementCount;
+}
+
+int Bench::getMeasurements() const {
+    return size;
 }
 
 void Bench::reset() {
+	reset(false);
+}
+
+void Bench::reset(bool repeatWarmup) {
     measurementCount = 0;
     sum = 0;
+    if (!repeatWarmup) warmupCount = 0;
     minTime = numeric_limits<long long>::max();
     maxTime = numeric_limits<long long>::min();
     results->clear();
     size = 0;
 }
 
-void Bench::printResults() const {
-    int effectiveCount = measurementCount - warmupCount;
-    if (effectiveCount <= 0) {
-        cout << "Not enough measurements after warmup to report statistics." << endl;
-        return;
-    }
+bool Bench::isWarmingUp() const {
+	return warmupCount <= measurementCount;
+}
 
-    double avg = static_cast<double>(sum) / effectiveCount;
+double Bench::avg() const {
+    const int effectiveCount = measurementCount - warmupCount;
+    if (effectiveCount <= 0) {
+        return 0;
+    }
+    const double avg = static_cast<double>(sum) / effectiveCount;
+    const double rounded = round(avg * 100.0) / 100.0;
+    return rounded;
+}
+
+double Bench::getAverage() const {
+	return avg();
+}	
+
+
+void Bench::printResults() const {
+
+    int effectiveCount = measurementCount - warmupCount;
 
     string effCountStr = formatWithCommas(effectiveCount);
     string warmupStr = formatWithCommas(warmupCount);
@@ -83,7 +117,7 @@ void Bench::printResults() const {
          << " | Warm-Up: " << warmupStr
          << " | Iterations: " << totalStr << endl;
 
-    auto [avgVal, avgUnit] = formatTime(avg);
+    auto [avgVal, avgUnit] = formatTime(avg());
     auto [minVal, minUnit] = formatTime(static_cast<double>(minTime));
     auto [maxVal, maxUnit] = formatTime(static_cast<double>(maxTime));
 
@@ -96,7 +130,7 @@ void Bench::printResults() const {
 }
 
 string Bench::formatWithCommas(long long value) {
-    std::string numStr = std::to_string(value);
+    string numStr = to_string(value);
     int insertPosition = static_cast<int>(numStr.length()) - 3;
     while (insertPosition > 0) {
         numStr.insert(insertPosition, ",");
@@ -122,8 +156,8 @@ pair<double, string> Bench::formatTime(double nanos) {
 }
 
 double Bench::roundToDecimals(double d, int decimals) {
-    double pow10 = std::pow(10.0, decimals);
-    return std::round(d * pow10) / pow10;
+    double pow10 = pow(10.0, decimals);
+    return round(d * pow10) / pow10;
 }
 
 void Bench::printPercentiles() const {
@@ -137,13 +171,13 @@ void Bench::printPercentiles() const {
     }
 }
 
-std::string Bench::formatPercentage(double perc) {
+string Bench::formatPercentage(double perc) {
     double p = perc * 100.0;
 
-    std::ostringstream oss;
-    oss << std::fixed << std::setprecision(6) << p;
+    ostringstream oss;
+    oss << fixed << setprecision(6) << p;
 
-    std::string s = oss.str();
+    string s = oss.str();
     // remove trailing zeros
     while (s.back() == '0') {
         s.pop_back();
@@ -164,7 +198,7 @@ void Bench::addPercentile(double perc) const {
 
     if (results->empty()) return;
 
-    long long target = static_cast<long long>(std::llround(perc * size));
+    long long target = static_cast<long long>(llround(perc * size));
     if (target == 0) return;
     if (target > size) target = size;
 
