@@ -341,6 +341,7 @@ Avg Time: 25.383 nanos | Min Time: 20.000 nanos | Max Time: 24.626 micros
 99.99% = [avg: 25.135 nanos, max: 425.000 nanos]
 99.999% = [avg: 25.231 nanos, max: 13.491 micros]
 ```
+<br/>
 
 ## Forcing the JVM to optimize at startup (-Xcomp -XX:-TieredCompilation)
 
