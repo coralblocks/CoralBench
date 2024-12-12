@@ -146,7 +146,7 @@ The Java benchmark code [is here](src/main/java/com/coralblocks/coralbench/examp
 The Java `Bench` class [is here](src/main/java/com/coralblocks/coralbench/Bench.java). The C++ `Bench` class [is here](src/main/c/bench.cpp).<br/>
 
 <details>
-  <summary> Test Environment </summary>
+  <summary> Benchmark Environment </summary>
 
 <br/>
 
