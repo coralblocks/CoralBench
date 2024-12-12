@@ -17,6 +17,9 @@ package com.coralblocks.coralbench.example;
 
 import com.coralblocks.coralbench.Bench;
 
+/**
+ * <p><b>NOTE:</b> This benchmark performs much better with the newest Graal JIT compiler. The old HotSpot C2 compiler does not do a good optimization job here.</p> 
+ */
 public class MathBenchmark {
 	
     private static final long doSomething(int load, int i) {
