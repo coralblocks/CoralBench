@@ -55,13 +55,13 @@ public class OracleJvm23MathBug {
 		bench.printResults();
 	}
 	
-	public static class NanoBench {
+	private static class NanoBench {
 
 		private int measurements;
 		private long totalTime, minTime, maxTime, time;
 		private final StringBuilder sb = new StringBuilder(128);
 		
-		public NanoBench() {
+		NanoBench() {
 			reset();
 		}
 		
