@@ -6,7 +6,7 @@ echo "Regular JIT with warm-up"
 java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -cp target/classes:target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 1000000 $PASSES
 
 echo "Regular JIT without warm-up"
-java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -cp target/classes:target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 6 $PASSES
+java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -cp target/classes:target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 5 $PASSES
 
 echo "-Xcomp -XX:-TieredCompilation with warm-up"
 java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -Xcomp -XX:-TieredCompilation -cp target/classes:target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 1000000 $PASSES
