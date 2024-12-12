@@ -34,7 +34,16 @@ public class IntMapBenchmark {
 		
 		Bench bench = new Bench(warmup);
 
-		System.out.println("Benchmarking put...");
+		System.out.println("Benchmarking put... (1)");
+		for(int i = 0; i < totalIterations; i++) {
+			bench.mark();
+			map.put(i, dummy);
+			bench.measure();
+		}
+		bench.printResults();
+		
+		System.out.println("Benchmarking put... (2)");
+		map.clear(); // clear the map, but the entry pool will be there
 		bench.reset(true);
 		for(int i = 0; i < totalIterations; i++) {
 			bench.mark();
