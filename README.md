@@ -139,14 +139,14 @@ The full <code>sleep_benchmark.cpp</code> source code can be seen [here](src/mai
 
 ## HotSpotVM (-Xcomp and JIT) vs C++ LLVM (clang) vs GraalVM
 
-In this section, we compare the `HotSpotVM` JIT against three forms of AOT: `C++ LLVM` (clang), `GraalVM` (native-image), and `-Xcomp`. To ensure a fair and unbiased comparison, all Java and C++ source code is designed to be _equivalent_. Not only the `IntMap` class, which is the code being measured, but also the `Bench` class, which performs the measurements. `We made every effort to maintain consistency and fairness in the comparison.` **If you notice anything that seems incorrect or could be improved, especially in the C++ code, please feel free to open an issue or submit a pull request.**
+In this section, we compare the `HotSpotVM` JIT (JVMCI and C2) against three forms of AOT: `C++ LLVM` (clang), `GraalVM` (native-image), and `-Xcomp` (JVMCI and C2). To ensure a fair and unbiased comparison, all Java and C++ source code is designed to be _equivalent_. Not only the `IntMap` class, which is the code being measured, but also the `Bench` class, which performs the measurements. `We made every effort to maintain consistency and fairness in the comparison.` **If you notice anything that seems incorrect or could be improved, especially in the C++ code, please feel free to open an issue or submit a pull request.**
 
 The Java `IntMap` implementation [is here](src/main/java/com/coralblocks/coralbench/example/IntMap.java). The C++ `IntMap` implementation [is here](src/main/c/int_map.hpp).<br/>
 The Java benchmark code [is here](src/main/java/com/coralblocks/coralbench/example/IntMapBenchmark.java). The C++ benchmark code [is here](src/main/c/int_map_benchmark.cpp).<br/>
 The Java `Bench` class [is here](src/main/java/com/coralblocks/coralbench/Bench.java). The C++ `Bench` class [is here](src/main/c/bench.cpp).<br/>
 
 <details>
-  <summary> Test Environment </summary>
+  <summary> Benchmark Environment </summary>
 
 <br/>
 
@@ -182,7 +182,7 @@ Substrate VM Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11, serial gc, compressed 
 </details>
 
 <details>
-  <summary> HotSpotVM JIT </summary>
+  <summary> HotSpotVM JIT (with Graal JVMCI JIT)</summary>
 
 <br/>
 
@@ -320,7 +320,51 @@ Avg Time: 35.800 nanos | Min Time: 23.000 nanos | Max Time: 165.095 micros
 </details>
 
 <details>
-  <summary> HotSpot -Xcomp </summary>
+  <summary> HotSpotVM JIT (with C2 JIT)</summary>
+
+<br/>
+
+```
+$ java -XX:-UseJVMCICompiler -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
+       -cp target/classes:target/coralbench-all.jar \
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+
+Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+
+Benchmarking put...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 30.490 nanos | Min Time: 25.000 nanos | Max Time: 32.250 micros
+75% = [avg: 29.000 nanos, max: 31.000 nanos]
+90% = [avg: 29.000 nanos, max: 32.000 nanos]
+99% = [avg: 29.000 nanos, max: 53.000 nanos]
+99.9% = [avg: 30.000 nanos, max: 101.000 nanos]
+99.99% = [avg: 30.000 nanos, max: 349.000 nanos]
+99.999% = [avg: 30.000 nanos, max: 1.946 micros]
+
+Benchmarking get...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 23.600 nanos | Min Time: 18.000 nanos | Max Time: 23.312 micros
+75% = [avg: 21.000 nanos, max: 24.000 nanos]
+90% = [avg: 22.000 nanos, max: 25.000 nanos]
+99% = [avg: 22.000 nanos, max: 53.000 nanos]
+99.9% = [avg: 23.000 nanos, max: 96.000 nanos]
+99.99% = [avg: 23.000 nanos, max: 412.000 nanos]
+99.999% = [avg: 23.000 nanos, max: 13.291 micros]
+
+Benchmarking remove...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 27.180 nanos | Min Time: 22.000 nanos | Max Time: 23.344 micros
+75% = [avg: 25.000 nanos, max: 28.000 nanos]
+90% = [avg: 25.000 nanos, max: 29.000 nanos]
+99% = [avg: 26.000 nanos, max: 59.000 nanos]
+99.9% = [avg: 26.000 nanos, max: 101.000 nanos]
+99.99% = [avg: 26.000 nanos, max: 362.000 nanos]
+99.999% = [avg: 27.000 nanos, max: 13.476 micros]
+```
+</details>
+
+<details>
+  <summary> HotSpotVM -Xcomp (with Graal JVMCI JIT)</summary>
 
 <br/>
 
@@ -361,6 +405,51 @@ Avg Time: 25.383 nanos | Min Time: 20.000 nanos | Max Time: 24.626 micros
 99.9% = [avg: 24.925 nanos, max: 158.000 nanos]
 99.99% = [avg: 25.135 nanos, max: 425.000 nanos]
 99.999% = [avg: 25.231 nanos, max: 13.491 micros]
+```
+</details>
+
+<details>
+  <summary> HotSpotVM -Xcomp (with C2 JIT)</summary>
+
+<br/>
+
+```
+$ java -XX:-UseJVMCICompiler -Xcomp -XX:-TieredCompilation \
+       -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
+       -cp target/classes:target/coralbench-all.jar \
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+
+Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+
+Benchmarking put...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 34.820 nanos | Min Time: 30.000 nanos | Max Time: 4.127 millis
+75% = [avg: 33.000 nanos, max: 35.000 nanos]
+90% = [avg: 33.000 nanos, max: 35.000 nanos]
+99% = [avg: 33.000 nanos, max: 41.000 nanos]
+99.9% = [avg: 34.000 nanos, max: 103.000 nanos]
+99.99% = [avg: 34.000 nanos, max: 370.000 nanos]
+99.999% = [avg: 34.000 nanos, max: 1.549 micros]
+
+Benchmarking get...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 26.670 nanos | Min Time: 21.000 nanos | Max Time: 845.407 micros
+75% = [avg: 24.000 nanos, max: 27.000 nanos]
+90% = [avg: 25.000 nanos, max: 29.000 nanos]
+99% = [avg: 25.000 nanos, max: 40.000 nanos]
+99.9% = [avg: 26.000 nanos, max: 97.000 nanos]
+99.99% = [avg: 26.000 nanos, max: 380.000 nanos]
+99.999% = [avg: 26.000 nanos, max: 13.523 micros]
+
+Benchmarking remove...
+Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
+Avg Time: 29.870 nanos | Min Time: 24.000 nanos | Max Time: 3.079 millis
+75% = [avg: 27.000 nanos, max: 30.000 nanos]
+90% = [avg: 28.000 nanos, max: 31.000 nanos]
+99% = [avg: 28.000 nanos, max: 43.000 nanos]
+99.9% = [avg: 29.000 nanos, max: 100.000 nanos]
+99.99% = [avg: 29.000 nanos, max: 396.000 nanos]
+99.999% = [avg: 29.000 nanos, max: 13.628 micros]
 ```
 </details>
 <br/>
