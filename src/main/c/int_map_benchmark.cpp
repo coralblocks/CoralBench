@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
     Bench bench(warmupCount);
     Dummy dummy;
 
-    cout << "Benchmarking put... (1)" << endl;
+    cout << "Benchmarking put on empty map... (1) => creating new Entry objects" << endl;
     for (int i = 0; i < iterations; i++) {
         bench.mark();
         map->put(i, dummy);
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
     }
     bench.printResults();
     
-    cout << "Benchmarking put... (2)" << endl;
+    cout << "Benchmarking put after clear()... (2) => hitting the pool of Entry objects" << endl;
     map->clear(); // clear the map, but the entry pool will be there
     bench.reset(true);
     for (int i = 0; i < iterations; i++) {
