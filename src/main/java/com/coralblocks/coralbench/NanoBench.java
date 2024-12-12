@@ -27,7 +27,7 @@ package com.coralblocks.coralbench;
  * Measurements: 2000000 | Avg Time: 1025 nanos | Min Time: 122 nanos | Max Time: 56500 nanos
  * </pre> 
  */
-public class QuickBench {
+public class NanoBench {
 
 	private int measurements;
 	private long totalTime, minTime, maxTime, time;
@@ -36,7 +36,7 @@ public class QuickBench {
 	/**
 	 * Creates a new <code>QuickBench</code>
 	 */
-	public QuickBench() {
+	public NanoBench() {
 		reset();
 	}
 	
@@ -81,7 +81,7 @@ public class QuickBench {
 	
 	public static void main(String[] args) {
 		
-		QuickBench bench = new QuickBench();
+		NanoBench bench = new NanoBench();
 		
 		for(int i = 0; i < 1_000_000; i++) {
 			bench.mark();
