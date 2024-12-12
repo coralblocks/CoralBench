@@ -660,6 +660,66 @@ Avg Time: 1.126 micros | Min Time: 1.079 micros | Max Time: 7.655 micros
 ```
 </details>
 <details>
+  <summary>BubbleSortBenchmark Numbers with new Graal JIT compiler (JVMCI)</summary>
+    
+#### Regular JIT <i>with</i> warm-up
+```
+$ java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark 1000000 1000
+Value computed: 1831830000
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 1,000 | Warm-Up: 1,000,000 | Iterations: 1,001,000
+Avg Time: 1.092 micros | Min Time: 970.000 nanos | Max Time: 19.336 micros
+75% = [avg: 1.002 micros, max: 1.034 micros]
+90% = [avg: 1.011 micros, max: 1.069 micros]
+99% = [avg: 1.018 micros, max: 1.715 micros]
+99.9% = [avg: 1.073 micros, max: 16.361 micros]
+99.99% = [avg: 1.092 micros, max: 19.336 micros]
+99.999% = [avg: 1.092 micros, max: 19.336 micros]
+```
+#### Regular JIT <i>without</i> warm-up
+```
+$ java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark 5 1000
+Value computed: 1839150
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 1,000 | Warm-Up: 5 | Iterations: 1,005
+Avg Time: 11.897 micros | Min Time: 8.262 micros | Max Time: 95.115 micros
+75% = [avg: 8.363 micros, max: 8.550 micros]
+90% = [avg: 8.673 micros, max: 16.875 micros]
+99% = [avg: 11.372 micros, max: 54.561 micros]
+99.9% = [avg: 11.814 micros, max: 90.020 micros]
+99.99% = [avg: 11.897 micros, max: 95.115 micros]
+99.999% = [avg: 11.897 micros, max: 95.115 micros]
+```
+#### -Xcomp -XX:-TieredCompilation <i>with</i> warm-up
+```
+$ java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -Xcomp -XX:-TieredCompilation -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark 1000000 1000
+Value computed: 1831830000
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 1,000 | Warm-Up: 1,000,000 | Iterations: 1,001,000
+Avg Time: 1.872 micros | Min Time: 1.814 micros | Max Time: 8.732 micros
+75% = [avg: 1.858 micros, max: 1.871 micros]
+90% = [avg: 1.861 micros, max: 1.877 micros]
+99% = [avg: 1.863 micros, max: 1.889 micros]
+99.9% = [avg: 1.864 micros, max: 2.673 micros]
+99.99% = [avg: 1.871 micros, max: 8.732 micros]
+99.999% = [avg: 1.871 micros, max: 8.732 micros]
+```
+#### -Xcomp -XX:-TieredCompilation <i>without</i> warm-up
+```
+$ java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -Xcomp -XX:-TieredCompilation -cp target/coralbench-all.jar com.coralblocks.coralbench.example.BubbleSortBenchmark 5 1000
+Value computed: 1839150
+Array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+Measurements: 1,000 | Warm-Up: 5 | Iterations: 1,005
+Avg Time: 1.816 micros | Min Time: 1.775 micros | Max Time: 7.835 micros
+75% = [avg: 1.802 micros, max: 1.817 micros]
+90% = [avg: 1.805 micros, max: 1.825 micros]
+99% = [avg: 1.808 micros, max: 1.858 micros]
+99.9% = [avg: 1.809 micros, max: 2.174 micros]
+99.99% = [avg: 1.815 micros, max: 7.835 micros]
+99.999% = [avg: 1.815 micros, max: 7.835 micros]
+```
+</details>
+<details>
   <summary>SleepBenchmark Numbers</summary>
     
 #### Regular JIT <i>with</i> warm-up
