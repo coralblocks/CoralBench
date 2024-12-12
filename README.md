@@ -130,7 +130,7 @@ The full <code>sleep_benchmark.cpp</code> source code can be seen [here](src/mai
 <details>
   <summary>&nbsp;&nbsp;<img src="https://cdn3.emoji.gg/emojis/8241-c-plus-plus.png" width="24px" height="24px" alt="c_plus_plus"/>&nbsp;&nbsp;Click here for the C++ examples </summary>
     
-- [math_benchmark.cpp](src/main/c/math_bechmark.cpp)
+- [math_benchmark.cpp](src/main/c/math_benchmark.cpp)
 - [bubble_sort_benchmark.cpp](src/main/c/bubble_sort_benchmark.cpp)
 - [sleep_benchmark.cpp](src/main/c/sleep_benchmark.cpp)
     
