@@ -34,7 +34,7 @@ public class IntMapBenchmark {
 		
 		Bench bench = new Bench(warmup);
 
-		System.out.println("Benchmarking put... (1)");
+		System.out.println("Benchmarking put on empty map... (1) => creating new Entry objects");
 		for(int i = 0; i < totalIterations; i++) {
 			bench.mark();
 			map.put(i, dummy);
@@ -42,7 +42,7 @@ public class IntMapBenchmark {
 		}
 		bench.printResults();
 		
-		System.out.println("Benchmarking put... (2)");
+		System.out.println("Benchmarking put after clear()... (2) => hitting the pool of Entry objects");
 		map.clear(); // clear the map, but the entry pool will be there
 		bench.reset(true);
 		for(int i = 0; i < totalIterations; i++) {
