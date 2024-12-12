@@ -320,7 +320,7 @@ Avg Time: 35.800 nanos | Min Time: 23.000 nanos | Max Time: 165.095 micros
 </details>
 
 <details>
-  <summary> HotSpot -Xcomp (with Graal JVMCI JIT)</summary>
+  <summary> HotSpotVM -Xcomp (with Graal JVMCI JIT)</summary>
 
 <br/>
 
