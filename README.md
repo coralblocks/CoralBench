@@ -455,6 +455,62 @@ Avg Time: 119.300 nanos | Min Time: 115.000 nanos | Max Time: 436.000 nanos
 ```
 </details>
 <details>
+  <summary>MathBenchmark Numbers with new Graal JIT compiler (JVMCI)</summary>
+    
+#### Regular JIT <i>with</i> warm-up
+```
+$ java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -cp target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 1000000 1000
+Value computed: -55054840000
+Measurements: 1,000 | Warm-Up: 1,000,000 | Iterations: 1,001,000
+Avg Time: 88.750 nanos | Min Time: 16.000 nanos | Max Time: 4.586 micros
+75% = [avg: 73.000 nanos, max: 94.000 nanos]
+90% = [avg: 77.000 nanos, max: 102.000 nanos]
+99% = [avg: 80.000 nanos, max: 155.000 nanos]
+99.9% = [avg: 84.000 nanos, max: 1.676 micros]
+99.99% = [avg: 88.000 nanos, max: 4.586 micros]
+99.999% = [avg: 88.000 nanos, max: 4.586 micros]
+```
+#### Regular JIT <i>without</i> warm-up
+```
+$ java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -cp target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 5 1000
+Value computed: -55230000
+Measurements: 1,000 | Warm-Up: 6 | Iterations: 1,006
+Avg Time: 3.482 micros | Min Time: 59.000 nanos | Max Time: 227.645 micros
+75% = [avg: 67.000 nanos, max: 72.000 nanos]
+90% = [avg: 69.000 nanos, max: 80.000 nanos]
+99% = [avg: 2.575 micros, max: 76.047 micros]
+99.9% = [avg: 3.257 micros, max: 79.292 micros]
+99.99% = [avg: 3.482 micros, max: 227.645 micros]
+99.999% = [avg: 3.482 micros, max: 227.645 micros]
+```
+#### -Xcomp -XX:-TieredCompilation <i>with</i> warm-up
+```
+$ java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -Xcomp -XX:-TieredCompilation -cp target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 1000000 1000
+Value computed: -55054840000
+Measurements: 1,000 | Warm-Up: 1,000,000 | Iterations: 1,001,000
+Avg Time: 17.050 nanos | Min Time: 16.000 nanos | Max Time: 62.000 nanos
+75% = [avg: 16.000 nanos, max: 17.000 nanos]
+90% = [avg: 16.000 nanos, max: 18.000 nanos]
+99% = [avg: 16.000 nanos, max: 21.000 nanos]
+99.9% = [avg: 17.000 nanos, max: 54.000 nanos]
+99.99% = [avg: 17.000 nanos, max: 62.000 nanos]
+99.999% = [avg: 17.000 nanos, max: 62.000 nanos]
+```
+#### -Xcomp -XX:-TieredCompilation <i>without</i> warm-up
+```
+$ java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -Xcomp -XX:-TieredCompilation -cp target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 5 1000
+Value computed: -54580000
+Measurements: 1,000 | Warm-Up: 5 | Iterations: 1,005
+Avg Time: 45.000 nanos | Min Time: 42.000 nanos | Max Time: 354.000 nanos
+75% = [avg: 43.000 nanos, max: 45.000 nanos]
+90% = [avg: 44.000 nanos, max: 45.000 nanos]
+99% = [avg: 44.000 nanos, max: 51.000 nanos]
+99.9% = [avg: 44.000 nanos, max: 351.000 nanos]
+99.99% = [avg: 45.000 nanos, max: 354.000 nanos]
+99.999% = [avg: 45.000 nanos, max: 354.000 nanos]
+```
+</details>
+<details>
   <summary>BubbleSortBenchmark Numbers</summary>
     
 #### Regular JIT <i>with</i> warm-up
