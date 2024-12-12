@@ -133,6 +133,8 @@ void Bench::printResults(bool includePercentiles) const {
 	
 	    if (includePercentiles) printPercentiles();
 	}
+	
+	cout << endl;
 }
 
 string Bench::formatWithCommas(long long value) {
