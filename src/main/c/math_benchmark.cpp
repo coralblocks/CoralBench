@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 
     long x = 0;
 
-    for (int i = 0; i < totalIterations; ++i) {
+    for (int i = 0; i < totalIterations; i++) {
         bench->mark();
         x += doSomething(load, i);
         bench->measure();
