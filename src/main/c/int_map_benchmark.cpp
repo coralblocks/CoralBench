@@ -51,7 +51,6 @@ int main(int argc, char* argv[]) {
         bench.measure();
     }
     bench.printResults();
-    cout << endl;
     
     cout << "Benchmarking put... (2)" << endl;
     map->clear(); // clear the map, but the entry pool will be there
@@ -62,7 +61,6 @@ int main(int argc, char* argv[]) {
         bench.measure();
     }
     bench.printResults();
-    cout << endl;
 
     cout << "Benchmarking get..." << endl;
     bench.reset(true);
@@ -72,7 +70,6 @@ int main(int argc, char* argv[]) {
         bench.measure();
     }
     bench.printResults();
-    cout << endl;
 
     cout << "Benchmarking remove..." << endl;
     bench.reset(true);
@@ -82,7 +79,6 @@ int main(int argc, char* argv[]) {
         bench.measure();
     }
     bench.printResults();
-    cout << endl;
 
     delete map; 
     return 0;
