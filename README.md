@@ -182,7 +182,7 @@ Substrate VM Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11, serial gc, compressed 
 </details>
 
 <details>
-  <summary> HotSpotVM JIT </summary>
+  <summary> HotSpotVM JIT (with Graal JVMCI JIT)</summary>
 
 <br/>
 
@@ -320,7 +320,7 @@ Avg Time: 35.800 nanos | Min Time: 23.000 nanos | Max Time: 165.095 micros
 </details>
 
 <details>
-  <summary> HotSpot -Xcomp </summary>
+  <summary> HotSpot -Xcomp (with Graal JVMCI JIT)</summary>
 
 <br/>
 
