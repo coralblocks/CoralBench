@@ -562,15 +562,15 @@ Avg Time: 88.750 nanos | Min Time: 16.000 nanos | Max Time: 4.586 micros
 #### Regular JIT <i>without</i> warm-up
 ```
 $ java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -cp target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 5 1000
-Value computed: -55230000
-Measurements: 1,000 | Warm-Up: 6 | Iterations: 1,006
-Avg Time: 3.482 micros | Min Time: 59.000 nanos | Max Time: 227.645 micros
-75% = [avg: 67.000 nanos, max: 72.000 nanos]
-90% = [avg: 69.000 nanos, max: 80.000 nanos]
-99% = [avg: 2.575 micros, max: 76.047 micros]
-99.9% = [avg: 3.257 micros, max: 79.292 micros]
-99.99% = [avg: 3.482 micros, max: 227.645 micros]
-99.999% = [avg: 3.482 micros, max: 227.645 micros]
+Value computed: -54580000
+Measurements: 1,000 | Warm-Up: 5 | Iterations: 1,005
+Avg Time: 3.683 micros | Min Time: 63.000 nanos | Max Time: 209.935 micros
+75% = [avg: 68.000 nanos, max: 72.000 nanos]
+90% = [avg: 69.000 nanos, max: 79.000 nanos]
+99% = [avg: 2.540 micros, max: 78.269 micros]
+99.9% = [avg: 3.476 micros, max: 186.890 micros]
+99.99% = [avg: 3.682 micros, max: 209.935 micros]
+99.999% = [avg: 3.682 micros, max: 209.935 micros]
 ```
 #### -Xcomp -XX:-TieredCompilation <i>with</i> warm-up
 ```
