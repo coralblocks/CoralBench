@@ -253,7 +253,7 @@ $ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/b
 $ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/int_map_benchmark.cpp -o ./target/cpp/int_map_benchmark.o
 $ clang++ -Ofast -march=native -flto -std=c++17 -o ./target/cpp/int_map_benchmark ./target/cpp/int_map.o ./target/cpp/bench.o ./target/cpp/int_map_benchmark.o
 
-$ ./target/cpp/int_map_benchmark 0 10000000 5000000
+$ ./target/cpp/int_map_benchmark 0 2000000 20000
 
 Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
@@ -317,7 +317,7 @@ $ native-image --gc=G1 -R:+AlwaysPreTouch -R:InitialHeapSize=4g -R:MaxHeapSize=4
                -cp target/coralbench-all.jar com.coralblocks.coralbench.example.IntMapBenchmark \
                -o target/graal/IntMapBenchmark --no-fallback -O3 --initialize-at-build-time
 
-$ ./target/graal/IntMapBenchmark 0 10000000 5000000
+$ ./target/graal/IntMapBenchmark 0 2000000 20000
 
 Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
@@ -378,7 +378,7 @@ DEL => Avg: 323 ns | Min: 27 ns | 99.9% = [avg: 321 ns, max: 1.850 micros]
 ```
 $ java -XX:-UseJVMCICompiler -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
        -cp target/classes:target/coralbench-all.jar \
-       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 2000000 20000
 
 Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
@@ -440,7 +440,7 @@ DEL => Avg: 826 ns | Min: 23 ns | 99.9% = [avg: 817 ns, max: 3.420 micros]
 $ java -Xcomp -XX:-TieredCompilation \
        -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
        -cp target/classes:target/coralbench-all.jar \
-       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 2000000 20000
 
 Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
@@ -502,7 +502,7 @@ DEL => Avg: 887 ns | Min: 24 ns | 99.9% = [avg: 874 ns, max: 3.912 micros]
 $ java -XX:-UseJVMCICompiler -Xcomp -XX:-TieredCompilation \
        -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
        -cp target/classes:target/coralbench-all.jar \
-       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 2000000 20000
 
 Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
