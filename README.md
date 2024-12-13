@@ -235,6 +235,13 @@ Avg Time: 662.350 nanos | Min Time: 18.000 nanos | Max Time: 65.518 micros
 ```
 </details>
 
+```
+PUT_1: Avg Time: 371.140 nanos | Min Time: 28.000 nanos | 99.9% = [avg: 367.000 nanos, max: 1.743 micros]
+PUT_2: Avg Time: 612.590 nanos | Min Time: 27.000 nanos | 99.9% = [avg: 606.000 nanos, max: 2.184 micros]
+GET  : Avg Time: 614.570 nanos | Min Time: 14.000 nanos | 99.9% = [avg: 607.000 nanos, max: 2.549 micros]
+DEL  : Avg Time: 662.350 nanos | Min Time: 18.000 nanos | 99.9% = [avg: 658.000 nanos, max: 2.538 micros]
+```
+
 <details>
   <summary> C++ LLVM (clang) </summary>
 
