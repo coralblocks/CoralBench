@@ -235,6 +235,13 @@ Avg Time: 662.350 nanos | Min Time: 18.000 nanos | Max Time: 65.518 micros
 ```
 </details>
 
+```
+PUT => Avg: 371 ns | Min: 28 ns | 99.9% = [avg: 367 ns, max: 1.743 micros]
+PUT => Avg: 613 ns | Min: 27 ns | 99.9% = [avg: 606 ns, max: 2.184 micros]
+GET => Avg: 615 ns | Min: 14 ns | 99.9% = [avg: 607 ns, max: 2.549 micros]
+DEL => Avg: 662 ns | Min: 18 ns | 99.9% = [avg: 658 ns, max: 2.538 micros]
+```
+
 <details>
   <summary> C++ LLVM (clang) </summary>
 
@@ -246,7 +253,7 @@ $ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/b
 $ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/int_map_benchmark.cpp -o ./target/cpp/int_map_benchmark.o
 $ clang++ -Ofast -march=native -flto -std=c++17 -o ./target/cpp/int_map_benchmark ./target/cpp/int_map.o ./target/cpp/bench.o ./target/cpp/int_map_benchmark.o
 
-$ ./target/cpp/int_map_benchmark 0 10000000 5000000
+$ ./target/cpp/int_map_benchmark 0 2000000 20000
 
 Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
@@ -292,6 +299,13 @@ Avg Time: 874.940 nanos | Min Time: 19.000 nanos | Max Time: 29.175 micros
 ```
 </details>
 
+```
+PUT => Avg: 726 ns | Min: 30 ns | 99.9% = [avg: 720 ns, max: 4.097 micros]
+PUT => Avg: 857 ns | Min: 18 ns | 99.9% = [avg: 848 ns, max: 2.933 micros]
+GET => Avg: 874 ns | Min: 18 ns | 99.9% = [avg: 865 ns, max: 3.010 micros]
+DEL => Avg: 875 ns | Min: 19 ns | 99.9% = [avg: 871 ns, max: 2.810 micros]
+```
+
 <details>
   <summary> GraalVM (native-image) </summary>
 
@@ -303,7 +317,7 @@ $ native-image --gc=G1 -R:+AlwaysPreTouch -R:InitialHeapSize=4g -R:MaxHeapSize=4
                -cp target/coralbench-all.jar com.coralblocks.coralbench.example.IntMapBenchmark \
                -o target/graal/IntMapBenchmark --no-fallback -O3 --initialize-at-build-time
 
-$ ./target/graal/IntMapBenchmark 0 10000000 5000000
+$ ./target/graal/IntMapBenchmark 0 2000000 20000
 
 Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
@@ -349,6 +363,13 @@ Avg Time: 323.300 nanos | Min Time: 27.000 nanos | Max Time: 18.084 micros
 ```
 </details>
 
+```
+PUT => Avg: 190 ns | Min: 21 ns | 99.9% = [avg: 183 ns, max: 814 ns]
+PUT => Avg: 659 ns | Min: 23 ns | 99.9% = [avg: 656 ns, max: 2.762 micros]
+GET => Avg: 399 ns | Min: 21 ns | 99.9% = [avg: 396 ns, max: 2.124 micros]
+DEL => Avg: 323 ns | Min: 27 ns | 99.9% = [avg: 321 ns, max: 1.850 micros]
+```
+
 <details>
   <summary> HotSpotVM JIT (with C2 JIT)</summary>
 
@@ -357,7 +378,7 @@ Avg Time: 323.300 nanos | Min Time: 27.000 nanos | Max Time: 18.084 micros
 ```
 $ java -XX:-UseJVMCICompiler -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
        -cp target/classes:target/coralbench-all.jar \
-       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 2000000 20000
 
 Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
@@ -403,6 +424,13 @@ Avg Time: 826.480 nanos | Min Time: 23.000 nanos | Max Time: 65.205 micros
 ```
 </details>
 
+```
+PUT => Avg: 342 ns | Min: 29 ns | 99.9% = [avg: 338 ns, max: 1.661 micros]
+PUT => Avg: 596 ns | Min: 28 ns | 99.9% = [avg: 589 ns, max: 2.161 micros]
+GET => Avg: 599 ns | Min: 20 ns | 99.9% = [avg: 592 ns, max: 2.275 micros]
+DEL => Avg: 826 ns | Min: 23 ns | 99.9% = [avg: 817 ns, max: 3.420 micros]
+```
+
 <details>
   <summary> HotSpotVM -Xcomp (with Graal JVMCI JIT)</summary>
 
@@ -412,7 +440,7 @@ Avg Time: 826.480 nanos | Min Time: 23.000 nanos | Max Time: 65.205 micros
 $ java -Xcomp -XX:-TieredCompilation \
        -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
        -cp target/classes:target/coralbench-all.jar \
-       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 2000000 20000
 
 Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
@@ -458,6 +486,13 @@ Avg Time: 886.830 nanos | Min Time: 24.000 nanos | Max Time: 5.870 millis
 ```
 </details>
 
+```
+PUT => Avg: 351 ns | Min: 25 ns | 99.9% = [avg: 345 ns, max: 1.680 micros]
+PUT => Avg: 623 ns | Min: 26 ns | 99.9% = [avg: 620 ns, max: 1.991 micros]
+GET => Avg: 628 ns | Min: 22 ns | 99.9% = [avg: 623 ns, max: 2.418 micros]
+DEL => Avg: 887 ns | Min: 24 ns | 99.9% = [avg: 874 ns, max: 3.912 micros]
+```
+
 <details>
   <summary> HotSpotVM -Xcomp (with C2 JIT)</summary>
 
@@ -467,7 +502,7 @@ Avg Time: 886.830 nanos | Min Time: 24.000 nanos | Max Time: 5.870 millis
 $ java -XX:-UseJVMCICompiler -Xcomp -XX:-TieredCompilation \
        -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
        -cp target/classes:target/coralbench-all.jar \
-       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 2000000 20000
 
 Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
@@ -512,6 +547,14 @@ Avg Time: 859.440 nanos | Min Time: 25.000 nanos | Max Time: 3.341 millis
 99.999% = [avg: 857.000 nanos, max: 19.239 micros]
 ```
 </details>
+
+```
+PUT => Avg: 351 ns | Min: 26 ns | 99.9% = [avg: 638 ns, max: 2.199 micros]
+PUT => Avg: 642 ns | Min: 25 ns | 99.9% = [avg: 638 ns, max: 2.199 micros]
+GET => Avg: 628 ns | Min: 22 ns | 99.9% = [avg: 624 ns, max: 2.043 micros]
+DEL => Avg: 859 ns | Min: 25 ns | 99.9% = [avg: 853 ns, max: 3.249 micros]
+```
+
 <br/>
 
 ## Forcing the JVM to optimize at startup (-Xcomp -XX:-TieredCompilation)
