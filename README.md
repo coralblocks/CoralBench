@@ -189,39 +189,49 @@ Substrate VM Oracle GraalVM 23.0.1+11.1 (build 23.0.1+11, serial gc, compressed 
 ```
 $ java -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
        -cp target/classes:target/coralbench-all.jar \
-       com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
+       com.coralblocks.coralbench.example.IntMapBenchmark 0 2000000 20000
 
-Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
-Benchmarking put...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 22.690 nanos | Min Time: 18.000 nanos | Max Time: 32.311 micros
-75% = [avg: 20.000 nanos, max: 22.000 nanos]
-90% = [avg: 20.000 nanos, max: 28.000 nanos]
-99% = [avg: 21.000 nanos, max: 59.000 nanos]
-99.9% = [avg: 22.000 nanos, max: 103.000 nanos]
-99.99% = [avg: 22.000 nanos, max: 408.000 nanos]
-99.999% = [avg: 22.000 nanos, max: 4.592 micros]
+Benchmarking put on empty map... (1) => creating new Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 371.140 nanos | Min Time: 28.000 nanos | Max Time: 35.143 micros
+75% = [avg: 189.000 nanos, max: 611.000 nanos]
+90% = [avg: 283.000 nanos, max: 917.000 nanos]
+99% = [avg: 356.000 nanos, max: 1.400 micros]
+99.9% = [avg: 367.000 nanos, max: 1.743 micros]
+99.99% = [avg: 369.000 nanos, max: 14.847 micros]
+99.999% = [avg: 370.000 nanos, max: 18.452 micros]
+
+Benchmarking put after clear()... (2) => hitting the pool of Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 612.590 nanos | Min Time: 27.000 nanos | Max Time: 25.693 micros
+75% = [avg: 427.000 nanos, max: 908.000 nanos]
+90% = [avg: 525.000 nanos, max: 1.146 micros]
+99% = [avg: 596.000 nanos, max: 1.622 micros]
+99.9% = [avg: 606.000 nanos, max: 2.184 micros]
+99.99% = [avg: 610.000 nanos, max: 16.229 micros]
+99.999% = [avg: 612.000 nanos, max: 18.765 micros]
 
 Benchmarking get...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 18.930 nanos | Min Time: 14.000 nanos | Max Time: 23.941 micros
-75% = [avg: 16.000 nanos, max: 18.000 nanos]
-90% = [avg: 16.000 nanos, max: 27.000 nanos]
-99% = [avg: 18.000 nanos, max: 76.000 nanos]
-99.9% = [avg: 18.000 nanos, max: 96.000 nanos]
-99.99% = [avg: 18.000 nanos, max: 383.000 nanos]
-99.999% = [avg: 18.000 nanos, max: 2.139 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 614.570 nanos | Min Time: 14.000 nanos | Max Time: 47.144 micros
+75% = [avg: 426.000 nanos, max: 905.000 nanos]
+90% = [avg: 524.000 nanos, max: 1.142 micros]
+99% = [avg: 595.000 nanos, max: 1.670 micros]
+99.9% = [avg: 607.000 nanos, max: 2.549 micros]
+99.99% = [avg: 612.000 nanos, max: 16.254 micros]
+99.999% = [avg: 614.000 nanos, max: 19.005 micros]
 
 Benchmarking remove...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 21.680 nanos | Min Time: 16.000 nanos | Max Time: 39.305 micros
-75% = [avg: 19.000 nanos, max: 22.000 nanos]
-90% = [avg: 19.000 nanos, max: 26.000 nanos]
-99% = [avg: 20.000 nanos, max: 79.000 nanos]
-99.9% = [avg: 21.000 nanos, max: 123.000 nanos]
-99.99% = [avg: 21.000 nanos, max: 421.000 nanos]
-99.999% = [avg: 21.000 nanos, max: 13.391 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 662.350 nanos | Min Time: 18.000 nanos | Max Time: 65.518 micros
+75% = [avg: 460.000 nanos, max: 982.000 nanos]
+90% = [avg: 567.000 nanos, max: 1.254 micros]
+99% = [avg: 646.000 nanos, max: 1.808 micros]
+99.9% = [avg: 658.000 nanos, max: 2.538 micros]
+99.99% = [avg: 660.000 nanos, max: 6.448 micros]
+99.999% = [avg: 662.000 nanos, max: 23.845 micros]
 ```
 </details>
 
@@ -238,37 +248,47 @@ $ clang++ -Ofast -march=native -flto -std=c++17 -o ./target/cpp/int_map_benchmar
 
 $ ./target/cpp/int_map_benchmark 0 10000000 5000000
 
-Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
-Benchmarking put...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 39.008 nanos | Min Time: 30.000 nanos | Max Time: 30.516 micros
-75% = [avg: 32.357 nanos, max: 35.000 nanos]
-90% = [avg: 32.846 nanos, max: 36.000 nanos]
-99% = [avg: 33.495 nanos, max: 105.000 nanos]
-99.9% = [avg: 37.728 nanos, max: 888.000 nanos]
-99.99% = [avg: 38.611 nanos, max: 1.244 micros]
-99.999% = [avg: 38.848 nanos, max: 15.107 micros]
+Benchmarking put on empty map... (1) => creating new Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 725.830 nanos | Min Time: 30.000 nanos | Max Time: 32.898 micros
+75% = [avg: 213.945 nanos, max: 827.000 nanos]
+90% = [avg: 462.161 nanos, max: 2.558 micros]
+99% = [avg: 692.651 nanos, max: 3.568 micros]
+99.9% = [avg: 720.035 nanos, max: 4.097 micros]
+99.99% = [avg: 723.810 nanos, max: 16.642 micros]
+99.999% = [avg: 725.549 nanos, max: 27.622 micros]
+
+Benchmarking put after clear()... (2) => hitting the pool of Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 856.870 nanos | Min Time: 18.000 nanos | Max Time: 34.051 micros
+75% = [avg: 621.592 nanos, max: 1.270 micros]
+90% = [avg: 751.984 nanos, max: 1.542 micros]
+99% = [avg: 836.167 nanos, max: 1.964 micros]
+99.9% = [avg: 848.394 nanos, max: 2.933 micros]
+99.99% = [avg: 855.174 nanos, max: 16.988 micros]
+99.999% = [avg: 856.656 nanos, max: 19.138 micros]
 
 Benchmarking get...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 24.003 nanos | Min Time: 18.000 nanos | Max Time: 17.977 micros
-75% = [avg: 21.813 nanos, max: 25.000 nanos]
-90% = [avg: 22.344 nanos, max: 25.000 nanos]
-99% = [avg: 22.937 nanos, max: 89.000 nanos]
-99.9% = [avg: 23.572 nanos, max: 151.000 nanos]
-99.99% = [avg: 23.794 nanos, max: 416.000 nanos]
-99.999% = [avg: 23.858 nanos, max: 13.239 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 873.800 nanos | Min Time: 18.000 nanos | Max Time: 30.037 micros
+75% = [avg: 636.786 nanos, max: 1.294 micros]
+90% = [avg: 768.257 nanos, max: 1.560 micros]
+99% = [avg: 852.247 nanos, max: 1.987 micros]
+99.9% = [avg: 864.806 nanos, max: 3.010 micros]
+99.99% = [avg: 872.055 nanos, max: 17.053 micros]
+99.999% = [avg: 873.564 nanos, max: 20.451 micros]
 
 Benchmarking remove...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 23.592 nanos | Min Time: 19.000 nanos | Max Time: 18.954 micros
-75% = [avg: 21.566 nanos, max: 23.000 nanos]
-90% = [avg: 21.919 nanos, max: 25.000 nanos]
-99% = [avg: 22.538 nanos, max: 90.000 nanos]
-99.9% = [avg: 23.192 nanos, max: 133.000 nanos]
-99.99% = [avg: 23.364 nanos, max: 408.000 nanos]
-99.999% = [avg: 23.446 nanos, max: 13.248 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 874.940 nanos | Min Time: 19.000 nanos | Max Time: 29.175 micros
+75% = [avg: 643.087 nanos, max: 1.304 micros]
+90% = [avg: 775.314 nanos, max: 1.569 micros]
+99% = [avg: 858.983 nanos, max: 1.979 micros]
+99.9% = [avg: 871.128 nanos, max: 2.810 micros]
+99.99% = [avg: 873.556 nanos, max: 5.865 micros]
+99.999% = [avg: 874.707 nanos, max: 21.086 micros]
 ```
 </details>
 
@@ -285,37 +305,47 @@ $ native-image --gc=G1 -R:+AlwaysPreTouch -R:InitialHeapSize=4g -R:MaxHeapSize=4
 
 $ ./target/graal/IntMapBenchmark 0 10000000 5000000
 
-Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
-Benchmarking put...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 41.110 nanos | Min Time: 25.000 nanos | Max Time: 21.841 millis
-75% = [avg: 29.000 nanos, max: 31.000 nanos]
-90% = [avg: 29.000 nanos, max: 32.000 nanos]
-99% = [avg: 30.000 nanos, max: 41.000 nanos]
-99.9% = [avg: 30.000 nanos, max: 100.000 nanos]
-99.99% = [avg: 30.000 nanos, max: 339.000 nanos]
-99.999% = [avg: 30.000 nanos, max: 1.573 micros]
+Benchmarking put on empty map... (1) => creating new Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 190.000 nanos | Min Time: 21.000 nanos | Max Time: 9.728 millis
+75% = [avg: 121.000 nanos, max: 267.000 nanos]
+90% = [avg: 152.000 nanos, max: 368.000 nanos]
+99% = [avg: 179.000 nanos, max: 610.000 nanos]
+99.9% = [avg: 183.000 nanos, max: 814.000 nanos]
+99.99% = [avg: 184.000 nanos, max: 1.098 micros]
+99.999% = [avg: 184.000 nanos, max: 15.573 micros]
+
+Benchmarking put after clear()... (2) => hitting the pool of Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 658.830 nanos | Min Time: 23.000 nanos | Max Time: 20.209 micros
+75% = [avg: 390.000 nanos, max: 1.027 micros]
+90% = [avg: 529.000 nanos, max: 1.485 micros]
+99% = [avg: 640.000 nanos, max: 2.201 micros]
+99.9% = [avg: 656.000 nanos, max: 2.762 micros]
+99.99% = [avg: 658.000 nanos, max: 4.202 micros]
+99.999% = [avg: 658.000 nanos, max: 6.371 micros]
 
 Benchmarking get...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 24.560 nanos | Min Time: 19.000 nanos | Max Time: 15.679 micros
-75% = [avg: 22.000 nanos, max: 25.000 nanos]
-90% = [avg: 23.000 nanos, max: 26.000 nanos]
-99% = [avg: 23.000 nanos, max: 39.000 nanos]
-99.9% = [avg: 24.000 nanos, max: 97.000 nanos]
-99.99% = [avg: 24.000 nanos, max: 382.000 nanos]
-99.999% = [avg: 24.000 nanos, max: 550.000 nanos]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 398.720 nanos | Min Time: 21.000 nanos | Max Time: 18.758 micros
+75% = [avg: 198.000 nanos, max: 558.000 nanos]
+90% = [avg: 291.000 nanos, max: 1.011 micros]
+99% = [avg: 382.000 nanos, max: 1.751 micros]
+99.9% = [avg: 396.000 nanos, max: 2.124 micros]
+99.99% = [avg: 398.000 nanos, max: 2.690 micros]
+99.999% = [avg: 398.000 nanos, max: 15.835 micros]
 
 Benchmarking remove...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 35.800 nanos | Min Time: 23.000 nanos | Max Time: 165.095 micros
-75% = [avg: 30.000 nanos, max: 33.000 nanos]
-90% = [avg: 30.000 nanos, max: 36.000 nanos]
-99% = [avg: 31.000 nanos, max: 93.000 nanos]
-99.9% = [avg: 32.000 nanos, max: 123.000 nanos]
-99.99% = [avg: 32.000 nanos, max: 457.000 nanos]
-99.999% = [avg: 34.000 nanos, max: 63.089 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 323.300 nanos | Min Time: 27.000 nanos | Max Time: 18.084 micros
+75% = [avg: 163.000 nanos, max: 423.000 nanos]
+90% = [avg: 234.000 nanos, max: 802.000 nanos]
+99% = [avg: 309.000 nanos, max: 1.489 micros]
+99.9% = [avg: 321.000 nanos, max: 1.850 micros]
+99.99% = [avg: 322.000 nanos, max: 2.330 micros]
+99.999% = [avg: 323.000 nanos, max: 4.592 micros]
 ```
 </details>
 
@@ -329,37 +359,47 @@ $ java -XX:-UseJVMCICompiler -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m 
        -cp target/classes:target/coralbench-all.jar \
        com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
 
-Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
-Benchmarking put...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 30.490 nanos | Min Time: 25.000 nanos | Max Time: 32.250 micros
-75% = [avg: 29.000 nanos, max: 31.000 nanos]
-90% = [avg: 29.000 nanos, max: 32.000 nanos]
-99% = [avg: 29.000 nanos, max: 53.000 nanos]
-99.9% = [avg: 30.000 nanos, max: 101.000 nanos]
-99.99% = [avg: 30.000 nanos, max: 349.000 nanos]
-99.999% = [avg: 30.000 nanos, max: 1.946 micros]
+Benchmarking put on empty map... (1) => creating new Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 341.770 nanos | Min Time: 29.000 nanos | Max Time: 36.715 micros
+75% = [avg: 177.000 nanos, max: 532.000 nanos]
+90% = [avg: 258.000 nanos, max: 835.000 nanos]
+99% = [avg: 327.000 nanos, max: 1.335 micros]
+99.9% = [avg: 338.000 nanos, max: 1.661 micros]
+99.99% = [avg: 340.000 nanos, max: 14.384 micros]
+99.999% = [avg: 341.000 nanos, max: 17.877 micros]
+
+Benchmarking put after clear()... (2) => hitting the pool of Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 596.090 nanos | Min Time: 28.000 nanos | Max Time: 34.792 micros
+75% = [avg: 415.000 nanos, max: 876.000 nanos]
+90% = [avg: 509.000 nanos, max: 1.113 micros]
+99% = [avg: 578.000 nanos, max: 1.596 micros]
+99.9% = [avg: 589.000 nanos, max: 2.161 micros]
+99.99% = [avg: 594.000 nanos, max: 16.180 micros]
+99.999% = [avg: 595.000 nanos, max: 17.084 micros]
 
 Benchmarking get...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 23.600 nanos | Min Time: 18.000 nanos | Max Time: 23.312 micros
-75% = [avg: 21.000 nanos, max: 24.000 nanos]
-90% = [avg: 22.000 nanos, max: 25.000 nanos]
-99% = [avg: 22.000 nanos, max: 53.000 nanos]
-99.9% = [avg: 23.000 nanos, max: 96.000 nanos]
-99.99% = [avg: 23.000 nanos, max: 412.000 nanos]
-99.999% = [avg: 23.000 nanos, max: 13.291 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 599.480 nanos | Min Time: 20.000 nanos | Max Time: 31.256 micros
+75% = [avg: 418.000 nanos, max: 882.000 nanos]
+90% = [avg: 512.000 nanos, max: 1.115 micros]
+99% = [avg: 581.000 nanos, max: 1.602 micros]
+99.9% = [avg: 592.000 nanos, max: 2.275 micros]
+99.99% = [avg: 597.000 nanos, max: 16.152 micros]
+99.999% = [avg: 599.000 nanos, max: 16.908 micros]
 
 Benchmarking remove...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 27.180 nanos | Min Time: 22.000 nanos | Max Time: 23.344 micros
-75% = [avg: 25.000 nanos, max: 28.000 nanos]
-90% = [avg: 25.000 nanos, max: 29.000 nanos]
-99% = [avg: 26.000 nanos, max: 59.000 nanos]
-99.9% = [avg: 26.000 nanos, max: 101.000 nanos]
-99.99% = [avg: 26.000 nanos, max: 362.000 nanos]
-99.999% = [avg: 27.000 nanos, max: 13.476 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 826.480 nanos | Min Time: 23.000 nanos | Max Time: 65.205 micros
+75% = [avg: 516.000 nanos, max: 1.267 micros]
+90% = [avg: 675.000 nanos, max: 1.705 micros]
+99% = [avg: 797.000 nanos, max: 2.756 micros]
+99.9% = [avg: 817.000 nanos, max: 3.420 micros]
+99.99% = [avg: 824.000 nanos, max: 16.860 micros]
+99.999% = [avg: 826.000 nanos, max: 18.824 micros]
 ```
 </details>
 
@@ -374,37 +414,47 @@ $ java -Xcomp -XX:-TieredCompilation \
        -cp target/classes:target/coralbench-all.jar \
        com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
 
-Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
-Benchmarking put...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 41.804 nanos | Min Time: 30.000 nanos | Max Time: 23.851 micros
-75% = [avg: 32.477 nanos, max: 34.000 nanos]
-90% = [avg: 32.939 nanos, max: 36.000 nanos]
-99% = [avg: 34.987 nanos, max: 588.000 nanos]
-99.9% = [avg: 40.434 nanos, max: 990.000 nanos]
-99.99% = [avg: 41.344 nanos, max: 1.305 micros]
-99.999% = [avg: 41.643 nanos, max: 15.394 micros]
+Benchmarking put on empty map... (1) => creating new Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 351.450 nanos | Min Time: 25.000 nanos | Max Time: 3.904 millis
+75% = [avg: 180.000 nanos, max: 539.000 nanos]
+90% = [avg: 263.000 nanos, max: 859.000 nanos]
+99% = [avg: 334.000 nanos, max: 1.358 micros]
+99.9% = [avg: 345.000 nanos, max: 1.680 micros]
+99.99% = [avg: 347.000 nanos, max: 14.904 micros]
+99.999% = [avg: 348.000 nanos, max: 16.979 micros]
+
+Benchmarking put after clear()... (2) => hitting the pool of Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 622.520 nanos | Min Time: 26.000 nanos | Max Time: 26.968 micros
+75% = [avg: 442.000 nanos, max: 927.000 nanos]
+90% = [avg: 540.000 nanos, max: 1.160 micros]
+99% = [avg: 610.000 nanos, max: 1.587 micros]
+99.9% = [avg: 620.000 nanos, max: 1.991 micros]
+99.99% = [avg: 621.000 nanos, max: 4.363 micros]
+99.999% = [avg: 622.000 nanos, max: 24.722 micros]
 
 Benchmarking get...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 24.397 nanos | Min Time: 19.000 nanos | Max Time: 16.001 micros
-75% = [avg: 21.539 nanos, max: 24.000 nanos]
-90% = [avg: 22.116 nanos, max: 26.000 nanos]
-99% = [avg: 23.279 nanos, max: 93.000 nanos]
-99.9% = [avg: 23.963 nanos, max: 160.000 nanos]
-99.99% = [avg: 24.182 nanos, max: 428.000 nanos]
-99.999% = [avg: 24.250 nanos, max: 13.414 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 628.130 nanos | Min Time: 22.000 nanos | Max Time: 1.479 millis
+75% = [avg: 441.000 nanos, max: 930.000 nanos]
+90% = [avg: 540.000 nanos, max: 1.165 micros]
+99% = [avg: 612.000 nanos, max: 1.683 micros]
+99.9% = [avg: 623.000 nanos, max: 2.418 micros]
+99.99% = [avg: 626.000 nanos, max: 5.492 micros]
+99.999% = [avg: 627.000 nanos, max: 23.719 micros]
 
 Benchmarking remove...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 25.383 nanos | Min Time: 20.000 nanos | Max Time: 24.626 micros
-75% = [avg: 22.410 nanos, max: 25.000 nanos]
-90% = [avg: 23.072 nanos, max: 27.000 nanos]
-99% = [avg: 24.239 nanos, max: 94.000 nanos]
-99.9% = [avg: 24.925 nanos, max: 158.000 nanos]
-99.99% = [avg: 25.135 nanos, max: 425.000 nanos]
-99.999% = [avg: 25.231 nanos, max: 13.491 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 886.830 nanos | Min Time: 24.000 nanos | Max Time: 5.870 millis
+75% = [avg: 561.000 nanos, max: 1.351 micros]
+90% = [avg: 726.000 nanos, max: 1.805 micros]
+99% = [avg: 853.000 nanos, max: 2.804 micros]
+99.9% = [avg: 874.000 nanos, max: 3.912 micros]
+99.99% = [avg: 882.000 nanos, max: 17.076 micros]
+99.999% = [avg: 883.000 nanos, max: 19.558 micros]
 ```
 </details>
 
@@ -419,37 +469,47 @@ $ java -XX:-UseJVMCICompiler -Xcomp -XX:-TieredCompilation \
        -cp target/classes:target/coralbench-all.jar \
        com.coralblocks.coralbench.example.IntMapBenchmark 0 10000000 5000000
 
-Arguments: warmup=0 measurements=10000000 mapCapacity=5000000
+Arguments: warmup=0 measurements=2000000 mapCapacity=20000
 
-Benchmarking put...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 34.820 nanos | Min Time: 30.000 nanos | Max Time: 4.127 millis
-75% = [avg: 33.000 nanos, max: 35.000 nanos]
-90% = [avg: 33.000 nanos, max: 35.000 nanos]
-99% = [avg: 33.000 nanos, max: 41.000 nanos]
-99.9% = [avg: 34.000 nanos, max: 103.000 nanos]
-99.99% = [avg: 34.000 nanos, max: 370.000 nanos]
-99.999% = [avg: 34.000 nanos, max: 1.549 micros]
+Benchmarking put on empty map... (1) => creating new Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 351.310 nanos | Min Time: 26.000 nanos | Max Time: 4.111 millis
+75% = [avg: 176.000 nanos, max: 536.000 nanos]
+90% = [avg: 261.000 nanos, max: 872.000 nanos]
+99% = [avg: 334.000 nanos, max: 1.395 micros]
+99.9% = [avg: 345.000 nanos, max: 1.728 micros]
+99.99% = [avg: 346.000 nanos, max: 14.244 micros]
+99.999% = [avg: 348.000 nanos, max: 16.885 micros]
+
+Benchmarking put after clear()... (2) => hitting the pool of Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 642.030 nanos | Min Time: 25.000 nanos | Max Time: 34.457 micros
+75% = [avg: 449.000 nanos, max: 954.000 nanos]
+90% = [avg: 552.000 nanos, max: 1.208 micros]
+99% = [avg: 627.000 nanos, max: 1.722 micros]
+99.9% = [avg: 638.000 nanos, max: 2.199 micros]
+99.99% = [avg: 640.000 nanos, max: 5.793 micros]
+99.999% = [avg: 641.000 nanos, max: 18.050 micros]
 
 Benchmarking get...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 26.670 nanos | Min Time: 21.000 nanos | Max Time: 845.407 micros
-75% = [avg: 24.000 nanos, max: 27.000 nanos]
-90% = [avg: 25.000 nanos, max: 29.000 nanos]
-99% = [avg: 25.000 nanos, max: 40.000 nanos]
-99.9% = [avg: 26.000 nanos, max: 97.000 nanos]
-99.99% = [avg: 26.000 nanos, max: 380.000 nanos]
-99.999% = [avg: 26.000 nanos, max: 13.523 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 628.040 nanos | Min Time: 22.000 nanos | Max Time: 739.780 micros
+75% = [avg: 447.000 nanos, max: 936.000 nanos]
+90% = [avg: 546.000 nanos, max: 1.158 micros]
+99% = [avg: 614.000 nanos, max: 1.588 micros]
+99.9% = [avg: 624.000 nanos, max: 2.043 micros]
+99.99% = [avg: 626.000 nanos, max: 6.296 micros]
+99.999% = [avg: 627.000 nanos, max: 16.825 micros]
 
 Benchmarking remove...
-Measurements: 10,000,000 | Warm-Up: 0 | Iterations: 10,000,000
-Avg Time: 29.870 nanos | Min Time: 24.000 nanos | Max Time: 3.079 millis
-75% = [avg: 27.000 nanos, max: 30.000 nanos]
-90% = [avg: 28.000 nanos, max: 31.000 nanos]
-99% = [avg: 28.000 nanos, max: 43.000 nanos]
-99.9% = [avg: 29.000 nanos, max: 100.000 nanos]
-99.99% = [avg: 29.000 nanos, max: 396.000 nanos]
-99.999% = [avg: 29.000 nanos, max: 13.628 micros]
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 859.440 nanos | Min Time: 25.000 nanos | Max Time: 3.341 millis
+75% = [avg: 555.000 nanos, max: 1.331 micros]
+90% = [avg: 716.000 nanos, max: 1.749 micros]
+99% = [avg: 835.000 nanos, max: 2.614 micros]
+99.9% = [avg: 853.000 nanos, max: 3.249 micros]
+99.99% = [avg: 856.000 nanos, max: 14.535 micros]
+99.999% = [avg: 857.000 nanos, max: 19.239 micros]
 ```
 </details>
 <br/>
