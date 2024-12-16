@@ -242,7 +242,7 @@ $ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/b
 $ clang++ -Ofast -march=native -flto -std=c++17 -I./src/main/c -c ./src/main/c/int_map_benchmark.cpp -o ./target/cpp/int_map_benchmark.o
 $ clang++ -Ofast -march=native -flto -std=c++17 -o ./target/cpp/int_map_benchmark ./target/cpp/int_map.o ./target/cpp/bench.o ./target/cpp/int_map_benchmark.o
 
-$ ./target/cpp/int_map_benchmark 0 2000000 20000
+$ ./target/cpp/int_map_benchmark 0 3000000 1000000
 
 Arguments: warmup=0 measurements=3000000 mapCapacity=1000000
 
