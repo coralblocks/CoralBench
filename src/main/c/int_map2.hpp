@@ -27,19 +27,18 @@ class IntMap2 {
 
 private:
 
-    template <typename T>
     struct Entry {
         Entry(Entry&&)=default;
         Entry& operator=(Entry&&)& =default;
         
-        Entry(std::size_t k, T v):key(k), value(std::move(v)) {}
+        Entry(std::size_t k, E v):key(k), value(std::move(v)) {}
 
         std::size_t key;
-        T value;
+        E value;
       };
 
     size_t count = 0;
-    vector<vector<Entry<E>>> data;
+    vector<vector<Entry>> data;
 
     size_t toArrayIndex(size_t key) const {
         return key % data.size();
@@ -56,15 +55,15 @@ public:
     }
 
     optional<E> get(size_t key) const {
-        vector<Entry<E>> const& entries = data[toArrayIndex(key)];
-        for (Entry<E> const& e : entries) {
+        vector<Entry> const& entries = data[toArrayIndex(key)];
+        for (Entry const& e : entries) {
             if (e.key == key) return e.value;
         }
         return nullopt;
     }
 
     optional<E> put(size_t key, const E& value) {
-        vector<Entry<E>>& entries = data[toArrayIndex(key)];
+        vector<Entry>& entries = data[toArrayIndex(key)];
         for (auto& e : entries) {
             if (e.key == key) {
                 auto old = std::move(e.value);
@@ -78,8 +77,8 @@ public:
     }
 
     optional<E> remove(size_t key) {
-        vector<Entry<E>>& entries = data[toArrayIndex(key)];
-        for (Entry<E>& e : entries) {
+        vector<Entry>& entries = data[toArrayIndex(key)];
+        for (Entry& e : entries) {
             if (e.key == key) {
                 auto old = e.value;
                 swap( e, entries.back() );
