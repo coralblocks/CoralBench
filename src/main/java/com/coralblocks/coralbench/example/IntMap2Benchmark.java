@@ -25,14 +25,12 @@ public class IntMap2Benchmark {
 		final int measurements = args.length > 1 ? Integer.parseInt(args[1]) : 1_000_000;
 		final int totalIterations = measurements + warmup;
 		final int mapCapacity = args.length > 2 ? Integer.parseInt(args[2]) : 100_000;
-		final int initialEntryPoolSize = args.length > 3 ? Integer.parseInt(args[3]) : totalIterations;
 		final int initialBucketSize = totalIterations / mapCapacity;
 		
 		System.out.println("\nArguments: warmup=" + warmup + " measurements=" + measurements + 
-						   " mapCapacity=" + mapCapacity + " initialBucketSize=" + initialBucketSize + 
-						   " initialEntryPoolSize=" + initialEntryPoolSize + "\n");
+						   " mapCapacity=" + mapCapacity + " initialBucketSize=" + initialBucketSize + "\n");
 		
-		final IntMap2<Object> map = new IntMap2<Object>(mapCapacity, initialBucketSize, initialEntryPoolSize);
+		final IntMap2<Object> map = new IntMap2<Object>(mapCapacity, initialBucketSize);
 		
 		final Object dummy = new Object();
 		

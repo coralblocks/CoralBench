@@ -31,12 +31,12 @@ class IntMap2<E> {
 	private final LinkedObjectList<Entry<E>> entryPool;
 
 	@SuppressWarnings("unchecked")
-	IntMap2(int capacity, int initialBucketSize, int initialEntryPoolSize) {
+	IntMap2(int capacity, int initialBucketSize) {
 		this.data = (ArrayList<Entry<E>>[]) new ArrayList[capacity];
 		for(int i = 0; i < capacity; i++) {
 			data[i] = new ArrayList<Entry<E>>(initialBucketSize);
 		}
-		this.entryPool = new LinkedObjectList<Entry<E>>(initialEntryPoolSize);
+		this.entryPool = new LinkedObjectList<Entry<E>>(capacity * initialBucketSize);
 	}
 
 	public final int size() {
