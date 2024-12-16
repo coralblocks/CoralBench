@@ -141,9 +141,11 @@ The full <code>sleep_benchmark.cpp</code> source code can be seen [here](src/mai
 
 In this section, we compare the `HotSpotVM` JIT (JVMCI and C2) against three forms of AOT: `C++ LLVM` (clang), `GraalVM` (native-image), and `-Xcomp` (JVMCI and C2). To ensure a fair and unbiased comparison, all Java and C++ source code is designed to be _equivalent_. Not only the `IntMap` class, which is the code being measured, but also the `Bench` class, which performs the measurements. `We made every effort to maintain consistency and fairness in the comparison.` **If you notice anything that seems incorrect or could be improved, especially in the C++ code, please feel free to open an issue or submit a pull request.**
 
-The Java `IntMap` implementation [is here](src/main/java/com/coralblocks/coralbench/example/IntMap.java). The C++ `IntMap` implementation [is here](src/main/c/int_map.hpp).<br/>
-The Java benchmark code [is here](src/main/java/com/coralblocks/coralbench/example/IntMapBenchmark.java). The C++ benchmark code [is here](src/main/c/int_map_benchmark.cpp).<br/>
-The Java `Bench` class [is here](src/main/java/com/coralblocks/coralbench/Bench.java). The C++ `Bench` class [is here](src/main/c/bench.cpp).<br/>
+The Java `IntMap` implementation [is here](src/main/java/com/coralblocks/coralbench/example/IntMap.java). The C++ implementation [is here](src/main/c/int_map.hpp).<br/>
+The Java `IntMap2` implementation [is here](src/main/java/com/coralblocks/coralbench/example/IntMap2.java). The C++ implementation [is here](src/main/c/int_map2.hpp).<br/>
+The Java benchmark code for the `IntMap` [is here](src/main/java/com/coralblocks/coralbench/example/IntMapBenchmark.java). The C++ implementation [is here](src/main/c/int_map_benchmark.cpp).<br/>
+The Java benchmark code for the `IntMap2` [is here](src/main/java/com/coralblocks/coralbench/example/IntMap2Benchmark.java). The C++ implementation [is here](src/main/c/int_map2_benchmark.cpp).<br/>
+The Java `Bench` class [is here](src/main/java/com/coralblocks/coralbench/Bench.java). The C++ implementation [is here](src/main/c/bench.cpp).<br/>
 
 <details>
   <summary> Benchmark Environment </summary>
@@ -233,13 +235,68 @@ Avg Time: 662.350 nanos | Min Time: 18.000 nanos | Max Time: 65.518 micros
 99.99% = [avg: 660.000 nanos, max: 6.448 micros]
 99.999% = [avg: 662.000 nanos, max: 23.845 micros]
 ```
+```
+$ java -XX:+AlwaysPreTouch -Xms4g -Xmx4g -XX:NewSize=512m -XX:MaxNewSize=1024m \
+       -cp target/classes:target/coralbench-all.jar \
+       com.coralblocks.coralbench.example.IntMap2Benchmark 0 2000000 20000 2000000
+
+Arguments: warmup=0 measurements=2000000 mapCapacity=20000 initialBucketSize=100 initialEntryPoolSize=2000000
+
+Benchmarking put on empty map... (1) => creating new Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 190.110 nanos | Min Time: 30.000 nanos | Max Time: 244.790 micros
+75% = [avg: 116.000 nanos, max: 289.000 nanos]
+90% = [avg: 153.000 nanos, max: 396.000 nanos]
+99% = [avg: 182.000 nanos, max: 686.000 nanos]
+99.9% = [avg: 187.000 nanos, max: 819.000 nanos]
+99.99% = [avg: 188.000 nanos, max: 4.332 micros]
+99.999% = [avg: 189.000 nanos, max: 17.008 micros]
+
+Benchmarking put after clear()... (2) => hitting the pool of Entry objects
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 259.630 nanos | Min Time: 40.000 nanos | Max Time: 25.351 micros
+75% = [avg: 177.000 nanos, max: 357.000 nanos]
+90% = [avg: 217.000 nanos, max: 491.000 nanos]
+99% = [avg: 251.000 nanos, max: 777.000 nanos]
+99.9% = [avg: 256.000 nanos, max: 984.000 nanos]
+99.99% = [avg: 258.000 nanos, max: 13.808 micros]
+99.999% = [avg: 259.000 nanos, max: 16.430 micros]
+
+Benchmarking get...
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 234.880 nanos | Min Time: 27.000 nanos | Max Time: 23.337 micros
+75% = [avg: 154.000 nanos, max: 331.000 nanos]
+90% = [avg: 193.000 nanos, max: 460.000 nanos]
+99% = [avg: 226.000 nanos, max: 754.000 nanos]
+99.9% = [avg: 231.000 nanos, max: 953.000 nanos]
+99.99% = [avg: 233.000 nanos, max: 13.806 micros]
+99.999% = [avg: 234.000 nanos, max: 16.380 micros]
+
+Benchmarking remove...
+Measurements: 2,000,000 | Warm-Up: 0 | Iterations: 2,000,000
+Avg Time: 157.420 nanos | Min Time: 20.000 nanos | Max Time: 34.595 micros
+75% = [avg: 91.000 nanos, max: 183.000 nanos]
+90% = [avg: 113.000 nanos, max: 271.000 nanos]
+99% = [avg: 136.000 nanos, max: 744.000 nanos]
+99.9% = [avg: 153.000 nanos, max: 3.010 micros]
+99.99% = [avg: 156.000 nanos, max: 5.379 micros]
+99.999% = [avg: 157.000 nanos, max: 16.510 micros]
+```
 </details>
 
+##### IntMap
 ```
 PUT => Avg: 371 ns | Min: 28 ns | 99.9% = [avg: 367 ns, max: 1.743 micros]
 PUT => Avg: 613 ns | Min: 27 ns | 99.9% = [avg: 606 ns, max: 2.184 micros]
 GET => Avg: 615 ns | Min: 14 ns | 99.9% = [avg: 607 ns, max: 2.549 micros]
 DEL => Avg: 662 ns | Min: 18 ns | 99.9% = [avg: 658 ns, max: 2.538 micros]
+```
+##### IntMap2
+```
+PUT => Avg: 190 ns | Min: 30 ns | 99.9% = [avg: 187 ns, max: 819 ns]
+PUT => Avg: 260 ns | Min: 40 ns | 99.9% = [avg: 256 ns, max: 984 ns]
+GET => Avg: 235 ns | Min: 27 ns | 99.9% = [avg: 231 ns, max: 953 ns]
+DEL => Avg: 157 ns | Min: 20 ns | 99.9% = [avg: 153 ns, max: 3.010 micros]
 ```
 
 <details>
