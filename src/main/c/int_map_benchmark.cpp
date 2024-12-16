@@ -22,9 +22,9 @@ struct Dummy {};
 
 int main(int argc, char* argv[]) {
 
-    int warmupCount = 1000000;
-    int measureCount = 1000000;
-    int capacity = 100000;
+    int warmupCount = 0;
+    int measureCount = 3000000;
+    int capacity = 1000000;
 
     if (argc > 1) {
         warmupCount = atoi(argv[1]);

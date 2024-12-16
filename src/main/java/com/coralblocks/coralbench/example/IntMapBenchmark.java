@@ -21,10 +21,10 @@ public class IntMapBenchmark {
 	
 	public static void main(String[] args) {
 		
-		final int warmup = args.length > 0 ? Integer.parseInt(args[0]) : 1_000_000;
-		final int measurements = args.length > 1 ? Integer.parseInt(args[1]) : 1_000_000;
+		final int warmup = args.length > 0 ? Integer.parseInt(args[0]) : 0;
+		final int measurements = args.length > 1 ? Integer.parseInt(args[1]) : 3_000_000;
 		final int totalIterations = measurements + warmup;
-		final int mapCapacity = args.length > 2 ? Integer.parseInt(args[2]) : 100_000;
+		final int mapCapacity = args.length > 2 ? Integer.parseInt(args[2]) : 1_000_000;
 		final int initialBucketSize = totalIterations / mapCapacity;
 		
 		System.out.println("\nArguments: warmup=" + warmup + " measurements=" + measurements + 
