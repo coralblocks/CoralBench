@@ -24,7 +24,7 @@ Bench::Bench(int warmupCount)
       maxTime(numeric_limits<long long>::min()),
       size(0) {
 
-        results = new map<long long, long long>();
+        results = new unordered_map<long long, long long>(4194304); // 2 ^ 22
 
 }
 
@@ -174,9 +174,13 @@ void Bench::printPercentiles() const {
 
     double percentiles[] = {0.75, 0.90, 0.99, 0.999, 0.9999, 0.99999};
 
+    auto sorted_results = new std::map<long long, long long>(results->begin(), results->end());
+
     for (double p : percentiles) {
-        addPercentile(p);
+        addPercentile(p, sorted_results);
     }
+
+    delete sorted_results;
 }
 
 string Bench::formatPercentage(double perc) {
@@ -202,9 +206,9 @@ string Bench::formatPercentage(double perc) {
     return s;
 }
 
-void Bench::addPercentile(double perc) const {
+void Bench::addPercentile(double perc, map<long long, long long>* sorted_results) const {
 
-    if (results->empty()) return;
+    if (sorted_results->empty()) return;
 
     long long target = static_cast<long long>(llround(perc * size));
     if (target == 0) return;
@@ -215,7 +219,7 @@ void Bench::addPercentile(double perc) const {
     long long sumTop = 0;
     long long maxTop = -1;
 
-    for (auto &entry : *results) {
+    for (auto &entry : *sorted_results) {
         long long time = entry.first;
         long long count = entry.second;
 

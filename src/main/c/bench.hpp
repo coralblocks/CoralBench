@@ -49,7 +49,7 @@ private:
     long long minTime;
     long long maxTime;
     int size;
-    std::map<long long, long long>* results;
+    std::unordered_map<long long, long long>* results;
     std::chrono::steady_clock::time_point startTime;
     
     static std::string formatWithCommas(long long value);
@@ -57,7 +57,7 @@ private:
     static std::string formatPercentage(double perc);
     static double roundToDecimals(double d, int decimals);
     void printPercentiles() const;
-    void addPercentile(double perc) const;
+    void addPercentile(double perc, std::map<long long, long long>* sorted_results) const;
     double avg() const;
 };
 
