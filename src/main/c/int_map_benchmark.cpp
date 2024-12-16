@@ -40,11 +40,11 @@ int main(int argc, char* argv[]) {
 
     int iterations = warmupCount + measureCount;
 
-    IntMap<Dummy>* map = new IntMap<Dummy>(capacity);
+    IntMap<Dummy*>* map = new IntMap<Dummy*>(capacity);
+    Dummy* dummy = new Dummy();
     Bench bench(warmupCount);
-    Dummy dummy;
 
-    cout << "Benchmarking put on empty map... (1) => creating new Entry objects" << endl;
+    cout << "Benchmarking put..." << endl;
     for (int i = 0; i < iterations; i++) {
         bench.mark();
         map->put(i, dummy);
@@ -52,21 +52,11 @@ int main(int argc, char* argv[]) {
     }
     bench.printResults();
     
-    cout << "Benchmarking put after clear()... (2) => hitting the pool of Entry objects" << endl;
-    map->clear(); // clear the map, but the entry pool will be there
-    bench.reset(true);
-    for (int i = 0; i < iterations; i++) {
-        bench.mark();
-        map->put(i, dummy);
-        bench.measure();
-    }
-    bench.printResults();
-
     cout << "Benchmarking get..." << endl;
     bench.reset(true);
     for (int i = 0; i < iterations; i++) {
         bench.mark();
-        volatile auto val = map->get(i); // volatile to prevent optimization out
+        volatile auto val = map->get(i); // volatile to avoid optimizing away...
         bench.measure();
     }
     bench.printResults();
@@ -80,6 +70,7 @@ int main(int argc, char* argv[]) {
     }
     bench.printResults();
 
+    delete dummy;
     delete map; 
     return 0;
 }

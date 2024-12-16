@@ -15,46 +15,28 @@
  */
 package com.coralblocks.coralbench.example;
 
+import java.util.ArrayList;
+
+import com.coralblocks.coralbench.util.LinkedObjectList;
+
 class IntMap<E> {
 
 	static class Entry<T> {
 		int key;
 		T value;
-		Entry<T> next;
 	}
 
-	private Entry<E>[] data;
+	private ArrayList<Entry<E>>[] data;
 	private int count;
-	private Entry<E> head;
-	private final int capacity;
+	private final LinkedObjectList<Entry<E>> entryPool;
 
 	@SuppressWarnings("unchecked")
-	IntMap(int capacity) {
-		this.capacity = capacity;
-		this.data = new Entry[capacity];
-	}
-
-	private Entry<E> newEntry(int key, E value, Entry<E> next) {
-
-		Entry<E> newEntry = head;
-
-		if (newEntry != null) {
-			head = newEntry.next;
-		} else {
-			newEntry = new Entry<E>();
+	IntMap(int capacity, int initialBucketSize) {
+		this.data = (ArrayList<Entry<E>>[]) new ArrayList[capacity];
+		for(int i = 0; i < capacity; i++) {
+			data[i] = new ArrayList<Entry<E>>(initialBucketSize);
 		}
-
-		newEntry.key = key;
-		newEntry.value = value;
-		newEntry.next = next;
-
-		return newEntry;
-	}
-
-	private void free(Entry<E> e) {
-		e.value = null;
-		e.next = head;
-		head = e;
+		this.entryPool = new LinkedObjectList<Entry<E>>(capacity * initialBucketSize);
 	}
 
 	public final int size() {
@@ -62,100 +44,89 @@ class IntMap<E> {
 	}
 
 	private final int toArrayIndex(int key) {
-		return (key & 0x7FFFFFFF) % capacity;
+		return key % data.length;
 	}
 
 	public final E get(int key) {
 
-		Entry<E> e = data[toArrayIndex(key)];
-
-		while (e != null) {
-
-			if (e.key == key) {
-
-				return e.value;
-			}
-
-			e = e.next;
+		ArrayList<Entry<E>> entries = data[toArrayIndex(key)];
+		
+		final int size = entries.size();
+		
+		for(int i = 0; i < size; i++) {
+			Entry<E> e = entries.get(i);
+			if (e.key == key) return e.value;
 		}
+		
 		return null;
 	}
-
+	
 	public final E put(int key, E value) {
 
-		int index = toArrayIndex(key);
-
-		Entry<E> e = data[index];
-
-		while (e != null) {
-
+		ArrayList<Entry<E>> entries = data[toArrayIndex(key)];
+		
+		final int size = entries.size();
+		
+		for(int i = 0; i < size; i++) {
+			Entry<E> e = entries.get(i);
 			if (e.key == key) {
-
 				E old = e.value;
-
 				e.value = value;
-
 				return old;
 			}
-
-			e = e.next;
 		}
-
-		data[index] = newEntry(key, value, data[index]);
-
+		
+		Entry<E> e = entryPool.removeLast();
+		
+		if (e == null) e = new Entry<E>();
+		
+		e.key = key;
+		e.value = value;
+		
+		entries.add(e);
+		
 		count++;
-
+		
 		return null;
 	}
-
+	
 	public final E remove(int key) {
-
-		int index = toArrayIndex(key);
-
-		Entry<E> e = data[index];
-		Entry<E> prev = null;
-
-		while (e != null) {
-
+		
+		ArrayList<Entry<E>> entries = data[toArrayIndex(key)];
+		
+		final int size = entries.size();
+		
+		for(int i = 0; i < size; i++) {
+			Entry<E> e = entries.get(i);
 			if (e.key == key) {
-
-				if (prev != null) {
-
-					prev.next = e.next;
-
+				E toReturn = e.value;
+				e.value = null;
+				entryPool.addLast(e);
+				Entry<E> last = entries.remove(size - 1);
+				if (last == e) {
+					// nothing to do
 				} else {
-
-					data[index] = e.next;
+					entries.set(i, last); // swap
 				}
-
-				E oldValue = e.value;
-
-				free(e);
-
 				count--;
-
-				return oldValue;
+				return toReturn;
 			}
-
-			prev = e;
-			e = e.next;
 		}
 
 		return null;
 	}
 
 	public final void clear() {
-
-		for (int index = data.length - 1; index >= 0; index--) {
-
-			while (data[index] != null) {
-
-				Entry<E> next = data[index].next;
-
-				free(data[index]);
-
-				data[index] = next;
+		
+		for(int i = 0; i < data.length; i++) {
+			ArrayList<Entry<E>> entries = data[i];
+			final int size = entries.size();
+			for(int j = 0; j < size; j++) {
+				Entry<E> e = entries.get(j);
+				e.value = null;
+				entryPool.addLast(e);
 			}
+			entries.clear();
 		}
 
 		count = 0;

@@ -18,137 +18,80 @@
 
 #include <optional>
 #include <cstddef>
+#include <vector>
+
+using namespace std;
 
 template <typename E>
 class IntMap {
 
 private:
 
-    template <typename T>
     struct Entry {
-        int key;
-        T* value;
-        Entry<T>* next;
-    };
+        Entry(Entry&&)=default;
+        Entry& operator=(Entry&&)& =default;
+        
+        Entry(std::size_t k, E v):key(k), value(std::move(v)) {}
 
-    Entry<E>** data;
-    int count;
-    Entry<E>* head;
-    const int capacity;
+        std::size_t key;
+        E value;
+      };
 
-    Entry<E>* newEntry(int key, const E& value, Entry<E>* next) {
-        Entry<E>* newEntry = head;
+    size_t count = 0;
+    vector<vector<Entry>> data;
 
-        if (newEntry != nullptr) {
-            head = newEntry->next;
-        } else {
-            newEntry = new Entry<E>();
-        }
-
-        newEntry->key = key;
-        newEntry->value = const_cast<E*>(&value);
-        newEntry->next = next;
-
-        return newEntry;
-    }
-
-    void free(Entry<E>* e) {
-        e->value = nullptr;
-        e->next = head;
-        head = e;
-    }
-
-    int toArrayIndex(int key) const {
-        return (key & 0x7FFFFFFF) % capacity;
+    size_t toArrayIndex(size_t key) const {
+        return key % data.size();
     }
 
 public:
 
-    IntMap(int capacity)
-        : capacity(capacity), count(0), head(nullptr) {
-        data = new Entry<E>*[capacity];
-        for (int i = 0; i < capacity; i++) {
-            data[i] = nullptr;
-        }
+    IntMap(size_t capacity)
+        : data(capacity) {
     }
 
-    ~IntMap() {
-        clear();
-
-        while (head != nullptr) {
-            Entry<E>* temp = head;
-            head = head->next;
-            delete temp;
-        }
-
-        delete[] data;
-    }
-
-    int size() const {
+    size_t size() const {
         return count;
     }
 
-    E* get(int key) const {
-        Entry<E>* e = data[toArrayIndex(key)];
-        while (e != nullptr) {
-            if (e->key == key) {
-                return e->value;
-            }
-            e = e->next;
+    optional<E> get(size_t key) const {
+        vector<Entry> const& entries = data[toArrayIndex(key)];
+        for (Entry const& e : entries) {
+            if (e.key == key) return e.value;
         }
-        return nullptr;
+        return nullopt;
     }
 
-    E* put(int key, const E& value) {
-        int index = toArrayIndex(key);
-        Entry<E>* e = data[index];
-
-        while (e != nullptr) {
-            if (e->key == key) {
-                E* old = e->value;
-                e->value = const_cast<E*>(&value);
+    optional<E> put(size_t key, const E& value) {
+        vector<Entry>& entries = data[toArrayIndex(key)];
+        for (auto& e : entries) {
+            if (e.key == key) {
+                auto old = std::move(e.value);
+                e.value = std::move(value);
                 return old;
             }
-            e = e->next;
         }
-
-        data[index] = newEntry(key, value, data[index]);
+        entries.emplace_back(key, value);
         count++;
-        return nullptr;
+        return nullopt;
     }
 
-    E* remove(int key) {
-        int index = toArrayIndex(key);
-        Entry<E>* e = data[index];
-        Entry<E>* prev = nullptr;
-
-        while (e != nullptr) {
-            if (e->key == key) {
-                if (prev != nullptr) {
-                    prev->next = e->next;
-                } else {
-                    data[index] = e->next;
-                }
-
-                E* oldValue = e->value;
-                free(e);
+    optional<E> remove(size_t key) {
+        vector<Entry>& entries = data[toArrayIndex(key)];
+        for (Entry& e : entries) {
+            if (e.key == key) {
+                auto old = e.value;
+                swap( e, entries.back() );
+                entries.erase( entries.end() - 1, entries.end() );
                 count--;
-                return oldValue;
+                return std::move(old);
             }
-            prev = e;
-            e = e->next;
         }
-        return nullptr;
+        return nullopt;
     }
 
     void clear() {
-        for (int index = capacity - 1; index >= 0; index--) {
-            while (data[index] != nullptr) {
-                Entry<E>* next = data[index]->next;
-                free(data[index]);
-                data[index] = next;
-            }
-        }
+        for (auto& entries : data) entries.clear();
         count = 0;
     }
 };

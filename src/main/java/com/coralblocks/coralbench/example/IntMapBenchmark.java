@@ -25,26 +25,16 @@ public class IntMapBenchmark {
 		final int measurements = args.length > 1 ? Integer.parseInt(args[1]) : 1_000_000;
 		final int totalIterations = measurements + warmup;
 		final int mapCapacity = args.length > 2 ? Integer.parseInt(args[2]) : 100_000;
+		final int initialBucketSize = totalIterations / mapCapacity;
 		
-		System.out.println("\nArguments: warmup=" + warmup + " measurements=" + measurements + " mapCapacity=" + mapCapacity + "\n");
+		System.out.println("\nArguments: warmup=" + warmup + " measurements=" + measurements + 
+						   " mapCapacity=" + mapCapacity + "\n");
 		
-		final IntMap<Object> map = new IntMap<Object>(mapCapacity);
-		
+		final IntMap<Object> map = new IntMap<Object>(mapCapacity, initialBucketSize);
 		final Object dummy = new Object();
-		
 		Bench bench = new Bench(warmup);
 
-		System.out.println("Benchmarking put on empty map... (1) => creating new Entry objects");
-		for(int i = 0; i < totalIterations; i++) {
-			bench.mark();
-			map.put(i, dummy);
-			bench.measure();
-		}
-		bench.printResults();
-		
-		System.out.println("Benchmarking put after clear()... (2) => hitting the pool of Entry objects");
-		map.clear(); // clear the map, but the entry pool will be there
-		bench.reset(true);
+		System.out.println("Benchmarking put...");
 		for(int i = 0; i < totalIterations; i++) {
 			bench.mark();
 			map.put(i, dummy);
