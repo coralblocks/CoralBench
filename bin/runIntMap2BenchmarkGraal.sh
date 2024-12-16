@@ -1,0 +1,9 @@
+#!/bin/bash
+
+WARMUP=${1:-0}
+MEASUREMENTS=${2:-2000000}
+CAPACITY=${3:-20000}
+POOLSIZE=${4:-2000000}
+
+./target/graal/IntMap2Benchmark $WARMUP $MEASUREMENTS $CAPACITY $POOLSIZE
+

@@ -27,7 +27,7 @@ private:
     template <typename T>
     struct Entry {
         int key;
-        T* value; // removed unnecessary std::optional (thanks to Paul McKenzie at https://stackoverflow.com/users/3133316/paulmckenzie)
+        T* value;
         Entry<T>* next;
     };
 
