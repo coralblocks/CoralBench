@@ -29,9 +29,14 @@ private:
 
     template <typename T>
     struct Entry {
-        size_t key;
-        optional<T> value;
-    };
+        Entry(Entry&&)=default;
+        Entry& operator=(Entry&&)& =default;
+        
+        Entry(std::size_t k, T v):key(k), value(std::move(v)) {}
+
+        std::size_t key;
+        T value;
+      };
 
     size_t count = 0;
     vector<vector<Entry<E>>> data;
@@ -55,19 +60,19 @@ public:
         for (Entry<E> const& e : entries) {
             if (e.key == key) return e.value;
         }
-        return std::nullopt;
+        return nullopt;
     }
 
     optional<E> put(size_t key, const E& value) {
         vector<Entry<E>>& entries = data[toArrayIndex(key)];
         for (auto& e : entries) {
             if (e.key == key) {
-                optional<E> old = std::move(e.value); // no copy
-                e.value = value;
+                auto old = std::move(e.value);
+                e.value = std::move(value);
                 return old;
             }
         }
-        entries.push_back( {key, value } );
+        entries.emplace_back(key, value);
         count++;
         return nullopt;
     }
@@ -76,11 +81,11 @@ public:
         vector<Entry<E>>& entries = data[toArrayIndex(key)];
         for (Entry<E>& e : entries) {
             if (e.key == key) {
-                auto old = e.value; // copy
+                auto old = e.value;
                 swap( e, entries.back() );
-                entries.resize( entries.size() - 1 );
+                entries.erase( entries.end() - 1, entries.end() );
                 count--;
-                return old;
+                return std::move(old);
             }
         }
         return nullopt;
