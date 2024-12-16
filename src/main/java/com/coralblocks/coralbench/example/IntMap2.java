@@ -90,22 +90,6 @@ class IntMap2<E> {
 		return null;
 	}
 	
-	/*
-	 *     optional<E> remove(size_t key) {
-        vector<Entry<E>>& entries = data[toArrayIndex(key)];
-        for (Entry<E>& e : entries) {
-            if (e.key == key) {
-                auto old = e.value; // copy
-                swap( e, entries.back() );
-                entries.resize( entries.size() - 1 );
-                count--;
-                return old;
-            }
-        }
-        return nullopt;
-    }
-	 */
-
 	public final E remove(int key) {
 		
 		ArrayList<Entry<E>> entries = data[toArrayIndex(key)];
