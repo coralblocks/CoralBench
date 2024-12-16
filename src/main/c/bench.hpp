@@ -24,6 +24,7 @@
 #include <cmath>
 #include <map>
 #include <sstream>
+#include <unordered_map>
 
 class Bench {
 public:
