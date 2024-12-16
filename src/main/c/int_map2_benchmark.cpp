@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
     bench.reset(true);
     for (int i = 0; i < iterations; i++) {
         bench.mark();
-        map->get(i);
+        volatile auto val = map->get(i);
         bench.measure();
     }
     bench.printResults();
