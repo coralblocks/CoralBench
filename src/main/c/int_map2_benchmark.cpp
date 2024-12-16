@@ -40,9 +40,9 @@ int main(int argc, char* argv[]) {
 
     int iterations = warmupCount + measureCount;
 
-    IntMap2<Dummy>* map = new IntMap2<Dummy>(capacity);
+    IntMap2<Dummy*>* map = new IntMap2<Dummy*>(capacity);
     Bench bench(warmupCount);
-    Dummy dummy;
+    Dummy* dummy = new Dummy();
 
     cout << "Benchmarking put on empty map... (1) => creating new Entry objects" << endl;
     for (int i = 0; i < iterations; i++) {
@@ -80,6 +80,7 @@ int main(int argc, char* argv[]) {
     }
     bench.printResults();
 
+    delete dummy;
     delete map; 
     return 0;
 }
