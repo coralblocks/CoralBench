@@ -7,4 +7,5 @@
 ./bin/compileSleepBenchmarkCpp.sh
 
 ./bin/compileIntMapBenchmarkCpp.sh
+./bin/compileIntMap2BenchmarkCpp.sh
 
