@@ -21,9 +21,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.coralblocks.coralbench.util.LinkedObjectList;
-import com.coralblocks.coralbench.util.LongMap;
 import com.coralblocks.coralbench.util.MutableInt;
+import com.coralblocks.coralds.list.LinkedList;
+import com.coralblocks.coralds.map.LongMap;
 
 /**
  * <p>A class to benchmark Java code for latency. It prints some pretty results with percentiles. See an example below:</p>
@@ -55,7 +55,7 @@ public class Bench {
 	private long minTime;
 	private long maxTime;
 	
-	private final LinkedObjectList<MutableInt> pool = new LinkedObjectList<MutableInt>(1024);
+	private final LinkedList<MutableInt> pool = new LinkedList<MutableInt>(1024);
 	private final LongMap<MutableInt> results = new LongMap<MutableInt>(4194304); // 2 ^ 22
 	private final boolean verbose;
 	private final int verboseLogEvery;

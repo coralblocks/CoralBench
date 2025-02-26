@@ -17,7 +17,7 @@ package com.coralblocks.coralbench.example;
 
 import java.util.ArrayList;
 
-import com.coralblocks.coralbench.util.LinkedObjectList;
+import com.coralblocks.coralds.list.LinkedList;
 
 class IntMap<E> {
 
@@ -28,7 +28,7 @@ class IntMap<E> {
 
 	private ArrayList<Entry<E>>[] data;
 	private int count;
-	private final LinkedObjectList<Entry<E>> entryPool;
+	private final LinkedList<Entry<E>> entryPool;
 
 	@SuppressWarnings("unchecked")
 	IntMap(int capacity, int initialBucketSize) {
@@ -36,7 +36,7 @@ class IntMap<E> {
 		for(int i = 0; i < capacity; i++) {
 			data[i] = new ArrayList<Entry<E>>(initialBucketSize);
 		}
-		this.entryPool = new LinkedObjectList<Entry<E>>(capacity * initialBucketSize);
+		this.entryPool = new LinkedList<Entry<E>>(capacity * initialBucketSize);
 	}
 
 	public final int size() {

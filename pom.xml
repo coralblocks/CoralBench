@@ -18,7 +18,13 @@
   </scm>
 
   <dependencies>
-	  
+
+    <dependency>
+      <groupId>com.github.coralblocks</groupId>
+      <artifactId>CoralDS</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -130,6 +136,13 @@
 
     </plugins>
   </build>
+
+  <repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
 
   <distributionManagement>
     <repository>
