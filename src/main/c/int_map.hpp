@@ -42,7 +42,7 @@ private:
     vector<vector<Entry>> data;
 
     size_t toArrayIndex(std::int32_t key) const {
-        return key % static_cast<std::int32_t>(data.size());
+        return (static_cast<std::uint32_t>(key) & 0x7FFFFFFFu) % static_cast<std::uint32_t>(data.size());
     }
 
 public:

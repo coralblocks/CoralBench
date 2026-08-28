@@ -29,4 +29,21 @@ public class IntMapTest {
 		assertNull(map.put(0, "value"));
 		assertEquals("value", map.get(0));
 	}
+
+	@Test
+	public void supportsNegativeKeys() {
+		IntMap<String> map = new IntMap<String>(2, 2);
+
+		assertNull(map.put(-1, "negative"));
+		assertNull(map.put(1, "positive"));
+		assertNull(map.put(Integer.MIN_VALUE, "minimum"));
+		assertNull(map.put(0, "zero"));
+
+		assertEquals("negative", map.get(-1));
+		assertEquals("positive", map.get(1));
+		assertEquals("minimum", map.get(Integer.MIN_VALUE));
+		assertEquals("zero", map.get(0));
+		assertEquals("negative", map.remove(-1));
+		assertNull(map.get(-1));
+	}
 }

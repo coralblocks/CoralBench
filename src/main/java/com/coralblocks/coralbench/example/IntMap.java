@@ -44,7 +44,7 @@ class IntMap<E> {
 	}
 
 	private final int toArrayIndex(int key) {
-		return key % data.length;
+		return (key & 0x7FFFFFFF) % data.length;
 	}
 
 	public final E get(int key) {
