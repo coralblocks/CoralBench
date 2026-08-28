@@ -20,7 +20,7 @@ package com.coralblocks.coralbench.util;
  */
 public class MutableInt {
 	
-	private static int DEFAULT_VALUE = 0;
+	private static final int DEFAULT_VALUE = 0;
 	
 	private int value;
 	
