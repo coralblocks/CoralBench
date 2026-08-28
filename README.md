@@ -1,9 +1,9 @@
 # CoralBench
 A <code>Benchmark</code> class for Java and C++ to measure latency in nanoseconds with percentiles. Equivalent benchmarks in Java and C++ are provided for performance comparison and research.
 
-Jump to the [Java vs C++](https://github.com/coralblocks/CoralBench?tab=readme-ov-file#hotspotvm-default-jit-and--xcomp-vs-c-llvm-clang-vs-graalvm) section.
+<!-- Jump to the [Java vs C++](https://github.com/coralblocks/CoralBench?tab=readme-ov-file#hotspotvm-default-jit-and--xcomp-vs-c-llvm-clang-vs-graalvm) section.
 
-Jump to the [-Xcomp](https://github.com/coralblocks/CoralBench?tab=readme-ov-file#forcing-the-jvm-to-optimize-at-startup--xcomp--xx-tieredcompilation) section.
+Jump to the [-Xcomp](https://github.com/coralblocks/CoralBench?tab=readme-ov-file#forcing-the-jvm-to-optimize-at-startup--xcomp--xx-tieredcompilation) section. -->
 
 ## How to use it
 ```Java
