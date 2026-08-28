@@ -29,7 +29,6 @@
 class Bench {
 public:
     Bench(int warmupCount = 0);
-    ~Bench();
 
     void mark();
     void measure();
@@ -51,7 +50,7 @@ private:
     long long maxTime;
     int size;
     bool marked;
-    std::unordered_map<long long, long long>* results;
+    std::unordered_map<long long, long long> results;
     std::chrono::steady_clock::time_point startTime;
     
     static std::string formatWithCommas(long long value);
@@ -59,7 +58,7 @@ private:
     static std::string formatPercentage(double perc);
     static double roundToDecimals(double d, int decimals);
     void printPercentiles() const;
-    void addPercentile(double perc, std::map<long long, long long>* sorted_results) const;
+    void addPercentile(double perc, const std::map<long long, long long>& sorted_results) const;
     double avg() const;
 };
 

@@ -43,14 +43,14 @@ int main(int argc, char* argv[]) {
     int iterations = warmupCount + measureCount;
     int initialBucketSize = iterations / capacity;
 
-    IntMap<Dummy*>* map = new IntMap<Dummy*>(capacity, initialBucketSize);
-    Dummy* dummy = new Dummy();
+    Dummy dummy;
+    IntMap<Dummy*> map(capacity, initialBucketSize);
     Bench bench(warmupCount);
 
     cout << "Benchmarking put..." << endl;
     for (int i = 0; i < iterations; i++) {
         bench.mark();
-        map->put(i, dummy);
+        map.put(i, &dummy);
         bench.measure();
     }
     bench.printResults();
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
     int valuesFound = 0;
     for (int i = 0; i < iterations; i++) {
         bench.mark();
-        if (map->get(i) != nullptr) valuesFound++;
+        if (map.get(i) != nullptr) valuesFound++;
         bench.measure();
     }
     bench.printResults();
@@ -69,14 +69,12 @@ int main(int argc, char* argv[]) {
     bench.reset(true);
     for (int i = 0; i < iterations; i++) {
         bench.mark();
-        map->remove(i);
+        map.remove(i);
         bench.measure();
     }
     bench.printResults();
 
     cout << "Values found: " << valuesFound << endl;
 
-    delete dummy;
-    delete map; 
     return 0;
 }

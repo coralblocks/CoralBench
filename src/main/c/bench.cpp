@@ -25,14 +25,8 @@ Bench::Bench(int warmupCount)
       minTime(numeric_limits<long long>::max()),
       maxTime(numeric_limits<long long>::min()),
       size(0),
-      marked(false) {
-
-        results = new unordered_map<long long, long long>(4194304); // 2 ^ 22
-
-}
-
-Bench::~Bench() {
-    delete results;
+      marked(false),
+      results(4194304) { // 2 ^ 22
 }
 
 void Bench::mark() {
@@ -58,9 +52,9 @@ bool Bench::measure(long long elapsed) {
         if (elapsed > maxTime) maxTime = elapsed;
 
         // Increment the frequency of this elapsed time
-        auto it = results->find(elapsed);
-        if (it == results->end()) {
-            results->insert({elapsed, 1});
+        auto it = results.find(elapsed);
+        if (it == results.end()) {
+            results.insert({elapsed, 1});
         } else {
             it->second++;
         }
@@ -89,7 +83,7 @@ void Bench::reset(bool repeatWarmup) {
     if (!repeatWarmup) warmupCount = 0;
     minTime = numeric_limits<long long>::max();
     maxTime = numeric_limits<long long>::min();
-    results->clear();
+    results.clear();
     size = 0;
 }
 
@@ -178,13 +172,11 @@ void Bench::printPercentiles() const {
 
     double percentiles[] = {0.75, 0.90, 0.99, 0.999, 0.9999, 0.99999};
 
-    auto sorted_results = new std::map<long long, long long>(results->begin(), results->end());
+    std::map<long long, long long> sorted_results(results.begin(), results.end());
 
     for (double p : percentiles) {
         addPercentile(p, sorted_results);
     }
-
-    delete sorted_results;
 }
 
 string Bench::formatPercentage(double perc) {
@@ -210,9 +202,9 @@ string Bench::formatPercentage(double perc) {
     return s;
 }
 
-void Bench::addPercentile(double perc, map<long long, long long>* sorted_results) const {
+void Bench::addPercentile(double perc, const map<long long, long long>& sorted_results) const {
 
-    if (sorted_results->empty()) return;
+    if (sorted_results.empty()) return;
 
     long long target = static_cast<long long>(llround(perc * size));
     if (target == 0) return;
@@ -223,7 +215,7 @@ void Bench::addPercentile(double perc, map<long long, long long>* sorted_results
     long long sumTop = 0;
     long long maxTop = -1;
 
-    for (auto &entry : *sorted_results) {
+    for (const auto& entry : sorted_results) {
         long long time = entry.first;
         long long count = entry.second;
 

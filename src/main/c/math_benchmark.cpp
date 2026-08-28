@@ -37,24 +37,22 @@ int main(int argc, char* argv[]) {
     int totalIterations = measurementIterations + warmupIterations;
     int load = 10000;
 
-    Bench* bench = new Bench(warmupIterations);
+    Bench bench(warmupIterations);
 
     long x = 0;
 
     for (int i = 0; i < totalIterations; i++) {
-        bench->mark();
+        bench.mark();
         x += doSomething(load, i);
-        bench->measure();
+        bench.measure();
     }
 
     cout << "Value computed: " << x << endl;
     cout << "warmup=" << warmupIterations << " measurements=" << measurementIterations << endl;
 
-    bench->printResults();
+    bench.printResults();
     
     cout << endl;
 
-    delete bench;
-    
     return 0;
 }

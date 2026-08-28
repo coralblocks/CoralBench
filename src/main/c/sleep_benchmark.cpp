@@ -28,10 +28,10 @@ void sleepFor(long nanos) {
     }
 }
 
-void doSleep(Bench* bench) {
-    bench->mark(); // <===== timer starts
+void doSleep(Bench& bench) {
+    bench.mark(); // <===== timer starts
     sleepFor(1000);
-    bench->measure(); // <===== timer stops
+    bench.measure(); // <===== timer stops
 }
 
 int main(int argc, char* argv[]) {
@@ -40,16 +40,14 @@ int main(int argc, char* argv[]) {
     const int totalIterations = measurementIterations + warmupIterations;
 
     // Specify the number of warmup iterations to ignore
-    Bench* bench = new Bench(warmupIterations);
+    Bench bench(warmupIterations);
 
     // Perform warmup + measurement iterations
-    while (bench->getIterations() < totalIterations) {
+    while (bench.getIterations() < totalIterations) {
         doSleep(bench);
     }
 
-    bench->printResults();
-
-    delete bench;
+    bench.printResults();
 
     return 0;
 }

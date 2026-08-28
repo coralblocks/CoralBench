@@ -77,10 +77,10 @@ void sleepFor(long nanos) {
     }
 }
 
-void doSleep(Bench* bench) {
-    bench->mark(); // <===== timer starts
+void doSleep(Bench& bench) {
+    bench.mark(); // <===== timer starts
     sleepFor(1000);
-    bench->measure(); // <===== timer stops
+    bench.measure(); // <===== timer stops
 }
 
 int main() {
@@ -89,16 +89,14 @@ int main() {
     const int totalIterations = measurementIterations + warmupIterations;
 
     // Specify the number of warmup iterations to ignore
-    Bench* bench = new Bench(warmupIterations);
+    Bench bench(warmupIterations);
 
     // Perform warmup + measurement iterations
-    while (bench->getIterations() < totalIterations) {
+    while (bench.getIterations() < totalIterations) {
         doSleep(bench);
     }
 
-    bench->printResults();
-
-    delete bench;
+    bench.printResults();
 
     return 0;
 }
@@ -106,12 +104,12 @@ int main() {
 
 #### Measuring the elapsed time yourself
 ```Cpp
-void doSleep(Bench* bench) {
+void doSleep(Bench& bench) {
     auto start = std::chrono::steady_clock::now(); // <===== timer starts
     sleepFor(1000);
     auto end = std::chrono::steady_clock::now();   // <===== timer stops
     long elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    bench->measure(elapsed); // <===== provide the elapsed time yourself
+    bench.measure(elapsed); // <===== provide the elapsed time yourself
 }
 ```
 

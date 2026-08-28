@@ -54,15 +54,15 @@ int main(int argc, char* argv[]) {
     
     HEAP_ARRAY = (int*) malloc(sizeof(int) * arraySize);
     
-    Bench* bench = new Bench(warmup);
+    Bench bench(warmup);
     
     long x = 0;
     
     for(int i = 0; i < total; i++) {
         
-        bench->mark();
+        bench.mark();
         doSomething(HEAP_ARRAY, arraySize);
-        bench->measure();
+        bench.measure();
         
         for(int j = 0; j < arraySize; j++) {
             x += HEAP_ARRAY[j];
@@ -78,10 +78,9 @@ int main(int argc, char* argv[]) {
     }
     printf("]\n");
     
-    bench->printResults();
+    bench.printResults();
     
     free(HEAP_ARRAY);
-    delete bench;
 
     return 0;
 }
