@@ -98,11 +98,10 @@ bool Bench::isWarmingUp() const {
 }
 
 double Bench::avg() const {
-    const int effectiveCount = measurementCount - warmupCount;
-    if (effectiveCount <= 0) {
+    if (size == 0) {
         return 0;
     }
-    const double avg = static_cast<double>(sum) / effectiveCount;
+    const double avg = static_cast<double>(sum) / size;
     const double rounded = round(avg * 100.0) / 100.0;
     return rounded;
 }
@@ -117,17 +116,15 @@ void Bench::printResults() const {
 
 void Bench::printResults(bool includePercentiles) const {
 
-    int effectiveCount = measurementCount - warmupCount;
-
-    string effCountStr = formatWithCommas(effectiveCount);
+    string measurementCountStr = formatWithCommas(size);
     string warmupStr = formatWithCommas(warmupCount);
     string totalStr = formatWithCommas(measurementCount);
 
-    cout << "Measurements: " << effCountStr
+    cout << "Measurements: " << measurementCountStr
          << " | Warm-Up: " << warmupStr
          << " | Iterations: " << totalStr << endl;
          
-  	if (effectiveCount > 0) {
+    if (size > 0) {
 
 	    auto [avgVal, avgUnit] = formatTime(avg());
 	    auto [minVal, minUnit] = formatTime(static_cast<double>(minTime));
