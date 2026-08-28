@@ -55,9 +55,10 @@ int main(int argc, char* argv[]) {
     
     cout << "Benchmarking get..." << endl;
     bench.reset(true);
+    int valuesFound = 0;
     for (int i = 0; i < iterations; i++) {
         bench.mark();
-        [[maybe_unused]] volatile auto val = map->get(i); // volatile to avoid optimizing away...
+        if (map->get(i).has_value()) valuesFound++;
         bench.measure();
     }
     bench.printResults();
@@ -70,6 +71,8 @@ int main(int argc, char* argv[]) {
         bench.measure();
     }
     bench.printResults();
+
+    cout << "Values found: " << valuesFound << endl;
 
     delete dummy;
     delete map; 

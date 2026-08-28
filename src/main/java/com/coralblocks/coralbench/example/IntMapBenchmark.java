@@ -44,9 +44,10 @@ public class IntMapBenchmark {
 		
 		System.out.println("Benchmarking get...");
 		bench.reset(true);
+		int valuesFound = 0;
 		for(int i = 0; i < totalIterations; i++) {
 			bench.mark();
-			map.get(i);
+			if (map.get(i) != null) valuesFound++;
 			bench.measure();
 		}
 		bench.printResults();
@@ -59,5 +60,7 @@ public class IntMapBenchmark {
 			bench.measure();
 		}
 		bench.printResults();
+
+		System.out.println("Values found: " + valuesFound);
 	}
 }
