@@ -245,7 +245,7 @@ public class Bench {
 		
 		sb.append(formatPercentage(perc, 8));
 		sb.append(" = [");
-		sb.append("avg: ").append(convertNanoTime(sumTop / iTop));
+		sb.append("avg: ").append(convertNanoTime((double) sumTop / iTop));
 		sb.append(", max: ").append(convertNanoTime(maxTop)).append(']');
 		sb.append('\n');
 	}

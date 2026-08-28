@@ -41,4 +41,14 @@ public class BenchTest {
 		bench.measure(1);
 		assertFalse(bench.isWarmingUp());
 	}
+
+	@Test
+	public void preservesFractionalPercentileAverages() {
+		Bench bench = new Bench();
+		bench.measure(10);
+		bench.measure(11);
+
+		String results = bench.results();
+		assertTrue(results, results.contains("75% = [avg: 10.500 nanos, max: 11.000 nanos]"));
+	}
 }
