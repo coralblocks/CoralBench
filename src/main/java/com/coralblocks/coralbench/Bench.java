@@ -79,13 +79,6 @@ public class Bench {
 		
 		this.toWarmup = warmup;
 		
-		try {
-			// initialize it here so when you measure for the first time garbage is not created...
-			Class.forName("java.lang.Math");
-		} catch (final Exception e) {
-			throw new RuntimeException(e);
-		}
-		
 		String s = System.getProperty("coralBenchVerbose");
 		this.verbose = s != null && s.equalsIgnoreCase("true");
 		
