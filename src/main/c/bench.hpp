@@ -44,11 +44,11 @@ public:
 
 private:
     int warmupCount;
-    int measurementCount;
+    int iterations;
     long long sum;
     long long minTime;
     long long maxTime;
-    int size;
+    int measurements;
     bool marked;
     std::unordered_map<long long, long long> results;
     std::chrono::steady_clock::time_point startTime;

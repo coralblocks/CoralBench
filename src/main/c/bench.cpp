@@ -20,11 +20,11 @@ using namespace std;
 
 Bench::Bench(int warmupCount)
     : warmupCount(warmupCount),
-      measurementCount(0),
+      iterations(0),
       sum(0),
       minTime(numeric_limits<long long>::max()),
       maxTime(numeric_limits<long long>::min()),
-      size(0),
+      measurements(0),
       marked(false),
       results(4194304) { // 2 ^ 22
 }
@@ -44,7 +44,7 @@ void Bench::measure() {
 bool Bench::measure(long long elapsed) {
     if (elapsed < 0) throw invalid_argument("Elapsed time cannot be negative: " + to_string(elapsed));
 
-    bool isToMeasure = ++measurementCount > warmupCount;
+    bool isToMeasure = ++iterations > warmupCount;
 
     if (isToMeasure) {
         sum += elapsed;
@@ -58,18 +58,18 @@ bool Bench::measure(long long elapsed) {
         } else {
             it->second++;
         }
-        size++;
+        measurements++;
     }
     
     return isToMeasure;
 }
 
 int Bench::getIterations() const {
-	return measurementCount;
+	return iterations;
 }
 
 int Bench::getMeasurements() const {
-    return size;
+    return measurements;
 }
 
 void Bench::reset() {
@@ -77,25 +77,25 @@ void Bench::reset() {
 }
 
 void Bench::reset(bool repeatWarmup) {
-    measurementCount = 0;
+    iterations = 0;
     sum = 0;
     marked = false;
     if (!repeatWarmup) warmupCount = 0;
     minTime = numeric_limits<long long>::max();
     maxTime = numeric_limits<long long>::min();
     results.clear();
-    size = 0;
+    measurements = 0;
 }
 
 bool Bench::isWarmingUp() const {
-	return measurementCount < warmupCount;
+	return iterations < warmupCount;
 }
 
 double Bench::avg() const {
-    if (size == 0) {
+    if (measurements == 0) {
         return 0;
     }
-    const double avg = static_cast<double>(sum) / size;
+    const double avg = static_cast<double>(sum) / measurements;
     const double rounded = round(avg * 100.0) / 100.0;
     return rounded;
 }
@@ -110,15 +110,15 @@ void Bench::printResults() const {
 
 void Bench::printResults(bool includePercentiles) const {
 
-    string measurementCountStr = formatWithCommas(size);
+    string measurementsStr = formatWithCommas(measurements);
     string warmupStr = formatWithCommas(warmupCount);
-    string totalStr = formatWithCommas(measurementCount);
+    string totalStr = formatWithCommas(iterations);
 
-    cout << "Measurements: " << measurementCountStr
+    cout << "Measurements: " << measurementsStr
          << " | Warm-Up: " << warmupStr
          << " | Iterations: " << totalStr << endl;
          
-    if (size > 0) {
+    if (measurements > 0) {
 
 	    auto [avgVal, avgUnit] = formatTime(avg());
 	    auto [minVal, minUnit] = formatTime(static_cast<double>(minTime));
@@ -168,7 +168,7 @@ double Bench::roundToDecimals(double d, int decimals) {
 
 void Bench::printPercentiles() const {
 
-    if (size == 0) return;
+    if (measurements == 0) return;
 
     double percentiles[] = {0.75, 0.90, 0.99, 0.999, 0.9999, 0.99999};
 
@@ -206,9 +206,9 @@ void Bench::addPercentile(double perc, const map<long long, long long>& sorted_r
 
     if (sorted_results.empty()) return;
 
-    long long target = static_cast<long long>(llround(perc * size));
+    long long target = static_cast<long long>(llround(perc * measurements));
     if (target == 0) return;
-    if (target > size) target = size;
+    if (target > measurements) target = measurements;
 
     // Iterate through the map to find the top element at position target
     long long iTop = 0;
