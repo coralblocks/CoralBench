@@ -67,9 +67,9 @@ private final static void doSleep(Bench bench) {
 &nbsp;<br/>
 ```Cpp
 void sleepFor(long nanos) {
-    auto start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::steady_clock::now();
     while (true) {
-        auto now = std::chrono::high_resolution_clock::now();
+        auto now = std::chrono::steady_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(now - start).count();
         if (elapsed >= nanos) {
             break;
@@ -107,9 +107,9 @@ int main() {
 #### Measuring the elapsed time yourself
 ```Cpp
 void doSleep(Bench* bench) {
-    auto start = std::chrono::high_resolution_clock::now(); // <===== timer starts
+    auto start = std::chrono::steady_clock::now(); // <===== timer starts
     sleepFor(1000);
-    auto end = std::chrono::high_resolution_clock::now();   // <===== timer stops
+    auto end = std::chrono::steady_clock::now();   // <===== timer stops
     long elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
     bench->measure(elapsed); // <===== provide the elapsed time yourself
 }

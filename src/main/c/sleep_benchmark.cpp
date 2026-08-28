@@ -18,9 +18,9 @@
 using namespace std;
 
 void sleepFor(long nanos) {
-    auto start = chrono::high_resolution_clock::now();
+    auto start = chrono::steady_clock::now();
     while (true) {
-        auto now = chrono::high_resolution_clock::now();
+        auto now = chrono::steady_clock::now();
         auto elapsed = chrono::duration_cast<chrono::nanoseconds>(now - start).count();
         if (elapsed >= nanos) {
             break;
