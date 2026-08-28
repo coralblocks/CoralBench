@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
     bench.reset(true);
     for (int i = 0; i < iterations; i++) {
         bench.mark();
-        volatile auto val = map->get(i); // volatile to avoid optimizing away...
+        [[maybe_unused]] volatile auto val = map->get(i); // volatile to avoid optimizing away...
         bench.measure();
     }
     bench.printResults();
