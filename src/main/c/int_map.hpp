@@ -66,16 +66,16 @@ public:
         return nullptr;
     }
 
-    E put(std::int32_t key, const E& value) {
+    E put(std::int32_t key, E value) {
         vector<Entry>& entries = data[toArrayIndex(key)];
         for (auto& e : entries) {
             if (e.key == key) {
-                E old = e.value;
-                e.value = value;
+                E old = std::move(e.value);
+                e.value = std::move(value);
                 return old;
             }
         }
-        entries.emplace_back(key, value);
+        entries.emplace_back(key, std::move(value));
         count++;
         return nullptr;
     }
