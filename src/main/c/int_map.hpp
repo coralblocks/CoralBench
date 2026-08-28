@@ -22,8 +22,6 @@
 #include <utility>
 #include <vector>
 
-using namespace std;
-
 template <typename E>
 class IntMap {
 
@@ -39,27 +37,27 @@ private:
         E value;
       };
 
-    size_t count = 0;
-    vector<vector<Entry>> data;
+    std::size_t count = 0;
+    std::vector<std::vector<Entry>> data;
 
-    size_t toArrayIndex(std::int32_t key) const {
+    std::size_t toArrayIndex(std::int32_t key) const {
         return (static_cast<std::uint32_t>(key) & 0x7FFFFFFFu) % static_cast<std::uint32_t>(data.size());
     }
 
 public:
 
-    IntMap(size_t capacity, size_t initialBucketSize)
+    IntMap(std::size_t capacity, std::size_t initialBucketSize)
         : data(capacity) {
         if (capacity == 0) throw std::invalid_argument("Capacity must be greater than zero");
         for (auto& entries : data) entries.reserve(initialBucketSize);
     }
 
-    size_t size() const {
+    std::size_t size() const {
         return count;
     }
 
     E get(std::int32_t key) const {
-        vector<Entry> const& entries = data[toArrayIndex(key)];
+        std::vector<Entry> const& entries = data[toArrayIndex(key)];
         for (Entry const& e : entries) {
             if (e.key == key) return e.value;
         }
@@ -67,7 +65,7 @@ public:
     }
 
     E put(std::int32_t key, E value) {
-        vector<Entry>& entries = data[toArrayIndex(key)];
+        std::vector<Entry>& entries = data[toArrayIndex(key)];
         for (auto& e : entries) {
             if (e.key == key) {
                 E old = std::move(e.value);
@@ -81,11 +79,11 @@ public:
     }
 
     E remove(std::int32_t key) {
-        vector<Entry>& entries = data[toArrayIndex(key)];
+        std::vector<Entry>& entries = data[toArrayIndex(key)];
         for (Entry& e : entries) {
             if (e.key == key) {
                 E old = e.value;
-                swap( e, entries.back() );
+                std::swap(e, entries.back());
                 entries.erase( entries.end() - 1, entries.end() );
                 count--;
                 return old;
