@@ -87,7 +87,7 @@ void Bench::reset(bool repeatWarmup) {
 }
 
 bool Bench::isWarmingUp() const {
-	return warmupCount <= measurementCount;
+	return measurementCount < warmupCount;
 }
 
 double Bench::avg() const {

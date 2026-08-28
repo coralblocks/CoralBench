@@ -171,7 +171,7 @@ public class Bench {
 	 * @return true if warming up
 	 */
 	public final boolean isWarmingUp() {
-		return toWarmup <= iterations;
+		return iterations < toWarmup;
 	}
 
 	/**
