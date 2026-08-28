@@ -95,4 +95,16 @@ public class BenchTest {
 			Locale.setDefault(originalLocale);
 		}
 	}
+
+	@Test
+	public void spellsOutSeconds() {
+		Bench bench = new Bench();
+		bench.measure(1_000_000_000L);
+		bench.measure(2_000_000_000L);
+
+		String results = bench.results(false);
+		assertTrue(results, results.contains("Avg Time: 1.500 seconds"));
+		assertTrue(results, results.contains("Min Time: 1.000 second"));
+		assertTrue(results, results.contains("Max Time: 2.000 seconds"));
+	}
 }

@@ -313,7 +313,7 @@ public class Bench {
 		if (nanoTime >= 1000000000L) {
 			// seconds...
 			double seconds = round(nanoTime / 1000000000D);
-			sb.append(formatThreeDecimals(seconds)).append(seconds > 1 ? " secs" : " sec");
+			sb.append(formatThreeDecimals(seconds)).append(seconds > 1 ? " seconds" : " second");
 		} else if (nanoTime >= 1000000L) {
 			// millis...
 			double millis = round(nanoTime / 1000000D);
