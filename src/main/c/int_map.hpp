@@ -16,8 +16,9 @@
 #ifndef INT_MAP_HPP
 #define INT_MAP_HPP
 
-#include <optional>
 #include <cstddef>
+#include <cstdint>
+#include <optional>
 #include <vector>
 
 using namespace std;
@@ -31,17 +32,17 @@ private:
         Entry(Entry&&)=default;
         Entry& operator=(Entry&&)& =default;
         
-        Entry(std::size_t k, E v):key(k), value(std::move(v)) {}
+        Entry(std::int32_t k, E v):key(k), value(std::move(v)) {}
 
-        std::size_t key;
+        std::int32_t key;
         E value;
       };
 
     size_t count = 0;
     vector<vector<Entry>> data;
 
-    size_t toArrayIndex(size_t key) const {
-        return key % data.size();
+    size_t toArrayIndex(std::int32_t key) const {
+        return key % static_cast<std::int32_t>(data.size());
     }
 
 public:
@@ -55,7 +56,7 @@ public:
         return count;
     }
 
-    optional<E> get(size_t key) const {
+    optional<E> get(std::int32_t key) const {
         vector<Entry> const& entries = data[toArrayIndex(key)];
         for (Entry const& e : entries) {
             if (e.key == key) return e.value;
@@ -63,7 +64,7 @@ public:
         return nullopt;
     }
 
-    optional<E> put(size_t key, const E& value) {
+    optional<E> put(std::int32_t key, const E& value) {
         vector<Entry>& entries = data[toArrayIndex(key)];
         for (auto& e : entries) {
             if (e.key == key) {
@@ -77,7 +78,7 @@ public:
         return nullopt;
     }
 
-    optional<E> remove(size_t key) {
+    optional<E> remove(std::int32_t key) {
         vector<Entry>& entries = data[toArrayIndex(key)];
         for (Entry& e : entries) {
             if (e.key == key) {
