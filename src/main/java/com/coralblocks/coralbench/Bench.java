@@ -16,8 +16,10 @@
 package com.coralblocks.coralbench;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -44,8 +46,9 @@ public class Bench {
 	private static final int NUMBER_OF_DECIMALS = 3;
 	private static final String VERBOSE = "\n==CoralBenchVerbose==> ";
 	private static final int DEFAULT_LOG_EVERY = 10000;
+	private static final Locale OUTPUT_LOCALE = Locale.US;
 
-	private final DecimalFormat formatter = new DecimalFormat("#,###");
+	private final DecimalFormat formatter = new DecimalFormat("#,###", DecimalFormatSymbols.getInstance(OUTPUT_LOCALE));
 	
 	private long time;
 	private int iterations;
@@ -207,7 +210,7 @@ public class Bench {
 	}
 	
 	private String formatPercentage(double x, int decimals) {
-		NumberFormat percentFormat = NumberFormat.getPercentInstance();
+		NumberFormat percentFormat = NumberFormat.getPercentInstance(OUTPUT_LOCALE);
 		percentFormat.setMaximumFractionDigits(decimals);
 		return percentFormat.format(x);
 	}
@@ -322,7 +325,7 @@ public class Bench {
 	}
 	
 	private static String formatThreeDecimals(double d) {
-		return String.format("%.3f", d);
+		return String.format(OUTPUT_LOCALE, "%.3f", d);
 	}
 
 	/**

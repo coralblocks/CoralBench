@@ -19,6 +19,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+
 import org.junit.Test;
 
 public class BenchTest {
@@ -50,5 +52,24 @@ public class BenchTest {
 
 		String results = bench.results();
 		assertTrue(results, results.contains("75% = [avg: 10.500 nanos, max: 11.000 nanos]"));
+	}
+
+	@Test
+	public void formatsResultsIndependentlyOfDefaultLocale() {
+		Locale originalLocale = Locale.getDefault();
+		try {
+			Locale.setDefault(Locale.GERMANY);
+			Bench bench = new Bench();
+			for(int i = 0; i < 1000; i++) {
+				bench.measure(i % 2 == 0 ? 10 : 11);
+			}
+
+			String results = bench.results();
+			assertTrue(results, results.contains("Measurements: 1,000"));
+			assertTrue(results, results.contains("Avg Time: 10.500 nanos"));
+			assertTrue(results, results.contains("75% = ["));
+		} finally {
+			Locale.setDefault(originalLocale);
+		}
 	}
 }
