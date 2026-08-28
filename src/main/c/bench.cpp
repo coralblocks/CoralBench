@@ -14,6 +14,8 @@
  * governing permissions and limitations under the License.
  */
 #include "bench.hpp"
+#include <stdexcept>
+
 using namespace std;
 
 Bench::Bench(int warmupCount)
@@ -22,7 +24,8 @@ Bench::Bench(int warmupCount)
       sum(0),
       minTime(numeric_limits<long long>::max()),
       maxTime(numeric_limits<long long>::min()),
-      size(0) {
+      size(0),
+      marked(false) {
 
         results = new unordered_map<long long, long long>(4194304); // 2 ^ 22
 
@@ -34,15 +37,18 @@ Bench::~Bench() {
 
 void Bench::mark() {
     startTime = chrono::steady_clock::now();
+    marked = true;
 }
 
 void Bench::measure() {
+    if (!marked) return;
     auto endTime = chrono::steady_clock::now();
     auto elapsed = chrono::duration_cast<chrono::nanoseconds>(endTime - startTime).count();
     measure(elapsed);
 }
 
 bool Bench::measure(long long elapsed) {
+    if (elapsed < 0) throw invalid_argument("Elapsed time cannot be negative: " + to_string(elapsed));
 
     bool isToMeasure = ++measurementCount > warmupCount;
 
@@ -79,6 +85,7 @@ void Bench::reset() {
 void Bench::reset(bool repeatWarmup) {
     measurementCount = 0;
     sum = 0;
+    marked = false;
     if (!repeatWarmup) warmupCount = 0;
     minTime = numeric_limits<long long>::max();
     maxTime = numeric_limits<long long>::min();

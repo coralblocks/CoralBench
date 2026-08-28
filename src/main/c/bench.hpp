@@ -50,6 +50,7 @@ private:
     long long minTime;
     long long maxTime;
     int size;
+    bool marked;
     std::unordered_map<long long, long long>* results;
     std::chrono::steady_clock::time_point startTime;
     
