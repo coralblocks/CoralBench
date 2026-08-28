@@ -13,6 +13,3 @@ java -Xcomp -XX:-TieredCompilation -cp target/classes:target/coralbench-all.jar 
 
 echo "-Xcomp -XX:-TieredCompilation without warm-up"
 java -Xcomp -XX:-TieredCompilation -cp target/classes:target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 5 $PASSES
-
-
-

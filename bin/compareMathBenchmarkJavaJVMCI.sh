@@ -13,6 +13,3 @@ java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -Xcomp -XX:-TieredCo
 
 echo "-Xcomp -XX:-TieredCompilation without warm-up"
 java -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler -Xcomp -XX:-TieredCompilation -cp target/classes:target/coralbench-all.jar com.coralblocks.coralbench.example.MathBenchmark 5 $PASSES
-
-
-
