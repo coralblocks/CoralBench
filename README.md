@@ -289,8 +289,8 @@ DEL => Avg: 26 ns | Min: 22 ns | 99.9% = [avg: 26 ns, max: 171 ns]
 
 ```
 $ native-image --gc=G1 -R:+AlwaysPreTouch -R:InitialHeapSize=4g -R:MaxHeapSize=4g \
-               -R:InitialHeapSize=512m -R:MaxHeapSize=1024m -march=native \
-               -cp target/coralbench-all.jar com.coralblocks.coralbench.example.IntMapBenchmark \
+               -march=native -cp target/coralbench-all.jar \
+               com.coralblocks.coralbench.example.IntMapBenchmark \
                -o target/graal/IntMapBenchmark --no-fallback -O3 --initialize-at-build-time
 
 $ ./target/graal/IntMapBenchmark 0 3000000 1000000
