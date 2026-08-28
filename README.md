@@ -858,6 +858,6 @@ Avg Time: 1.044 micros | Min Time: 1.036 micros | Max Time: 4.846 micros
 ```
 </details>
 
-As you can see from the latency numbers above, by using `-Xcomp -XX:-TieredCompilation` you may be able to `eliminate the need for your application to warm up by paying a small price in performance`. Of course this conclusion cannot be generalized for every application as it will depend heavily on the characteristics and particularities of the source code and its critical path. `But it is worth giving -Xcomp -XX:-TieredCompilation a try to see what kind of numbers you get and to evaluate if the trade-off is worth it.`
+The latency numbers above suggest that `-Xcomp -XX:-TieredCompilation` can reduce or eliminate application warm-up, but its effect on peak performance is workload-dependent: in these results, it sometimes improves performance and sometimes reduces it. This conclusion cannot be generalized to every application because it depends heavily on the source code and its critical path. `It is worth trying -Xcomp -XX:-TieredCompilation to measure its effect on your application and decide whether the trade-off is worthwhile.`
 
 ##### For how this applies to [CoralSequencer](https://www.coralblocks.com/coralsequencer) you can check [this article](https://www.coralblocks.com/index.php/hotspot-jit-aot-and-warm-up/).
