@@ -34,6 +34,20 @@ public class BenchTest {
 	}
 
 	@Test
+	public void consumesMarkAfterOneMeasurement() {
+		Bench bench = new Bench();
+
+		bench.mark();
+		assertTrue(bench.measure() >= 0);
+		assertEquals(1, bench.getIterations());
+		assertEquals(1, bench.getMeasurements());
+
+		assertEquals(-1, bench.measure());
+		assertEquals(1, bench.getIterations());
+		assertEquals(1, bench.getMeasurements());
+	}
+
+	@Test
 	public void reportsWhetherWarmupIsInProgress() {
 		Bench bench = new Bench(2);
 

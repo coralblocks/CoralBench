@@ -157,9 +157,11 @@ public class Bench {
 	 */
 	public long measure() {
 		if (time > 0) {
+			long start = time;
+			time = 0;
 			long now = System.nanoTime();
-			long elapsed = now - time;
-			if (elapsed < 0) throw new RuntimeException("Found a negative elapsed time: now=" + now + " start=" + time + " diff=" + elapsed);
+			long elapsed = now - start;
+			if (elapsed < 0) throw new RuntimeException("Found a negative elapsed time: now=" + now + " start=" + start + " diff=" + elapsed);
 			final boolean counted = measure(elapsed);
 			if (counted) {
 				return elapsed;
