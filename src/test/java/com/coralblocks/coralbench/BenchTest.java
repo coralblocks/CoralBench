@@ -26,11 +26,20 @@ import org.junit.Test;
 public class BenchTest {
 
 	@Test
-	public void measuresWhenMutableIntPoolIsEmpty() {
+	public void measuresWhenCounterPoolIsEmpty() {
 		Bench bench = new Bench();
 
 		assertTrue(bench.measure(1));
 		assertEquals(1, bench.getMeasurements());
+	}
+
+	@Test
+	public void acceptsWarmupCountsBeyondIntegerRange() {
+		Bench bench = new Bench((long) Integer.MAX_VALUE + 1);
+
+		assertTrue(bench.isWarmingUp());
+		assertEquals(0L, bench.getIterations());
+		assertEquals(0L, bench.getMeasurements());
 	}
 
 	@Test

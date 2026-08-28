@@ -28,7 +28,7 @@
 
 class Bench {
 public:
-    Bench(int warmupCount = 0);
+    Bench(long long warmupCount = 0);
 
     void mark();
     void measure();
@@ -38,17 +38,17 @@ public:
     void printResults() const;
     void printResults(bool) const;
     bool isWarmingUp() const;
-    int getIterations() const;
-    int getMeasurements() const;
+    long long getIterations() const;
+    long long getMeasurements() const;
     double getAverage() const;
 
 private:
-    int warmupCount;
-    int iterations;
+    long long warmupCount;
+    long long iterations;
     long long sum;
     long long minTime;
     long long maxTime;
-    int measurements;
+    long long measurements;
     bool marked;
     std::unordered_map<long long, long long> results;
     std::chrono::steady_clock::time_point startTime;

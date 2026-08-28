@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.coralblocks.coralbench.util.MutableInt;
 import com.coralblocks.coralds.list.LinkedList;
 import com.coralblocks.coralds.map.LongMap;
 
@@ -42,6 +41,10 @@ import com.coralblocks.coralds.map.LongMap;
  */
 public class Bench {
 
+	private static final class Counter {
+		private long value;
+	}
+
 	private static final int DEFAULT_WARMUP = 0;
 	private static final int NUMBER_OF_DECIMALS = 3;
 	private static final String VERBOSE = "\n==CoralBenchVerbose==> ";
@@ -51,15 +54,15 @@ public class Bench {
 	private final DecimalFormat formatter = new DecimalFormat("#,###", DecimalFormatSymbols.getInstance(OUTPUT_LOCALE));
 	
 	private long time;
-	private int iterations;
-	private int measurements;
-	private int toWarmup;
+	private long iterations;
+	private long measurements;
+	private long toWarmup;
 	private long totalTime;
 	private long minTime;
 	private long maxTime;
 	
-	private final LinkedList<MutableInt> pool = new LinkedList<MutableInt>(1024);
-	private final LongMap<MutableInt> results = new LongMap<MutableInt>(4194304); // 2 ^ 22
+	private final LinkedList<Counter> pool = new LinkedList<Counter>(1024);
+	private final LongMap<Counter> results = new LongMap<Counter>(4194304); // 2 ^ 22
 	private final boolean verbose;
 	private final int verboseLogEvery;
 	
@@ -76,6 +79,15 @@ public class Bench {
 	 * @param warmup how many iterations to warmup and ignore results
 	 */
 	public Bench(final int warmup) {
+		this((long) warmup);
+	}
+
+	/**
+	 * Creates a <code>Bench</code> object with the given warmup count
+	 *
+	 * @param warmup how many iterations to warmup and ignore results
+	 */
+	public Bench(final long warmup) {
 		
 		this.toWarmup = warmup;
 		
@@ -92,17 +104,15 @@ public class Bench {
 		reset(true);
 	}
 	
-	private final MutableInt getMutableInt(int x) {
-		MutableInt mi = pool.isEmpty() ? null : pool.removeLast();
-		if (mi != null) {
-			mi.set(x);
-			return mi;
-		}
-		return new MutableInt(x);
+	private final Counter getCounter(long value) {
+		Counter counter = pool.isEmpty() ? null : pool.removeLast();
+		if (counter == null) counter = new Counter();
+		counter.value = value;
+		return counter;
 	}
 	
-	private final void releaseMutableInt(MutableInt mi) {
-		pool.addLast(mi);
+	private final void releaseCounter(Counter counter) {
+		pool.addLast(counter);
 	}
 	
 	/**
@@ -126,9 +136,9 @@ public class Bench {
 		maxTime = Long.MIN_VALUE;
 		
 		measurements = 0;
-		Iterator<MutableInt> iter = results.iterator();
+		Iterator<Counter> iter = results.iterator();
 		while(iter.hasNext()) {
-			releaseMutableInt(iter.next());
+			releaseCounter(iter.next());
 		}
 		results.clear();
 	}
@@ -188,11 +198,11 @@ public class Bench {
 			minTime = Math.min(minTime, lastNanoTime);
 			maxTime = Math.max(maxTime, lastNanoTime);
 			
-			MutableInt count = results.get(lastNanoTime);
+			Counter count = results.get(lastNanoTime);
 			if (count == null) {
-				results.put(lastNanoTime, getMutableInt(1));
+				results.put(lastNanoTime, getCounter(1));
 			} else {
-				count.set(count.get() + 1);
+				count.value++;
 			}
 			measurements++;
 		}
@@ -210,7 +220,7 @@ public class Bench {
 		return percentFormat.format(x);
 	}
 	
-	private void addPercentile(StringBuilder sb, double perc, TreeMap<Long, MutableInt> treeMap) {
+	private void addPercentile(StringBuilder sb, double perc, TreeMap<Long, Counter> treeMap) {
 		
 		if (treeMap.isEmpty()) {
 			return;
@@ -219,17 +229,17 @@ public class Bench {
 		long maxTop = -1;
 		
 		long x = Math.round(perc * measurements);
-		Iterator<Map.Entry<Long, MutableInt>> iter = treeMap.entrySet().iterator();
-		int iTop = 0;
+		Iterator<Map.Entry<Long, Counter>> iter = treeMap.entrySet().iterator();
+		long iTop = 0;
 		long sumTop = 0;
 		
 		LOOP: while(iter.hasNext()) {
 			
-			Map.Entry<Long, MutableInt> entry = iter.next();
+			Map.Entry<Long, Counter> entry = iter.next();
 			Long time = entry.getKey();
-			MutableInt count = entry.getValue();
+			Counter count = entry.getValue();
 			
-			for(int a = 0; a < count.get(); a++) {
+			for(long a = 0; a < count.value; a++) {
 				
 				iTop++;
 				sumTop += time;
@@ -253,7 +263,7 @@ public class Bench {
 	 * 
 	 * @return the total number of iterations so far
 	 */
-    public int getIterations() {
+    public long getIterations() {
     	return iterations;
     }
     
@@ -262,7 +272,7 @@ public class Bench {
      * 
      * @return the total number of measurements so far
      */
-    public int getMeasurements() {
+    public long getMeasurements() {
     	return measurements;
     }
 	
@@ -342,10 +352,10 @@ public class Bench {
 			sb.append('\n');
 		
 			if (includePercentiles) {
-				TreeMap<Long, MutableInt> treeMap = new TreeMap<Long, MutableInt>();
-				Iterator<MutableInt> iter = results.iterator();
+				TreeMap<Long, Counter> treeMap = new TreeMap<Long, Counter>();
+				Iterator<Counter> iter = results.iterator();
 				while(iter.hasNext()) {
-					MutableInt counter = iter.next();
+					Counter counter = iter.next();
 					Long time = results.getCurrIteratorKey();
 					treeMap.put(time, counter);
 				}

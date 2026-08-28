@@ -18,7 +18,7 @@
 
 using namespace std;
 
-Bench::Bench(int warmupCount)
+Bench::Bench(long long warmupCount)
     : warmupCount(warmupCount),
       iterations(0),
       sum(0),
@@ -64,11 +64,11 @@ bool Bench::measure(long long elapsed) {
     return isToMeasure;
 }
 
-int Bench::getIterations() const {
+long long Bench::getIterations() const {
 	return iterations;
 }
 
-int Bench::getMeasurements() const {
+long long Bench::getMeasurements() const {
     return measurements;
 }
 
@@ -219,7 +219,7 @@ void Bench::addPercentile(double perc, const map<long long, long long>& sorted_r
         long long time = entry.first;
         long long count = entry.second;
 
-        for (int i = 0; i < count; i++) {
+        for (long long i = 0; i < count; i++) {
             iTop++;
             sumTop += time;
             if (iTop == target) {
