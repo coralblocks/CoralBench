@@ -46,8 +46,9 @@ private:
 
 public:
 
-    IntMap(size_t capacity)
+    IntMap(size_t capacity, size_t initialBucketSize)
         : data(capacity) {
+        for (auto& entries : data) entries.reserve(initialBucketSize);
     }
 
     size_t size() const {

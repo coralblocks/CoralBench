@@ -39,8 +39,9 @@ int main(int argc, char* argv[]) {
     cout << "\nArguments: warmup=" << warmupCount << " measurements=" << measureCount << " mapCapacity=" << capacity << endl << endl;
 
     int iterations = warmupCount + measureCount;
+    int initialBucketSize = iterations / capacity;
 
-    IntMap<Dummy*>* map = new IntMap<Dummy*>(capacity);
+    IntMap<Dummy*>* map = new IntMap<Dummy*>(capacity, initialBucketSize);
     Dummy* dummy = new Dummy();
     Bench bench(warmupCount);
 
