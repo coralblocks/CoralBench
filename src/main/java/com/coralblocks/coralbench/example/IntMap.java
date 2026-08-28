@@ -76,7 +76,7 @@ class IntMap<E> {
 			}
 		}
 		
-		Entry<E> e = entryPool.removeLast();
+		Entry<E> e = entryPool.isEmpty() ? null : entryPool.removeLast();
 		
 		if (e == null) e = new Entry<E>();
 		

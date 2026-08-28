@@ -97,7 +97,7 @@ public class Bench {
 	}
 	
 	private final MutableInt getMutableInt(int x) {
-		MutableInt mi = pool.removeLast();
+		MutableInt mi = pool.isEmpty() ? null : pool.removeLast();
 		if (mi != null) {
 			mi.set(x);
 			return mi;
@@ -390,4 +390,3 @@ public class Bench {
 	}
 	
 }
-
