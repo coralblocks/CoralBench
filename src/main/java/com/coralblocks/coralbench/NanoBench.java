@@ -34,7 +34,7 @@ public class NanoBench {
 	private final StringBuilder sb = new StringBuilder(128);
 	
 	/**
-	 * Creates a new <code>QuickBench</code>
+	 * Creates a new <code>NanoBench</code>
 	 */
 	public NanoBench() {
 		reset();
@@ -73,7 +73,7 @@ public class NanoBench {
 	public final void printResults() {
 		sb.setLength(0);
 		sb.append("Measurements: ").append(measurements);
-		sb.append("| Avg Time: ").append((long) (totalTime / (double) measurements)).append(" nanos");
+		sb.append(" | Avg Time: ").append((long) (totalTime / (double) measurements)).append(" nanos");
 		sb.append(" | Min Time: ").append(minTime).append(" nanos");
 		sb.append(" | Max Time: ").append(maxTime).append(" nanos\n\n");
 		for(int i = 0; i < sb.length(); i++) System.out.print(sb.charAt(i));
@@ -97,4 +97,3 @@ public class NanoBench {
 		while((System.nanoTime() - time) < nanos);
 	}
 }
-
