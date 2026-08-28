@@ -47,8 +47,8 @@ static void doSomething(int* array, int size) {
 
 int main(int argc, char* argv[]) {
 
-    int warmup = (argc > 1) ? atoi(argv[1]) : 1000000;
-    int measurements = (argc > 2) ? atoi(argv[2]) : 10000000;
+    int warmup = (argc > 1) ? std::stoi(argv[1]) : 1000000;
+    int measurements = (argc > 2) ? std::stoi(argv[2]) : 10000000;
     int total = measurements + warmup;
     int arraySize = 60;
     

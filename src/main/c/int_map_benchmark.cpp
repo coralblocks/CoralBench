@@ -27,14 +27,16 @@ int main(int argc, char* argv[]) {
     int capacity = 1000000;
 
     if (argc > 1) {
-        warmupCount = atoi(argv[1]);
+        warmupCount = std::stoi(argv[1]);
     }
     if (argc > 2) {
-        measureCount = atoi(argv[2]);
+        measureCount = std::stoi(argv[2]);
     }
     if (argc > 3) {
-        capacity = atoi(argv[3]);
+        capacity = std::stoi(argv[3]);
     }
+
+    if (capacity <= 0) throw std::invalid_argument("Map capacity must be greater than zero");
 
     cout << "\nArguments: warmup=" << warmupCount << " measurements=" << measureCount << " mapCapacity=" << capacity << endl << endl;
 

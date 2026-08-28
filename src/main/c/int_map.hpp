@@ -18,6 +18,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -49,6 +50,7 @@ public:
 
     IntMap(size_t capacity, size_t initialBucketSize)
         : data(capacity) {
+        if (capacity == 0) throw std::invalid_argument("Capacity must be greater than zero");
         for (auto& entries : data) entries.reserve(initialBucketSize);
     }
 

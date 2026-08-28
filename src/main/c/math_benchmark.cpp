@@ -32,8 +32,8 @@ long doSomething(int load, int i) {
 
 int main(int argc, char* argv[]) {
 
-    int warmupIterations = (argc > 1) ? atoi(argv[1]) : 1'000'000;
-    int measurementIterations = (argc > 2) ? atoi(argv[2]) : 9'000'000;
+    int warmupIterations = (argc > 1) ? std::stoi(argv[1]) : 1'000'000;
+    int measurementIterations = (argc > 2) ? std::stoi(argv[2]) : 9'000'000;
     int totalIterations = measurementIterations + warmupIterations;
     int load = 10000;
 

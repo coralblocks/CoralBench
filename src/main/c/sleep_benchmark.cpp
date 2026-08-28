@@ -35,8 +35,8 @@ void doSleep(Bench* bench) {
 }
 
 int main(int argc, char* argv[]) {
-    const int warmupIterations = (argc > 1) ? stoi(argv[1]) : 1'000'000;
-    const int measurementIterations = (argc > 2) ? stoi(argv[2]) : 2'000'000;
+    const int warmupIterations = (argc > 1) ? std::stoi(argv[1]) : 1'000'000;
+    const int measurementIterations = (argc > 2) ? std::stoi(argv[2]) : 2'000'000;
     const int totalIterations = measurementIterations + warmupIterations;
 
     // Specify the number of warmup iterations to ignore
