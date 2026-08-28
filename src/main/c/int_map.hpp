@@ -18,7 +18,7 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <optional>
+#include <utility>
 #include <vector>
 
 using namespace std;
@@ -56,40 +56,40 @@ public:
         return count;
     }
 
-    optional<E> get(std::int32_t key) const {
+    E get(std::int32_t key) const {
         vector<Entry> const& entries = data[toArrayIndex(key)];
         for (Entry const& e : entries) {
             if (e.key == key) return e.value;
         }
-        return nullopt;
+        return nullptr;
     }
 
-    optional<E> put(std::int32_t key, const E& value) {
+    E put(std::int32_t key, const E& value) {
         vector<Entry>& entries = data[toArrayIndex(key)];
         for (auto& e : entries) {
             if (e.key == key) {
-                auto old = std::move(e.value);
-                e.value = std::move(value);
+                E old = e.value;
+                e.value = value;
                 return old;
             }
         }
         entries.emplace_back(key, value);
         count++;
-        return nullopt;
+        return nullptr;
     }
 
-    optional<E> remove(std::int32_t key) {
+    E remove(std::int32_t key) {
         vector<Entry>& entries = data[toArrayIndex(key)];
         for (Entry& e : entries) {
             if (e.key == key) {
-                auto old = e.value;
+                E old = e.value;
                 swap( e, entries.back() );
                 entries.erase( entries.end() - 1, entries.end() );
                 count--;
-                return std::move(old);
+                return old;
             }
         }
-        return nullopt;
+        return nullptr;
     }
 
     void clear() {

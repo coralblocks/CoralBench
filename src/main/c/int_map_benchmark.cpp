@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
     int valuesFound = 0;
     for (int i = 0; i < iterations; i++) {
         bench.mark();
-        if (map->get(i).has_value()) valuesFound++;
+        if (map->get(i) != nullptr) valuesFound++;
         bench.measure();
     }
     bench.printResults();
