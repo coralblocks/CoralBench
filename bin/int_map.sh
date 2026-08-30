@@ -4,13 +4,23 @@ WARMUP=${1:-1000000}
 MEASUREMENTS=${2:-10000000}
 
 java25() {
-    rm -f /usr/java/default
-    ln -s /usr/java/java25 /usr/java/default
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        sudo rm -f /Library/Java/JavaVirtualMachines/Default
+        sudo ln -sf /Library/Java/JavaVirtualMachines/jdk25-oracle /Library/Java/JavaVirtualMachines/Default
+    else
+        rm -f /usr/java/default
+        ln -s /usr/java/java25 /usr/java/default
+    fi
 }
 
 graal25() {
-    rm -f /usr/java/default
-    ln -s /usr/java/graal25 /usr/java/default
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        sudo rm -f /Library/Java/JavaVirtualMachines/Default
+        sudo ln -sf /Library/Java/JavaVirtualMachines/jdk25-graal /Library/Java/JavaVirtualMachines/Default
+    else
+        rm -f /usr/java/default
+        ln -s /usr/java/graal25 /usr/java/default
+    fi
 }
 
 CMD_JAVA="java -cp target/classes:target/coralbench-all.jar com.coralblocks.coralbench.example.IntMapBenchmark $WARMUP $MEASUREMENTS"
@@ -32,4 +42,3 @@ echo "C/C++:"
 ./bin/compileIntMapBenchmarkCpp.sh
 echo $CMD_CPP
 $CMD_CPP
-
